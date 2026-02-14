@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.wkhan.naturesaura_plus.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mixins.naturesaura_plus.refmap.json",
+  "mixins": [
+    "ItemStackMixin"
+  ],
+  "client": [],
+  "server": []
+}

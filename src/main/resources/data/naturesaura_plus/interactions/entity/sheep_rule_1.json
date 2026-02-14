@@ -1,0 +1,5 @@
+{
+  "type":"entity",
+  "entity":"minecraft:sheep",
+  "item": "minecraft:shears"
+}
