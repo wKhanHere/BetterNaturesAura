@@ -1,6 +1,6 @@
 /*
- * Portions of this file are derived from Nature's Aura
- * https://github.com/Ellpeck/NaturesAura
+ * Portions of this file are derived from Nature's Aura ItemBreakPrevention java class.
+ * https://github.com/Ellpeck/NaturesAura/blob/main/src/main/java/de/ellpeck/naturesaura/items/ItemBreakPrevention.java
  *
  * Copyright (c) Ellpeck
  * Licensed under the MIT License
@@ -8,36 +8,25 @@
 
 package net.wkhan.naturesaura_plus.item.custom;
 
-import de.ellpeck.naturesaura.items.ItemBreakPrevention;
 import de.ellpeck.naturesaura.items.ItemImpl;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.Stats;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ElytraItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.wkhan.naturesaura_plus.item.ModItems;
 import net.wkhan.naturesaura_plus.util.ModTags;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ItemBreakPreventionAll extends ItemImpl
 {
