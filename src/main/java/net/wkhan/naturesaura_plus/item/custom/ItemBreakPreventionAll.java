@@ -24,7 +24,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.wkhan.naturesaura_plus.item.ModItems;
-import net.wkhan.naturesaura_plus.util.ModTags;
+import net.wkhan.naturesaura_plus.tag.ModTags;
 
 import java.util.List;
 
@@ -47,12 +47,12 @@ public class ItemBreakPreventionAll extends ItemImpl
                     return;
                 if (stack.getTag().getBoolean("naturesaura_plus:break_prevention")) {
                     if (stack.getDamageValue() >= stack.getMaxDamage() - 1) {event.setNewSpeed(0.0F);}
-                    // Get a broken sound byte here too.
+                    // Get a broken sound bite here too.
                 }
             }
         }
 
-        //Add a entity interact cancel for shearing sheep lmao
+        //Add an entity interact cancel for shearing sheep lmao
 
         @SubscribeEvent
         public void onAnvilUpdate(AnvilUpdateEvent event) {

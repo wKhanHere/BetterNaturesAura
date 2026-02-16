@@ -7,7 +7,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
-import net.wkhan.naturesaura_plus.util.ModTags;
+import net.wkhan.naturesaura_plus.tag.ModTags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
