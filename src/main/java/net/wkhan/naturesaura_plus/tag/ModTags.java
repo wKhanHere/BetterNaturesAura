@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.util;
+package net.wkhan.naturesaura_plus.tag;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
