@@ -1,5 +1,6 @@
 package net.wkhan.naturesaura_plus.data;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,7 +14,7 @@ public final class BlockInteractionRules {
     private static final Map<Block, List<BlockInteractionRule>> RULE_CACHE = new HashMap<>();
 
     // Globals: Rules that apply to ALL blocks (id was empty in JSON)
-    private static final List<BlockInteractionRule> GLOBAL_RULES = new ArrayList<>();
+    private static final Map<Item, List<BlockInteractionRule>> GLOBAL_RULES = new HashMap<>();
 
     public static int size() {
         return RULE_CACHE.size() + GLOBAL_RULES.size();
@@ -25,41 +26,40 @@ public final class BlockInteractionRules {
     }
 
     public static void add(BlockInteractionRule rule) {
-        // 1. Validate: If resolve fails, it logs the error internally.
         if (!rule.resolve()) return;
 
-        Block targetBlock = rule.getTargetBlock();
-        String rawId = rule.getRawBlockId();
+        String rawBlockId = rule.getRawBlockId();
+        Item targetItem = rule.getTargetItem();
+        if (Objects.equals(rawBlockId, "*")) {
+            GLOBAL_RULES.computeIfAbsent(targetItem, k -> new ArrayList<>()).add(rule);
+            return;
+        }
 
-        // 2. Add to specific cache or global list
+        Block targetBlock = rule.getTargetBlock();
         if (targetBlock != null) {
             RULE_CACHE.computeIfAbsent(targetBlock, k -> new ArrayList<>()).add(rule);
-        }
-        else if (rawId == null || rawId.isEmpty()) {
-            GLOBAL_RULES.add(rule);
         }
     }
 
     public static void sortRules() {
         RULE_CACHE.values().forEach(Collections::sort);
-        Collections.sort(GLOBAL_RULES);
+        GLOBAL_RULES.values().forEach(Collections::sort);
     }
 
     @Nullable
     public static BlockInteractionRule match(ItemStack stack, BlockState state) {
-        // 1. Check specific rules (Fast O(1) Lookup)
-        List<BlockInteractionRule> specificRules = RULE_CACHE.get(state.getBlock());
 
-        if (specificRules != null) {
-            for (BlockInteractionRule rule : specificRules) {
+        List<BlockInteractionRule> specificRules = RULE_CACHE.getOrDefault(state.getBlock(), Collections.emptyList());
+        List<BlockInteractionRule> globalRules = GLOBAL_RULES.getOrDefault(stack.getItem(), Collections.emptyList());
+
+        for (BlockInteractionRule rule : specificRules) {
                 if (rule.matches(stack, state)) return rule;
-            }
         }
 
-        // 2. Check global rules (Iterative)
-        for (BlockInteractionRule rule : GLOBAL_RULES) {
-            if (rule.matches(stack, state)) return rule;
+        for (BlockInteractionRule rule : globalRules) {
+            if (rule.matches(stack, null)) return rule;
         }
+
 
         return null;
     }

@@ -2,10 +2,8 @@ package net.wkhan.naturesaura_plus.event;
 
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,6 +11,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.data.BlockInteractionRule;
 import net.wkhan.naturesaura_plus.data.BlockInteractionRules;
+
+import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.Events.isBroken;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)
 public class BlockInteractionEvent {
@@ -23,9 +23,8 @@ public class BlockInteractionEvent {
         BlockState state = event.getLevel().getBlockState(event.getPos());
         Entity entity = event.getEntity();
         Level level = event.getLevel();
-        if (stack.isEmpty()) return;
-        if (!stack.hasTag()) return;
-        if (!(stack.getTag().getBoolean("naturesaura_plus:break_prevention") && stack.getDamageValue() == stack.getMaxDamage() - 1)) return;
+        if (!isBroken(stack)) return;
+
 
         BlockInteractionRule rule =
                 BlockInteractionRules.match(stack, state);
@@ -42,14 +41,5 @@ public class BlockInteractionEvent {
         );
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.FAIL);
-
-
-//        if (rule.damage() > 0) {
-//            stack.hurtAndBreak(
-//                    rule.damage(),
-//                    event.getEntity(),
-//                    p -> p.broadcastBreakEvent(event.getHand())
-//            );
-//        }
     }
 }

@@ -12,55 +12,79 @@ public class BlockInteractionRule implements Comparable<BlockInteractionRule> {
 
     // --- JSON DATA FIELDS ---
 
-    @SerializedName("block") // Maps to "block": "minecraft:grass_block"
+    @SerializedName("block")
     private String blockId;
 
-    @SerializedName("item") // Maps to "item": "minecraft:shears"
+    @SerializedName("item")
     private String itemId;
 
     @SerializedName("priority")
-    private int priority = 0; //Default to 0 if not specified.
+    private int priority = 0;
 
-
-    // --- RUNTIME CACHE ---
     private transient Block cachedBlock;
     private transient Item cachedItem;
     private transient boolean rulesResolved = false;
+    private transient String sourceFile;
 
-
-    // --- LOGIC ---
+    public void setSourceFile(String sourceFile) { this.sourceFile = sourceFile; }
 
     /**
      * Resolves string IDs to actual Registry objects.
-     * @return true if valid, false if IDs are invalid/typos.
+     * @return true if valid, false if invalid.
      */
     public boolean resolve() {
         if (rulesResolved) return true;
 
-        // 1. Resolve Block (if specified)
-        if (blockId != null && !blockId.isEmpty()) {
-            ResourceLocation loc = ResourceLocation.tryParse(blockId);
-            if (loc != null && ForgeRegistries.BLOCKS.containsKey(loc)) {
-                this.cachedBlock = ForgeRegistries.BLOCKS.getValue(loc);
-            } else {
-                System.err.println("Block Rule Error: Invalid Block ID '" + blockId + "'");
-                return false;
-            }
+        if (!itemResolve()) {
+            logError("Failed to resolve Item ID: '" + itemId + "'");
+            return false;
         }
 
-        // 2. Resolve Item (if specified)
-        if (itemId != null && !itemId.isEmpty()) {
-            ResourceLocation loc = ResourceLocation.tryParse(itemId);
-            if (loc != null && ForgeRegistries.ITEMS.containsKey(loc)) {
-                this.cachedItem = ForgeRegistries.ITEMS.getValue(loc);
-            } else {
-                System.err.println("Block Rule Error: Invalid Item ID '" + itemId + "'");
-                return false;
-            }
+        if (!blockResolve()) {
+            logError("Failed to resolve Block ID: '" + blockId + "'");
+            return false;
         }
 
         this.rulesResolved = true;
         return true;
+    }
+
+    private boolean itemResolve(){
+        if (itemId == null || itemId.isEmpty()) {
+            System.err.println("Block Rule Error: Missing Item ID'" + itemId + "'");
+            return false;
+        }
+        if (itemId.equals("*")) {
+            this.cachedItem = null; // Wildcard: matches any item
+            return true;
+        }
+        ResourceLocation loc = ResourceLocation.tryParse(itemId);
+        if (loc != null && ForgeRegistries.ITEMS.containsKey(loc)) {
+            this.cachedItem = ForgeRegistries.ITEMS.getValue(loc);
+            return true;
+        } else {
+            System.err.println("Block Rule Error: Invalid Item ID '" + itemId + "'");
+            return false;
+        }
+    }
+
+    private boolean blockResolve() {
+        if (blockId == null || blockId.isEmpty()) {
+            System.err.println("Block Rule Error: Missing Block ID'" + blockId + "'");
+            return false;
+        }
+        if (blockId.equals("*")) {
+            this.cachedBlock = null; // Wildcard: matches any block
+            return true;
+        }
+        ResourceLocation loc = ResourceLocation.tryParse(blockId);
+        if (loc != null && ForgeRegistries.BLOCKS.containsKey(loc)) {
+            this.cachedBlock = ForgeRegistries.BLOCKS.getValue(loc);
+            return true;
+        } else {
+            System.err.println("Block Rule Error: Invalid Block ID '" + blockId + "'");
+            return false;
+        }
     }
 
     public boolean matches(ItemStack stack, BlockState state) {
@@ -81,15 +105,21 @@ public class BlockInteractionRule implements Comparable<BlockInteractionRule> {
         return true;
     }
 
-    // --- GETTERS ---
-    public int getPriority() { return priority; }
-    // For sorting/manager use
+    private void logError(String message) {
+        if (sourceFile != null) {
+            System.err.println("Block Rule Error in " + sourceFile + ": " + message);
+        } else {
+            System.err.println("Block Rule Error: (Invalid SourceFile? <- Seen when sourceFile resolves to null) " + message);
+        }
+    }
+
+    public Item getTargetItem() { return cachedItem;}
     public Block getTargetBlock() { return cachedBlock; }
     public String getRawBlockId() { return blockId; }
 
     @Override
     public int compareTo(BlockInteractionRule other) {
         // Sort specifically by priority (Higher number = processed first)
-        return Integer.compare(other.priority, this.priority);
+        return Integer.compare(other.priority, this.priority); //Dont ask why this even exists.
     }
 }
