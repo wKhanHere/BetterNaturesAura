@@ -1,7 +1,6 @@
 package net.wkhan.naturesaura_plus.mixin;
 
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.Events.isBroken;
 
 
 @Mixin(ItemStack.class)
@@ -22,8 +22,6 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
         super(baseClass);
     }
 
-
-    //Prevents Items with Steel Token Applied from Breaking due excess durability loss.
     @ModifyVariable(
             method = "hurt",
             slice = @Slice(
@@ -37,13 +35,13 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
     )
     private int naturesaura_plus$preventBreak(int amount) {
         ItemStack stack = (ItemStack)(Object)this;
-        if (!stack.hasTag()) return amount;
-        if (!stack.getTag().getBoolean("naturesaura_plus:break_prevention")) return amount;
+        if(!isBroken(stack)) return amount;
         int remaining = stack.getMaxDamage() - stack.getDamageValue() - 1;
         return Math.max(0, Math.min(amount, remaining));
     }
 
-    //Prevents the use of Broken (Steel Token Applied) Items.
+
+
     @Inject(
             method = "use",
             at = @At("HEAD"),
@@ -54,9 +52,7 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
     ) {
         ItemStack stack = (ItemStack)(Object)this;
 
-        if (!stack.isDamageableItem()) return;
-        if (!stack.hasTag()) return;
-        if (!stack.getTag().getBoolean("naturesaura_plus:break_prevention")) return;
+        if(!isBroken(stack)) return;
 
         if (stack.getDamageValue() == stack.getMaxDamage() - 1) {
             p_41683_.playSound(

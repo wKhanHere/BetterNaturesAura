@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +24,7 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.wkhan.naturesaura_plus.data.AnvilCostRules;
 import net.wkhan.naturesaura_plus.item.ModItems;
 import net.wkhan.naturesaura_plus.tag.ModTags;
 
@@ -70,10 +72,17 @@ public class ItemBreakPreventionAll extends ItemImpl
                     ItemStack output = left.copy();
                     output.getOrCreateTag().putBoolean("naturesaura_plus:break_prevention", true);
                     event.setOutput(output);
-                    event.setCost(5);
+                    event.setCost(AnvilCostRules.getCost(ResourceLocation.parse("naturesaura_plus:anvil_cost/steel_token")));
                     event.setMaterialCost(1);
                 }
             }
+        }
+
+        public static boolean isBroken(ItemStack stack) {
+            return !stack.isEmpty()
+                    && stack.hasTag()
+                    && stack.getTag().getBoolean("naturesaura_plus:break_prevention")
+                    && stack.getDamageValue() >= stack.getMaxDamage() - 1;
         }
 
         @SubscribeEvent

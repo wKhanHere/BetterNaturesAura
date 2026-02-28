@@ -7,11 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.wkhan.naturesaura_plus.data.BlockInteractionRule;
-import net.wkhan.naturesaura_plus.data.BlockInteractionRules;
-import net.wkhan.naturesaura_plus.data.EntityInteractionRule;
-import net.wkhan.naturesaura_plus.data.EntityInteractionRules;
+import net.wkhan.naturesaura_plus.data.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class InteractionRuleReloadListener
@@ -29,41 +28,59 @@ public class InteractionRuleReloadListener
     ) {
         EntityInteractionRules.clear();
         BlockInteractionRules.clear();
+        AnvilCostRules.clear();
+
+        List<String> loadedBlockRules = new ArrayList<>();
+        List<String> loadedEntityRules = new ArrayList<>();
+        List<String> loadedAnvilCosts = new ArrayList<>();
 
         data.forEach((fileId, jsonElement) -> {
             try {
                 JsonObject json = jsonElement.getAsJsonObject();
 
-                // 3. Check for a "type" discriminator
-                // This assumes your JSON has a field like: "type": "entity" or "type": "block"
+                // Check for a "type" discriminator
                 if (json.has("type")) {
                     String type = json.get("type").getAsString();
 
                     if ("entity".equals(type)) {
-                        // Deserialize to your EntityRule class
                         EntityInteractionRule rule = new Gson().fromJson(json, EntityInteractionRule.class);
+//                       rule.setSourceFile(fileId.toString()); //pls implement
+                        loadedEntityRules.add(fileId.toString());
                         EntityInteractionRules.add(rule);
 
                     } else if ("block".equals(type)) {
                         // Deserialize to your BlockRule class
                         BlockInteractionRule rule = new Gson().fromJson(json, BlockInteractionRule.class);
+                        rule.setSourceFile(fileId.toString());
+                        loadedBlockRules.add(fileId.toString());
                         BlockInteractionRules.add(rule);
                     }
+                    else if ("anvil_cost".equals(type)) {
+                        if (json.has("levels")) {
+                            int cost = json.get("levels").getAsInt();
+                            AnvilCostRules.add(fileId, cost);
+                            loadedAnvilCosts.add(fileId.toString());
+                        } else {
+                            System.err.println("Missing 'levels' field in anvil cost file: " + fileId);
+                        }
+                    }
+                    else {
+                        System.err.println("Unknown rule type '" + type + "' in file: " + fileId);
+                    }
                 } else {
-                    // Fallback: If no type is specified, you might try to guess based on fields
-                    // or log a warning.
                     System.err.println("Missing 'type' field in rule file: " + fileId);
                 }
 
             } catch (Exception e) {
-                // 4. Robust Error Logging
-                // This ensures one bad JSON file doesn't crash the whole game or stop other rules from loading
                 System.err.println("Failed to load interaction rule: " + fileId);
                 e.printStackTrace();
             }
         });
 
-        System.out.println("Loaded " + EntityInteractionRules.size() + " entity rules and " + BlockInteractionRules.size() + " block rules.");
+        System.out.println("Loaded " + EntityInteractionRules.size() + " entity rules and " + BlockInteractionRules.size() + " block rules and " + AnvilCostRules.size() + " anvil cost rules.");
+        System.out.println("Entity Rules Loaded: " + loadedEntityRules);
+        System.out.println("Block Rules Loaded: " + loadedBlockRules);
+        System.out.println("Anvil Costs Loaded: " + loadedAnvilCosts);
         EntityInteractionRules.sortRules();
         BlockInteractionRules.sortRules();
         System.out.println("Rules loaded and sorted.");
