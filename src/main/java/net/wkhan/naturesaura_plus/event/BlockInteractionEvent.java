@@ -9,7 +9,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
-import net.wkhan.naturesaura_plus.data.BlockInteractionRule;
 import net.wkhan.naturesaura_plus.data.BlockInteractionRules;
 
 import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.Events.isBroken;
@@ -25,11 +24,8 @@ public class BlockInteractionEvent {
         Level level = event.getLevel();
         if (!isBroken(stack)) return;
 
-
-        BlockInteractionRule rule =
-                BlockInteractionRules.match(stack, state);
-
-        if (rule == null) return;
+        boolean ruleMatch = BlockInteractionRules.match(stack, state);
+        if (!ruleMatch) return;
 
         level.playSound( //Doesnt work
                 entity,

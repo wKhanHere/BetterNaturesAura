@@ -5,13 +5,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public final class BlockInteractionRules {
 
+    private record BlockItemPair(Block block, Item item) {}
+
     // Cache: Map specific Block to a list of rules
-    private static final Map<Block, List<BlockInteractionRule>> RULE_CACHE = new HashMap<>();
+    private static final Map<BlockItemPair, BlockInteractionRule> RULE_CACHE = new HashMap<>();
 
     // Globals: Rules that apply to ALL blocks (id was empty in JSON)
     private static final Map<Item, List<BlockInteractionRule>> GLOBAL_RULES = new HashMap<>();
@@ -37,30 +38,26 @@ public final class BlockInteractionRules {
 
         Block targetBlock = rule.getTargetBlock();
         if (targetBlock != null) {
-            RULE_CACHE.computeIfAbsent(targetBlock, k -> new ArrayList<>()).add(rule);
+            BlockItemPair key = new BlockItemPair(targetBlock, targetItem);
+            RULE_CACHE.put(key, rule);
         }
     }
 
     public static void sortRules() {
-        RULE_CACHE.values().forEach(Collections::sort);
         GLOBAL_RULES.values().forEach(Collections::sort);
     }
 
-    @Nullable
-    public static BlockInteractionRule match(ItemStack stack, BlockState state) {
+    public static boolean match(ItemStack stack, BlockState state) {
 
-        List<BlockInteractionRule> specificRules = RULE_CACHE.getOrDefault(state.getBlock(), Collections.emptyList());
+        BlockItemPair key = new BlockItemPair(state.getBlock(), stack.getItem());
+        BlockInteractionRule specificRule = RULE_CACHE.get(key);
         List<BlockInteractionRule> globalRules = GLOBAL_RULES.getOrDefault(stack.getItem(), Collections.emptyList());
 
-        for (BlockInteractionRule rule : specificRules) {
-                if (rule.matches(stack, state)) return rule;
-        }
-
         for (BlockInteractionRule rule : globalRules) {
-            if (rule.matches(stack, null)) return rule;
+            if (rule.matches(stack, null)) return true;
         }
 
-
-        return null;
+        if(specificRule == null) return false;
+        return specificRule.matches(stack, state);
     }
 }
