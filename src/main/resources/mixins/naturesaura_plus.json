@@ -6,7 +6,8 @@
   "refmap": "mixins.naturesaura_plus.refmap.json",
   "mixins": [
     "ItemStackMixin",
-    "BlockDispenserMixin"
+    "BlockDispenserMixin",
+    "AuraRepairMixin"
   ],
   "client": [],
   "server": []
