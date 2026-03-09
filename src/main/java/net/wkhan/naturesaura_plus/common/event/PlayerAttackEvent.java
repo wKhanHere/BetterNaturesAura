@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.event;
+package net.wkhan.naturesaura_plus.common.event;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
+import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)
 public class PlayerAttackEvent {

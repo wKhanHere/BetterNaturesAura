@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
+import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mixin(DispenserBlock.class)
 public abstract class BlockDispenserMixin extends net.minecraft.world.level.block.BaseEntityBlock {

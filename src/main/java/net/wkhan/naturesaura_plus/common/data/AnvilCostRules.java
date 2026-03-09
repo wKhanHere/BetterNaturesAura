@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.data;
+package net.wkhan.naturesaura_plus.common.data;
 
 import net.minecraft.resources.ResourceLocation;
 

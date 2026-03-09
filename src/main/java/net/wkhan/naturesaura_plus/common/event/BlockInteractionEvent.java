@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.event;
+package net.wkhan.naturesaura_plus.common.event;
 
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -9,9 +9,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
-import net.wkhan.naturesaura_plus.data.BlockInteractionRules;
+import net.wkhan.naturesaura_plus.common.data.BlockInteractionRules;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
+import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)
 public class BlockInteractionEvent {

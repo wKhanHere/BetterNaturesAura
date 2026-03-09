@@ -6,7 +6,7 @@
  * Licensed under the MIT License
  */
 
-package net.wkhan.naturesaura_plus.item.custom;
+package net.wkhan.naturesaura_plus.common.item;
 
 import de.ellpeck.naturesaura.items.ItemImpl;
 import net.minecraft.ChatFormatting;
@@ -26,9 +26,8 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.wkhan.naturesaura_plus.data.AnvilCostRules;
-import net.wkhan.naturesaura_plus.item.ModItems;
-import net.wkhan.naturesaura_plus.tag.ModTags;
+import net.wkhan.naturesaura_plus.common.data.AnvilCostRules;
+import net.wkhan.naturesaura_plus.common.tag.ModTags;
 
 import java.util.List;
 

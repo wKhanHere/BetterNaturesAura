@@ -6,8 +6,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.wkhan.naturesaura_plus.item.ModItems;
-import net.wkhan.naturesaura_plus.reload.ReloadListener;
+import net.wkhan.naturesaura_plus.common.item.ModItems;
+import net.wkhan.naturesaura_plus.common.reload.ReloadListener;
 
 @Mod(NaturesAuraPlus.MODID)
 public class NaturesAuraPlus

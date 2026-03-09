@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.event;
+package net.wkhan.naturesaura_plus.common.event;
 
 
 import net.minecraft.ChatFormatting;
@@ -17,7 +17,7 @@ import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
+import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)
 public class PlayerTickEvent {

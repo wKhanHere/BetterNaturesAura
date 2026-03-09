@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.willTokenAppliedBroken;
+import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
+import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.willTokenAppliedBroken;
 
 
 @Mixin(ItemStack.class)

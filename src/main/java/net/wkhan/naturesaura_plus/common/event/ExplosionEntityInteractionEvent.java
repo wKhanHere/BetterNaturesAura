@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.event;
+package net.wkhan.naturesaura_plus.common.event;
 
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.event.level.ExplosionEvent;
@@ -6,7 +6,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
+import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)
 public class ExplosionEntityInteractionEvent {
