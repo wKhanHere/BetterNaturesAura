@@ -12,7 +12,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.Events.isBroken;
+
+import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
+import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.willTokenAppliedBroken;
 
 
 @Mixin(ItemStack.class)
@@ -35,7 +37,7 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
     )
     private int naturesaura_plus$preventBreak(int amount) {
         ItemStack stack = (ItemStack)(Object)this;
-        if(!isBroken(stack)) return amount;
+        if(!willTokenAppliedBroken(stack,amount)) return amount;
         int remaining = stack.getMaxDamage() - stack.getDamageValue() - 1;
         return Math.max(0, Math.min(amount, remaining));
     }
@@ -52,10 +54,9 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
     ) {
         ItemStack stack = (ItemStack)(Object)this;
 
-        if(!isBroken(stack)) return;
+        if(!isTokenAppliedBroken(stack)) return;
 
-        if (stack.getDamageValue() == stack.getMaxDamage() - 1) {
-            p_41683_.playSound(
+        p_41683_.playSound(
                     p_41684_,
                     p_41684_.blockPosition(),
                     net.minecraft.sounds.SoundEvents.ITEM_BREAK,
@@ -63,8 +64,7 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
                     0.8F,
                     0.8F + p_41683_.random.nextFloat() * 0.4F
             );
-            cir.setReturnValue(InteractionResultHolder.fail(stack));
-        }
+        cir.setReturnValue(InteractionResultHolder.fail(stack));
     }
 
 }

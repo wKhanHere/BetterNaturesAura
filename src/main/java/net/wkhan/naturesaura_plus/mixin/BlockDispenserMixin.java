@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.Events.isBroken;
+import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mixin(DispenserBlock.class)
 public abstract class BlockDispenserMixin extends net.minecraft.world.level.block.BaseEntityBlock {
@@ -34,7 +34,7 @@ public abstract class BlockDispenserMixin extends net.minecraft.world.level.bloc
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void naturesaura_plus$cancelBrokenDispense(ServerLevel p_52665_, BlockPos p_52666_, CallbackInfo ci, BlockSourceImpl blocksourceimpl, DispenserBlockEntity dispenserblockentity, int i, ItemStack itemstack) {
-        if (isBroken(itemstack)) {
+        if (isTokenAppliedBroken(itemstack)) {
             p_52665_.playSound(
                     null,
                     p_52666_.getX() + 0.5D,

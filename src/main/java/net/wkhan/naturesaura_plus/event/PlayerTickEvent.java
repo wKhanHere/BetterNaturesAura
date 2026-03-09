@@ -17,7 +17,7 @@ import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.Events.isBroken;
+import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)
 public class PlayerTickEvent {
@@ -34,7 +34,7 @@ public class PlayerTickEvent {
         if (tickCounter == 0)
             for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
                 ItemStack stack = player.getItemBySlot(slot);
-                if (isBroken(stack)) {
+                if (isTokenAppliedBroken(stack)) {
                     unequipVanillaItem(player, slot, stack);
                 }
             }
@@ -56,7 +56,7 @@ public class PlayerTickEvent {
 
         for (int i = 0; i < equipped.getSlots(); i++) {
             ItemStack stack = equipped.getStackInSlot(i);
-            if (isBroken(stack)) {
+            if (isTokenAppliedBroken(stack)) {
                 ItemStack extracted = equipped.extractItem(i, 1, false);
                 handleItemTransfer(player, extracted, "One of your curio broke!");
             }

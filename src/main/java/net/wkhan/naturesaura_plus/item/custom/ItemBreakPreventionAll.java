@@ -17,10 +17,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,45 +32,73 @@ import net.wkhan.naturesaura_plus.tag.ModTags;
 
 import java.util.List;
 
-public class ItemBreakPreventionAll extends ItemImpl
-{
+public class ItemBreakPreventionAll extends ItemImpl {
     public ItemBreakPreventionAll() {
         super("break_prevention");
         MinecraftForge.EVENT_BUS.register(new Events());
     }
 
+    public static boolean isTokenAppliedBroken(ItemStack stack) {
+        return willTokenAppliedBroken(stack,0);
+    }
+
+    public static boolean willTokenAppliedBroken(ItemStack stack, int damageAmount) {
+        if (stack.isEmpty()) return false;
+        if (!stack.hasTag()) return false;
+        assert stack.getTag() != null;
+        if (!stack.getTag().getBoolean("naturesaura_plus:break_prevention")) return false;
+        return ((stack.getDamageValue() + damageAmount) >= stack.getMaxDamage() - 1);
+    }
+
     public static class Events {
-        public Events() {}
+        public Events() {
+        }
 
         @SubscribeEvent
         public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
             Player player = event.getEntity();
-            if (player != null) {
-                ItemStack stack = player.getMainHandItem();
-                if(!stack.hasTag())
-                    return;
-                if (stack.getTag().getBoolean("naturesaura_plus:break_prevention")) {
-                    if (stack.getDamageValue() >= stack.getMaxDamage() - 1) {event.setNewSpeed(0.0F);}
-                    // Get a broken sound bite here too.
-                }
-            }
+            if (player == null) return;
+            ItemStack stack = player.getMainHandItem();
+            if (!isTokenAppliedBroken(stack)) return;
+            event.setNewSpeed(0.0F);
         }
 
-        //Add an entity interact cancel for shearing sheep lmao
+        @SubscribeEvent
+        public void onUseTick(LivingEntityUseItemEvent event) {
+            if (event.isCanceled()) return;
+            ItemStack stack = event.getItem();
+            if (!isTokenAppliedBroken(stack)) return;
+            if (!event.isCancelable()) return;
+            event.setCanceled(true);
+            Player player = (Player) event.getEntity();
+            Level level = player.level();
+            level.playSound(
+                    null,
+                    event.getEntity().getX(),
+                    event.getEntity().getY(),
+                    event.getEntity().getZ(),
+                    net.minecraft.sounds.SoundEvents.ITEM_BREAK,
+                    net.minecraft.sounds.SoundSource.PLAYERS,
+                    1.0F,
+                    1.0F
+                );
+            player.displayClientMessage(
+                        Component.literal("The item is broken, you can't use it!").withStyle(ChatFormatting.YELLOW),
+                        true
+            );
+        }
 
         @SubscribeEvent
         public void onAnvilUpdate(AnvilUpdateEvent event) {
             ItemStack left = event.getLeft();
-            if (!left.hasTag())
-                return;
-            if (left.getTag().getBoolean("naturesaura_plus:break_prevention") || left.getTag().getBoolean("Unbreakable") )
+            assert left.getTag() != null;
+            if (left.getTag().getBoolean("naturesaura_plus:break_prevention") || left.getTag().getBoolean("Unbreakable"))
                 return;
             if (left.is(ModTags.Items.CANNOT_APPLY_STEEL_TOKEN))
                 return;
             if (left.isDamageableItem()) {
                 ItemStack right = event.getRight();
-                if (right.getItem() == ModItems.BREAK_PREVENTION.get())
-                {
+                if (right.getItem() == ModItems.BREAK_PREVENTION.get()) {
                     ItemStack output = left.copy();
                     output.getOrCreateTag().putBoolean("naturesaura_plus:break_prevention", true);
                     event.setOutput(output);
@@ -78,19 +108,13 @@ public class ItemBreakPreventionAll extends ItemImpl
             }
         }
 
-        public static boolean isBroken(ItemStack stack) {
-            return !stack.isEmpty()
-                    && stack.hasTag()
-                    && stack.getTag().getBoolean("naturesaura_plus:break_prevention")
-                    && stack.getDamageValue() >= stack.getMaxDamage() - 1;
-        }
-
         @SubscribeEvent
         @OnlyIn(Dist.CLIENT)
         public void onTooltip(ItemTooltipEvent event) {
             ItemStack stack = event.getItemStack();
             if (!stack.hasTag())
                 return;
+            assert stack.getTag() != null;
             if (stack.getTag().getBoolean("naturesaura_plus:break_prevention")) {
                 List<Component> tooltip = event.getToolTip();
                 tooltip.add(Component.translatable("info.naturesaura_plus.break_prevention_token").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
@@ -98,7 +122,7 @@ public class ItemBreakPreventionAll extends ItemImpl
                     if (!tooltip.isEmpty()) {
                         Component head = tooltip.get(0);
                         if (head instanceof MutableComponent) {
-                            ((MutableComponent)head).append(Component.translatable("info.naturesaura.broken").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+                            ((MutableComponent) head).append(Component.translatable("info.naturesaura.broken").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
                         }
 
                     }
@@ -107,3 +131,4 @@ public class ItemBreakPreventionAll extends ItemImpl
         }
     }
 }
+
