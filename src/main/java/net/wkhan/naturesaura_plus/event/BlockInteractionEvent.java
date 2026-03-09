@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.data.BlockInteractionRules;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.Events.isBroken;
+import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)
 public class BlockInteractionEvent {
@@ -22,12 +22,12 @@ public class BlockInteractionEvent {
         BlockState state = event.getLevel().getBlockState(event.getPos());
         Entity entity = event.getEntity();
         Level level = event.getLevel();
-        if (!isBroken(stack)) return;
+        if (!isTokenAppliedBroken(stack)) return;
 
         boolean ruleMatch = BlockInteractionRules.match(stack, state);
         if (!ruleMatch) return;
 
-        level.playSound( //Doesnt work
+        level.playSound(
                 entity,
                 entity.blockPosition(),
                 net.minecraft.sounds.SoundEvents.ITEM_BREAK,

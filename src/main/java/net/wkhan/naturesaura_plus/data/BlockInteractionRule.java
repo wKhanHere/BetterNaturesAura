@@ -1,16 +1,18 @@
 package net.wkhan.naturesaura_plus.data;
 
 import com.google.gson.annotations.SerializedName;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class BlockInteractionRule implements Comparable<BlockInteractionRule> {
+import java.util.Objects;
 
-    // --- JSON DATA FIELDS ---
+public class BlockInteractionRule {
 
     @SerializedName("block")
     private String blockId;
@@ -18,20 +20,17 @@ public class BlockInteractionRule implements Comparable<BlockInteractionRule> {
     @SerializedName("item")
     private String itemId;
 
-    @SerializedName("priority")
-    private int priority = 0;
-
     private transient Block cachedBlock;
+    private transient TagKey<Block> cachedBlockTag;
     private transient Item cachedItem;
+    private transient TagKey<Item> cachedItemTag;
     private transient boolean rulesResolved = false;
     private transient String sourceFile;
 
-    public void setSourceFile(String sourceFile) { this.sourceFile = sourceFile; }
+    public void setSourceFile(String sourceFile) {
+        this.sourceFile = sourceFile;
+    }
 
-    /**
-     * Resolves string IDs to actual Registry objects.
-     * @return true if valid, false if invalid.
-     */
     public boolean resolve() {
         if (rulesResolved) return true;
 
@@ -55,7 +54,12 @@ public class BlockInteractionRule implements Comparable<BlockInteractionRule> {
             return false;
         }
         if (itemId.equals("*")) {
-            this.cachedItem = null; // Wildcard: matches any item
+            this.cachedItem = null;
+            return true;
+        }
+        if (itemId.startsWith("#")) {
+            String tagId = itemId.substring(1);
+            this.cachedItemTag = TagKey.create(Registries.ITEM, new ResourceLocation(tagId));
             return true;
         }
         ResourceLocation loc = ResourceLocation.tryParse(itemId);
@@ -74,7 +78,12 @@ public class BlockInteractionRule implements Comparable<BlockInteractionRule> {
             return false;
         }
         if (blockId.equals("*")) {
-            this.cachedBlock = null; // Wildcard: matches any block
+            this.cachedBlock = null;
+            return true;
+        }
+        if (blockId.startsWith("#")) {
+            String tagId = blockId.substring(1);
+            this.cachedBlockTag = TagKey.create(Registries.BLOCK, new ResourceLocation(tagId));
             return true;
         }
         ResourceLocation loc = ResourceLocation.tryParse(blockId);
@@ -90,16 +99,19 @@ public class BlockInteractionRule implements Comparable<BlockInteractionRule> {
     public boolean matches(ItemStack stack, BlockState state) {
         if (!rulesResolved) resolve();
 
-        // 1. Check Block
         if (cachedBlock != null) {
-            if (!state.is(cachedBlock)) {
-                return false;
-            }
+            if (state == null) return true;
+            if (!state.is(cachedBlock)) return false;
         }
-
-        // 2. Check Item
+        if (cachedBlockTag != null) {
+            if (!Objects.requireNonNull(ForgeRegistries.BLOCKS.tags()).getTag(cachedBlockTag).contains(state.getBlock())) return false;
+        }
         if (cachedItem != null) {
-            return stack.is(cachedItem);
+            if (stack == null) return true;
+            if (!stack.is(cachedItem)) return false;
+        }
+        if (cachedItemTag != null) {
+            if (!Objects.requireNonNull(ForgeRegistries.ITEMS.tags()).getTag(cachedItemTag).contains(stack.getItem())) return false;
         }
 
         return true;
@@ -113,13 +125,22 @@ public class BlockInteractionRule implements Comparable<BlockInteractionRule> {
         }
     }
 
-    public Item getTargetItem() { return cachedItem;}
-    public Block getTargetBlock() { return cachedBlock; }
-    public String getRawBlockId() { return blockId; }
-
-    @Override
-    public int compareTo(BlockInteractionRule other) {
-        // Sort specifically by priority (Higher number = processed first)
-        return Integer.compare(other.priority, this.priority); //Dont ask why this even exists.
+    public Item getTargetItem() {
+        return cachedItem;
+    }
+    public Block getTargetBlock() {
+        return cachedBlock;
+    }
+    public String getRawBlockId() {
+        return blockId;
+    }
+    public String getRawItemId() {
+        return itemId;
+    }
+    public TagKey<Block> getTargetBlockTag() {
+        return cachedBlockTag;
+    }
+    public TagKey<Item> getTargetItemTag() {
+        return cachedItemTag;
     }
 }

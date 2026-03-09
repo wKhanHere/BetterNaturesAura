@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class InteractionRuleReloadListener
+public class ReloadListener
         extends SimpleJsonResourceReloadListener {
 
-    public InteractionRuleReloadListener() {
+    public ReloadListener() {
         super(new Gson(), "interactions");
     }
 
@@ -38,18 +38,17 @@ public class InteractionRuleReloadListener
             try {
                 JsonObject json = jsonElement.getAsJsonObject();
 
-                // Check for a "type" discriminator
                 if (json.has("type")) {
                     String type = json.get("type").getAsString();
 
                     if ("entity".equals(type)) {
                         EntityInteractionRule rule = new Gson().fromJson(json, EntityInteractionRule.class);
-//                       rule.setSourceFile(fileId.toString()); //pls implement
+                        rule.setSourceFile(fileId.toString());
                         loadedEntityRules.add(fileId.toString());
                         EntityInteractionRules.add(rule);
 
-                    } else if ("block".equals(type)) {
-                        // Deserialize to your BlockRule class
+                    }
+                    else if ("block".equals(type)) {
                         BlockInteractionRule rule = new Gson().fromJson(json, BlockInteractionRule.class);
                         rule.setSourceFile(fileId.toString());
                         loadedBlockRules.add(fileId.toString());
@@ -81,8 +80,5 @@ public class InteractionRuleReloadListener
         System.out.println("Entity Rules Loaded: " + loadedEntityRules);
         System.out.println("Block Rules Loaded: " + loadedBlockRules);
         System.out.println("Anvil Costs Loaded: " + loadedAnvilCosts);
-        EntityInteractionRules.sortRules();
-        BlockInteractionRules.sortRules();
-        System.out.println("Rules loaded and sorted.");
     }
 }

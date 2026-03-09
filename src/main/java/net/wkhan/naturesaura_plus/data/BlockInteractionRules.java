@@ -1,5 +1,6 @@
 package net.wkhan.naturesaura_plus.data;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -9,55 +10,106 @@ import java.util.*;
 
 public final class BlockInteractionRules {
 
-    private record BlockItemPair(Block block, Item item) {}
-
-    // Cache: Map specific Block to a list of rules
+    private record BlockItemPair(Object block, Object item) {}
     private static final Map<BlockItemPair, BlockInteractionRule> RULE_CACHE = new HashMap<>();
 
-    // Globals: Rules that apply to ALL blocks (id was empty in JSON)
-    private static final Map<Item, List<BlockInteractionRule>> GLOBAL_RULES = new HashMap<>();
+    private static final Set<TagKey<Block>> EXPECTED_BLOCK_TAGS = new HashSet<>();
+    private static final Set<TagKey<Item>> EXPECTED_ITEM_TAGS = new HashSet<>();
 
     public static int size() {
-        return RULE_CACHE.size() + GLOBAL_RULES.size();
+        return RULE_CACHE.size();
     }
 
     public static void clear() {
         RULE_CACHE.clear();
-        GLOBAL_RULES.clear();
     }
 
     public static void add(BlockInteractionRule rule) {
         if (!rule.resolve()) return;
 
         String rawBlockId = rule.getRawBlockId();
-        Item targetItem = rule.getTargetItem();
+        String rawItemId = rule.getRawItemId(); //Global item rules dont exist yet
+        Object targetItem = rule.getTargetItem();
+        if (targetItem == null) {
+            TagKey<Item> itemTag = rule.getTargetItemTag();
+            targetItem = itemTag;
+            EXPECTED_ITEM_TAGS.add(itemTag);
+        }
+        Object targetBlock = rule.getTargetBlock();
+        if (targetBlock == null) {
+            TagKey<Block> blockTag = rule.getTargetBlockTag();
+            targetBlock = blockTag;
+            EXPECTED_BLOCK_TAGS.add(blockTag);
+        }
+
         if (Objects.equals(rawBlockId, "*")) {
-            GLOBAL_RULES.computeIfAbsent(targetItem, k -> new ArrayList<>()).add(rule);
+            BlockItemPair key = new BlockItemPair("*", targetItem);
+            RULE_CACHE.put(key, rule);
             return;
         }
 
-        Block targetBlock = rule.getTargetBlock();
-        if (targetBlock != null) {
+        if (Objects.equals(rawItemId, "*")) {
+            BlockItemPair key = new BlockItemPair(targetBlock, "*");
+            RULE_CACHE.put(key, rule);
+            return;
+        }
+
+        if (targetBlock != null && targetItem != null) {
             BlockItemPair key = new BlockItemPair(targetBlock, targetItem);
             RULE_CACHE.put(key, rule);
-        }
-    }
-
-    public static void sortRules() {
-        GLOBAL_RULES.values().forEach(Collections::sort);
+        } //May wanna add an error log here.
     }
 
     public static boolean match(ItemStack stack, BlockState state) {
 
-        BlockItemPair key = new BlockItemPair(state.getBlock(), stack.getItem());
+        Item item = stack.getItem();
+        Block block = state.getBlock();
+        BlockItemPair key = new BlockItemPair(block, item);
         BlockInteractionRule specificRule = RULE_CACHE.get(key);
-        List<BlockInteractionRule> globalRules = GLOBAL_RULES.getOrDefault(stack.getItem(), Collections.emptyList());
 
-        for (BlockInteractionRule rule : globalRules) {
-            if (rule.matches(stack, null)) return true;
+        if (specificRule != null) {
+            return specificRule.matches(stack, state);
         }
 
-        if(specificRule == null) return false;
-        return specificRule.matches(stack, state);
+        key = new BlockItemPair("*", item);
+        specificRule = RULE_CACHE.get(key);
+        if (specificRule != null) return specificRule.matches(stack, null);
+
+        key = new BlockItemPair(block, "*");
+        specificRule = RULE_CACHE.get(key);
+        if (specificRule != null) return specificRule.matches(stack, null);
+
+        List<TagKey<Item>> validItemTags = stack.getTags().filter(EXPECTED_ITEM_TAGS::contains).toList();
+        List<TagKey<Block>> validBlockTags = state.getTags().filter(EXPECTED_BLOCK_TAGS::contains).toList();
+
+        for (TagKey<Item> itemTag: validItemTags) {
+            key = new BlockItemPair(block, itemTag);
+            specificRule = RULE_CACHE.get(key);
+            if (specificRule != null) return specificRule.matches(stack, state);
+
+            key = new BlockItemPair("*", itemTag);
+            specificRule = RULE_CACHE.get(key);
+            if (specificRule != null) return specificRule.matches(null, state);
+        }
+
+        for (TagKey<Block> blockTag: validBlockTags) {
+            key = new BlockItemPair(blockTag, item);
+            specificRule = RULE_CACHE.get(key);
+            if (specificRule != null) return specificRule.matches(stack, state);
+
+            key = new BlockItemPair(blockTag, "*");
+            specificRule = RULE_CACHE.get(key);
+            if (specificRule != null) return specificRule.matches(stack, null);
+        }
+
+        for (TagKey<Block> blockTag: validBlockTags) {
+            for (TagKey<Item> itemTag: validItemTags) {
+                key = new BlockItemPair(blockTag, itemTag);
+                specificRule = RULE_CACHE.get(key);
+                if (specificRule != null) return specificRule.matches(stack, state);
+            }
+        }
+
+        return false;
     }
 }

@@ -6,7 +6,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 
-import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.Events.isBroken;
+import static net.wkhan.naturesaura_plus.item.custom.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)
 public class ExplosionEntityInteractionEvent {
@@ -16,7 +16,7 @@ public class ExplosionEntityInteractionEvent {
     public static void onExplosionEntityInteraction(ExplosionEvent.Detonate event) {
         event.getAffectedEntities().removeIf(entity -> {
             if (entity instanceof ItemEntity itemEntity) {
-                return isBroken(itemEntity.getItem());
+                return isTokenAppliedBroken(itemEntity.getItem());
             }
             return false;
         });
