@@ -1,0 +1,5 @@
+{
+  "type": "auraGen:shootingMark",
+  "projectile": "minecraft:egg",
+  "aura": 10000
+}

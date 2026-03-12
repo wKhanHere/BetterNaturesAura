@@ -1,0 +1,5 @@
+{
+"type": "auraGen:shootingMark",
+"projectile": "minecraft:small_fireball",
+"aura": 35000
+}

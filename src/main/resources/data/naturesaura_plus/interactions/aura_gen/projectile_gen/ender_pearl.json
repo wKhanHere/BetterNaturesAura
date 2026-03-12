@@ -1,0 +1,5 @@
+{
+"type": "auraGen:shootingMark",
+"projectile": "minecraft:ender_pearl",
+"aura": 50000
+}

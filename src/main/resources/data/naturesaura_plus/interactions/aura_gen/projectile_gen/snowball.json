@@ -1,0 +1,5 @@
+{
+  "type": "auraGen:shootingMark",
+  "projectile": "minecraft:snowball",
+  "aura": 7000
+}

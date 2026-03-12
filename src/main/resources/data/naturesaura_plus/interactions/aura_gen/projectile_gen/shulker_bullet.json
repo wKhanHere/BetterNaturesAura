@@ -1,0 +1,5 @@
+{
+  "type": "auraGen:shootingMark",
+  "projectile": "minecraft:shulker_bullet",
+  "aura": 300000
+}

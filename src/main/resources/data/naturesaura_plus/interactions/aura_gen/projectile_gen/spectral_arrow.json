@@ -1,0 +1,5 @@
+{
+  "type": "auraGen:shootingMark",
+  "projectile": "minecraft:spectral_arrow",
+  "aura": 40000
+}

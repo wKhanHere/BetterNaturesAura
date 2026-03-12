@@ -1,0 +1,5 @@
+{
+  "type": "auraGen:shootingMark",
+  "projectile": "minecraft:trident",
+  "aura": 3000000
+}
