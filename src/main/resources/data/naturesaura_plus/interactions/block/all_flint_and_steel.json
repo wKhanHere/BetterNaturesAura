@@ -1,5 +1,5 @@
 {
-  "type": "block",
+  "type": "brokenPreventInteract:block",
   "item": "minecraft:flint_and_steel",
   "block": "*"
 }

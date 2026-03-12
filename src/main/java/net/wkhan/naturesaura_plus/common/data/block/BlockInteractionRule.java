@@ -1,28 +1,29 @@
-package net.wkhan.naturesaura_plus.common.data;
+package net.wkhan.naturesaura_plus.common.data.block;
 
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
-public class EntityInteractionRule {
+public class BlockInteractionRule {
+
+    @SerializedName("block")
+    private String blockId;
 
     @SerializedName("item")
     private String itemId;
 
-    @SerializedName("entity")
-    private String entityId;
-
+    private transient Block cachedBlock;
+    private transient TagKey<Block> cachedBlockTag;
     private transient Item cachedItem;
     private transient TagKey<Item> cachedItemTag;
-    private transient EntityType<?> cachedEntity;
-    private transient TagKey<EntityType<?>> cachedEntityTag;
     private transient boolean rulesResolved = false;
     private transient String sourceFile;
 
@@ -38,8 +39,8 @@ public class EntityInteractionRule {
             return false;
         }
 
-        if (!entityResolve()) {
-            logError("Failed to resolve Block ID: '" + entityId + "'");
+        if (!blockResolve()) {
+            logError("Failed to resolve Block ID: '" + blockId + "'");
             return false;
         }
 
@@ -71,43 +72,43 @@ public class EntityInteractionRule {
         }
     }
 
-    private boolean entityResolve() {
-        if (entityId == null || entityId.isEmpty()) {
-            System.err.println("Entity Rule Error: Missing Entity ID'" + entityId + "'");
+    private boolean blockResolve() {
+        if (blockId == null || blockId.isEmpty()) {
+            System.err.println("Block Rule Error: Missing Block ID'" + blockId + "'");
             return false;
         }
-        if (entityId.equals("*")) {
-            this.cachedEntity = null;
+        if (blockId.equals("*")) {
+            this.cachedBlock = null;
             return true;
         }
-        if (entityId.startsWith("#")) {
-            String tagId = entityId.substring(1);
-            this.cachedEntityTag = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(tagId));
+        if (blockId.startsWith("#")) {
+            String tagId = blockId.substring(1);
+            this.cachedBlockTag = TagKey.create(Registries.BLOCK, new ResourceLocation(tagId));
             return true;
         }
-        ResourceLocation loc = ResourceLocation.tryParse(entityId);
-        if (loc != null && ForgeRegistries.ENTITY_TYPES.containsKey(loc)) {
-            this.cachedEntity = ForgeRegistries.ENTITY_TYPES.getValue(loc);
+        ResourceLocation loc = ResourceLocation.tryParse(blockId);
+        if (loc != null && ForgeRegistries.BLOCKS.containsKey(loc)) {
+            this.cachedBlock = ForgeRegistries.BLOCKS.getValue(loc);
             return true;
         } else {
-            System.err.println("Entity Rule Error: Invalid Entity ID '" + entityId + "'");
+            System.err.println("Block Rule Error: Invalid Block ID '" + blockId + "'");
             return false;
         }
     }
 
-    public boolean matches(ItemStack stack, EntityType<?> entityType) {
+    public boolean matches(ItemStack stack, BlockState state) {
         if (!rulesResolved) resolve();
 
-        if (cachedEntity != null) {
-            if (entityType == null) return true;
-            if (entityType != cachedEntity) return false;
+        if (cachedBlock != null) {
+            if (state == null) return true;
+            if (!state.is(cachedBlock)) return false;
         }
-        if (cachedEntityTag != null) {
-            if (!entityType.is(cachedEntityTag)) return false;
+        if (cachedBlockTag != null) {
+            if (!Objects.requireNonNull(ForgeRegistries.BLOCKS.tags()).getTag(cachedBlockTag).contains(state.getBlock())) return false;
         }
         if (cachedItem != null) {
             if (stack == null) return true;
-            if(!stack.is(cachedItem)) return false;
+            if (!stack.is(cachedItem)) return false;
         }
         if (cachedItemTag != null) {
             if (!Objects.requireNonNull(ForgeRegistries.ITEMS.tags()).getTag(cachedItemTag).contains(stack.getItem())) return false;
@@ -127,17 +128,17 @@ public class EntityInteractionRule {
     public Item getTargetItem() {
         return cachedItem;
     }
-    public EntityType<?> getTargetEntity() {
-        return cachedEntity;
+    public Block getTargetBlock() {
+        return cachedBlock;
     }
-    public String getRawEntityId() {
-        return entityId;
+    public String getRawBlockId() {
+        return blockId;
     }
     public String getRawItemId() {
         return itemId;
     }
-    public TagKey<EntityType<?>> getTargetEntityTag() {
-        return cachedEntityTag;
+    public TagKey<Block> getTargetBlockTag() {
+        return cachedBlockTag;
     }
     public TagKey<Item> getTargetItemTag() {
         return cachedItemTag;

@@ -1,4 +1,4 @@
 {
-  "type": "anvil_cost",
+  "type": "anvilCost:applySteelToken",
   "levels": 30
 }

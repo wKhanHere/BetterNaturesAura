@@ -1,5 +1,5 @@
 {
-  "type":"entity",
+  "type":"brokenPreventInteract:entity",
   "entity":"minecraft:sheep",
   "item": "minecraft:shears"
 }

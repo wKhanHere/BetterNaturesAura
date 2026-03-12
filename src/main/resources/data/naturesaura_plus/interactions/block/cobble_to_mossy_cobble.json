@@ -1,5 +1,5 @@
 {
-  "type": "block",
+  "type": "brokenPreventInteract:block",
   "item": "naturesaura:infused_iron_pickaxe",
   "block": "minecraft:cobblestone"
 }

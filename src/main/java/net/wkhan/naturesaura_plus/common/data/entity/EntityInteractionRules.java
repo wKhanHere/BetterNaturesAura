@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.common.data;
+package net.wkhan.naturesaura_plus.common.data.entity;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;

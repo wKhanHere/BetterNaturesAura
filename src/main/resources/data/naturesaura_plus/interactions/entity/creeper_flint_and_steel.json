@@ -1,5 +1,5 @@
 {
-  "type":"entity",
+  "type":"brokenPreventInteract:entity",
   "entity":"minecraft:creeper",
   "item": "minecraft:flint_and_steel"
 }
