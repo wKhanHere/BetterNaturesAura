@@ -45,7 +45,14 @@ public final class EntityInteractionRules {
         }
 
         if (Objects.equals(rawEntityId, "*")) {
-            GLOBAL_RULES.computeIfAbsent(targetItem, k -> new ArrayList<>()).add(rule);
+            EntityItemPair key = new EntityItemPair("*", targetItem);
+            RULE_CACHE.put(key, rule);
+            return;
+        }
+
+        if (Objects.equals(rawItemId, "*")) {
+            EntityItemPair key = new EntityItemPair(targetEntity, "*");
+            RULE_CACHE.put(key, rule);
             return;
         }
 
@@ -65,6 +72,15 @@ public final class EntityInteractionRules {
         if (specificRule != null) {
             return specificRule.matches(stack, entityType);
         }
+
+        key = new EntityItemPair("*", item);
+        specificRule = RULE_CACHE.get(key);
+        if (specificRule != null) return specificRule.matches(stack, null);
+
+        key = new EntityItemPair(entityType, "*");
+        specificRule = RULE_CACHE.get(key);
+        if (specificRule != null) return specificRule.matches(null, entityType);
+
         List<TagKey<Item>> validItemTags = stack.getTags().filter(EXPECTED_ITEM_TAGS::contains).toList();
         List<TagKey<EntityType<?>>> validEntityTags = entity.getType().getTags().filter(EXPECTED_ENTITY_TAGS::contains).toList();
 
@@ -72,12 +88,20 @@ public final class EntityInteractionRules {
             key = new EntityItemPair(entityType, itemTag);
             specificRule = RULE_CACHE.get(key);
             if (specificRule != null) return specificRule.matches(stack, entityType);
+
+            key = new EntityItemPair("*", itemTag);
+            specificRule = RULE_CACHE.get(key);
+            if (specificRule != null) return specificRule.matches(stack, null);
         }
 
         for (TagKey<EntityType<?>> entityTag: validEntityTags) {
             key = new EntityItemPair(entityTag, item);
             specificRule = RULE_CACHE.get(key);
             if (specificRule != null) return specificRule.matches(stack, entityType);
+
+            key = new EntityItemPair(entityTag, "*");
+            specificRule = RULE_CACHE.get(key);
+            if (specificRule != null) return specificRule.matches(null, entityType);
         }
 
         for (TagKey<EntityType<?>> entityTag: validEntityTags) {
@@ -88,10 +112,6 @@ public final class EntityInteractionRules {
             }
         }
 
-        List<EntityInteractionRule> globalRules = GLOBAL_RULES.getOrDefault(stack.getItem(), Collections.emptyList());
-        for (EntityInteractionRule rule : globalRules) {
-            if (rule.matches(stack, null)) return true;
-        }
         return false;
     }
 }

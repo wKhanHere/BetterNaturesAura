@@ -77,7 +77,7 @@ public final class BlockInteractionRules {
 
         key = new BlockItemPair(block, "*");
         specificRule = RULE_CACHE.get(key);
-        if (specificRule != null) return specificRule.matches(stack, null);
+        if (specificRule != null) return specificRule.matches(null, state);
 
         List<TagKey<Item>> validItemTags = stack.getTags().filter(EXPECTED_ITEM_TAGS::contains).toList();
         List<TagKey<Block>> validBlockTags = state.getTags().filter(EXPECTED_BLOCK_TAGS::contains).toList();
@@ -89,7 +89,7 @@ public final class BlockInteractionRules {
 
             key = new BlockItemPair("*", itemTag);
             specificRule = RULE_CACHE.get(key);
-            if (specificRule != null) return specificRule.matches(null, state);
+            if (specificRule != null) return specificRule.matches(stack, null);
         }
 
         for (TagKey<Block> blockTag: validBlockTags) {
@@ -99,7 +99,7 @@ public final class BlockInteractionRules {
 
             key = new BlockItemPair(blockTag, "*");
             specificRule = RULE_CACHE.get(key);
-            if (specificRule != null) return specificRule.matches(stack, null);
+            if (specificRule != null) return specificRule.matches(null, state);
         }
 
         for (TagKey<Block> blockTag: validBlockTags) {
