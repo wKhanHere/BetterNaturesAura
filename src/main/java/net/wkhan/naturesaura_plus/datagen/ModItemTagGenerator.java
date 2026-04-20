@@ -20,6 +20,6 @@ public class ModItemTagGenerator extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
-        this.tag(ModTags.Items.CANNOT_APPLY_STEEL_TOKEN).add(Items.ELYTRA);
+        this.tag(ModTags.Items.CANNOT_APPLY_BREAK_PREVENTION).add(Items.ELYTRA);
     }
 }
