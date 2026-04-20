@@ -9,7 +9,8 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.wkhan.naturesaura_plus.common.data.*;
 import net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules;
-import net.wkhan.naturesaura_plus.common.data.auragen.ShootingMarkRule;
+import net.wkhan.naturesaura_plus.common.data.auragen.MossGenRule;
+import net.wkhan.naturesaura_plus.common.data.auragen.ProjectileGenRule;
 import net.wkhan.naturesaura_plus.common.data.block.BlockInteractionRule;
 import net.wkhan.naturesaura_plus.common.data.block.BlockInteractionRules;
 import net.wkhan.naturesaura_plus.common.data.entity.EntityInteractionRule;
@@ -36,6 +37,7 @@ public class ReloadListener
         BlockInteractionRules.clear();
         AnvilCostRules.clear();
         AuraGenRules.projectileGenerationClear();
+        AuraGenRules.mossGenerationClear();
 
         List<String> loadedBlockRules = new ArrayList<>();
         List<String> loadedEntityRules = new ArrayList<>();
@@ -45,46 +47,55 @@ public class ReloadListener
         data.forEach((fileId, jsonElement) -> {
             try {
                 JsonObject json = jsonElement.getAsJsonObject();
-
-                if (json.has("type")) {
-                    String type = json.get("type").getAsString();
-
-                    if ("brokenPreventInteract:entity".equals(type)) {
-                        EntityInteractionRule rule = new Gson().fromJson(json, EntityInteractionRule.class);
-                        rule.setSourceFile(fileId.toString());
-                        loadedEntityRules.add(fileId.toString());
-                        EntityInteractionRules.add(rule);
-
-                    }
-                    else if ("brokenPreventInteract:block".equals(type)) {
-                        BlockInteractionRule rule = new Gson().fromJson(json, BlockInteractionRule.class);
-                        rule.setSourceFile(fileId.toString());
-                        loadedBlockRules.add(fileId.toString());
-                        BlockInteractionRules.add(rule);
-                    }
-                    else if ("anvilCost:applySteelToken".equals(type)) {
-                        if (json.has("levels")) {
-                            int cost = json.get("levels").getAsInt();
-                            AnvilCostRules.add(fileId, cost);
-                            loadedAnvilCosts.add(fileId.toString());
-                        } else {
-                            System.err.println("Missing 'levels' field in anvil cost file: " + fileId);
-                        }
-                    }
-                    else if ("auraGen:shootingMark".equals(type)) {
-                        ShootingMarkRule rule = new Gson().fromJson(json, ShootingMarkRule.class);
-                        rule.setSourceFile(fileId.toString());
-                        loadedAuraRules.add(fileId.toString());
-                        AuraGenRules.addProjectileGeneration(rule);
-                    }
-                    else {
-                        System.err.println("Unknown rule type '" + type + "' in file: " + fileId);
-                    }
-                } else {
+                if (!json.has("type")) {
                     System.err.println("Missing 'type' field in rule file: " + fileId);
+                    return;
                 }
+                String type = json.get("type").getAsString();
 
-            } catch (Exception e) {
+                if ("brokenPreventInteract:entity".equals(type)) {
+                    EntityInteractionRule rule = new Gson().fromJson(json, EntityInteractionRule.class);
+                    rule.setSourceFile(fileId.toString());
+                    loadedEntityRules.add(fileId.toString());
+                    EntityInteractionRules.add(rule);
+                    return;
+                }
+                if ("brokenPreventInteract:block".equals(type)) {
+                    BlockInteractionRule rule = new Gson().fromJson(json, BlockInteractionRule.class);
+                    rule.setSourceFile(fileId.toString());
+                    loadedBlockRules.add(fileId.toString());
+                    BlockInteractionRules.add(rule);
+                    return;
+                }
+                if ("anvilCost:applySteelToken".equals(type)) {
+                    if(!json.has("levels")) {
+                        System.err.println("Missing 'levels' field in anvil cost file: " + fileId);
+                        return;
+                    }
+                    if (json.has("levels")) {
+                        loadedAnvilCosts.add(fileId.toString());
+                        int cost = json.get("levels").getAsInt();
+                        AnvilCostRules.add(fileId, cost);
+                        return;
+                    }
+                }
+                if ("auraGen:projectileGen".equals(type)) {
+                    ProjectileGenRule rule = new Gson().fromJson(json, ProjectileGenRule.class);
+                    rule.setSourceFile(fileId.toString());
+                    loadedAuraRules.add(fileId.toString());
+                    AuraGenRules.addProjectileGeneration(rule);
+                    return;
+                }
+                if ("auraGen:mossGen".equals(type)) {
+                    MossGenRule rule = new Gson().fromJson(json, MossGenRule.class);
+                    rule.setSourceFile(fileId.toString());
+                    loadedAuraRules.add(fileId.toString());
+                    AuraGenRules.addMossGeneration(rule);
+                    return;
+                }
+                System.err.println("Unknown rule type '" + type + "' in file: " + fileId);
+            }
+            catch (Exception e) { // I know this is sucky.
                 System.err.println("Failed to load interaction rule: " + fileId);
                 e.printStackTrace();
             }

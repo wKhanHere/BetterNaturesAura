@@ -7,7 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ShootingMarkRule {
+public class ProjectileGenRule {
 
     @SerializedName("projectile")
     private String projectileId;
@@ -38,12 +38,12 @@ public class ShootingMarkRule {
 
     private boolean projectileResolve(){
         if (projectileId == null || projectileId.isEmpty()) {
-            System.err.println("Block Rule Error: Missing Projectile ID'" + projectileId + "'");
+            System.err.println("ProjectileAuraGen Rule Error: Missing Projectile ID'" + projectileId + "'");
             return false;
         }
         if (projectileId.startsWith("#")) {
             String tagId = projectileId.substring(1);
-            this.cachedProjectileEntityTag = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(tagId));
+            this.cachedProjectileEntityTag = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(tagId));
             return true;
         }
         ResourceLocation loc = ResourceLocation.tryParse(projectileId);
@@ -51,7 +51,7 @@ public class ShootingMarkRule {
             this.cachedProjectileEntity = ForgeRegistries.ENTITY_TYPES.getValue(loc);
             return true;
         } else {
-            System.err.println("Entity Rule Error: Invalid Entity ID '" + projectileId + "'");
+            System.err.println("ProjectileAuraGen Rule Error: Invalid Entity ID '" + projectileId + "'");
             return false;
         }
     }
@@ -59,9 +59,9 @@ public class ShootingMarkRule {
 
     private void logError(String message) {
         if (sourceFile != null) {
-            System.err.println("Block Rule Error in " + sourceFile + ": " + message);
+            System.err.println("ProjectileAuraGen Rule Error in " + sourceFile + ": " + message);
         } else {
-            System.err.println("Block Rule Error: (Invalid SourceFile? <- Seen when sourceFile resolves to null) " + message);
+            System.err.println("ProjectileAuraGen Rule Error: (Invalid SourceFile? <- Seen when sourceFile resolves to null) " + message);
         }
     }
 

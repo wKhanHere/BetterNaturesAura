@@ -14,16 +14,15 @@ public abstract class AuraRepairMixin extends ItemImpl {
         super(baseName, properties);
     }
 
-
-
+    //This is what allows offhand items to repair with Nature's Mend.
     @Redirect(
-            method = "inventoryTick", // (Or whatever the method is named)
+            method = "inventoryTick",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/core/NonNullList;size()I",
                     ordinal = 1
             ))
     private int naturesaura_plus$expandArmorToOffhand(NonNullList instance) {
-        return instance.size() + 1; // Tricks the math into including slot 40
+        return instance.size() + 1;
     }
 }

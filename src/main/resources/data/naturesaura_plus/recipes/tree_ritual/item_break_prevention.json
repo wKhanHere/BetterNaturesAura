@@ -1,0 +1,31 @@
+{
+  "type": "naturesaura:tree_ritual",
+  "ingredients": [
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "naturesaura:token_joy"
+    },
+    {
+      "item": "naturesaura:token_anger"
+    }
+  ],
+  "sapling": {
+    "item": "minecraft:brown_mushroom"
+  },
+  "output": {
+    "item": "naturesaura_plus:break_prevention_token",
+    "count": 1
+  },
+  "time": 400
+}
