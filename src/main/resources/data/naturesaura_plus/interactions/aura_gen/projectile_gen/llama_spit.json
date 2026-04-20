@@ -1,5 +1,5 @@
 {
-  "type": "auraGen:shootingMark",
+  "type": "auraGen:projectileGen",
   "projectile": "minecraft:llama_spit",
   "aura": 100000
 }

@@ -15,7 +15,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -50,8 +49,7 @@ public class ItemBreakPreventionAll extends ItemImpl {
     }
 
     public static class Events {
-        public Events() {
-        }
+        public Events() {}
 
         @SubscribeEvent
         public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
@@ -89,43 +87,49 @@ public class ItemBreakPreventionAll extends ItemImpl {
 
         @SubscribeEvent
         public void onAnvilUpdate(AnvilUpdateEvent event) {
-            ItemStack left = event.getLeft();
-            assert left.getTag() != null;
-            if (left.getTag().getBoolean("naturesaura_plus:break_prevention") || left.getTag().getBoolean("Unbreakable"))
+
+            ItemStack right = event.getRight();
+            if (!(right.getItem() == ModItems.BREAK_PREVENTION.get())) {
                 return;
-            if (left.is(ModTags.Items.CANNOT_APPLY_STEEL_TOKEN))
-                return;
-            if (left.isDamageableItem()) {
-                ItemStack right = event.getRight();
-                if (right.getItem() == ModItems.BREAK_PREVENTION.get()) {
-                    ItemStack output = left.copy();
-                    output.getOrCreateTag().putBoolean("naturesaura_plus:break_prevention", true);
-                    event.setOutput(output);
-                    event.setCost(AnvilCostRules.getCost(ResourceLocation.parse("naturesaura_plus:anvil_cost/steel_token")));
-                    event.setMaterialCost(1);
-                }
             }
+
+            ItemStack left = event.getLeft();
+            if (!left.isDamageableItem()) {
+                return;
+            }
+            if (!left.hasTag()) {
+                return;
+            }
+            if (left.getTag().getBoolean("naturesaura_plus:break_prevention") || left.getTag().getBoolean("Unbreakable")) {
+                return;
+            }
+            if (left.is(ModTags.Items.CANNOT_APPLY_BREAK_PREVENTION)) {
+                return;
+            }
+
+            ItemStack output = left.copy();
+            output.getOrCreateTag().putBoolean("naturesaura_plus:break_prevention", true);
+            event.setOutput(output);
+            event.setCost(AnvilCostRules.getCost(ResourceLocation.parse("naturesaura_plus:anvil_cost/steel_token")));
+            event.setMaterialCost(1);
         }
 
+        //Portion of code of this method is derived from NaturesAura - Credit to Ellpeck.
         @SubscribeEvent
         @OnlyIn(Dist.CLIENT)
         public void onTooltip(ItemTooltipEvent event) {
             ItemStack stack = event.getItemStack();
             if (!stack.hasTag())
                 return;
-            assert stack.getTag() != null;
-            if (stack.getTag().getBoolean("naturesaura_plus:break_prevention")) {
-                List<Component> tooltip = event.getToolTip();
-                tooltip.add(Component.translatable("info.naturesaura_plus.break_prevention_token").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-                if (!ElytraItem.isFlyEnabled(stack)) {
-                    if (!tooltip.isEmpty()) {
-                        Component head = tooltip.get(0);
-                        if (head instanceof MutableComponent) {
-                            ((MutableComponent) head).append(Component.translatable("info.naturesaura.broken").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-                        }
+            if (!stack.getTag().getBoolean("naturesaura_plus:break_prevention")) {
+                return;
+            }
 
-                    }
-                }
+            List<Component> tooltip = event.getToolTip();
+            tooltip.add(Component.translatable("info.naturesaura_plus.break_prevention_token").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+            Component head = tooltip.get(0);
+            if (head instanceof MutableComponent) {
+                ((MutableComponent) head).append(Component.translatable("info.naturesaura_plus.broken").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
             }
         }
     }

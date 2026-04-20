@@ -9,9 +9,7 @@ public class AnvilCostRules {
 
     private static final Map<ResourceLocation, Integer> COSTS = new HashMap<>();
 
-    private AnvilCostRules() {
-        // Private constructor to prevent instantiation
-    }
+    private AnvilCostRules() {}
 
     public static void clear() {
         COSTS.clear();

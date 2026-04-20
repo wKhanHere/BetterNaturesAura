@@ -39,7 +39,7 @@ public class EntityInteractionRule {
         }
 
         if (!entityResolve()) {
-            logError("Failed to resolve Block ID: '" + entityId + "'");
+            logError("Failed to resolve Entity ID: '" + entityId + "'");
             return false;
         }
 
@@ -49,7 +49,7 @@ public class EntityInteractionRule {
 
     private boolean itemResolve(){
         if (itemId == null || itemId.isEmpty()) {
-            System.err.println("Block Rule Error: Missing Item ID'" + itemId + "'");
+            System.err.println("Entity Rule Error: Missing Item ID'" + itemId + "'");
             return false;
         }
         if (itemId.equals("*")) {
@@ -58,7 +58,7 @@ public class EntityInteractionRule {
         }
         if (itemId.startsWith("#")) {
             String tagId = itemId.substring(1);
-            this.cachedItemTag = TagKey.create(Registries.ITEM, new ResourceLocation(tagId));
+            this.cachedItemTag = TagKey.create(Registries.ITEM, ResourceLocation.parse(tagId));
             return true;
         }
         ResourceLocation loc = ResourceLocation.tryParse(itemId);
@@ -66,7 +66,7 @@ public class EntityInteractionRule {
             this.cachedItem = ForgeRegistries.ITEMS.getValue(loc);
             return true;
         } else {
-            System.err.println("Block Rule Error: Invalid Item ID '" + itemId + "'");
+            System.err.println("Entity Rule Error: Invalid Item ID '" + itemId + "'");
             return false;
         }
     }
@@ -82,7 +82,7 @@ public class EntityInteractionRule {
         }
         if (entityId.startsWith("#")) {
             String tagId = entityId.substring(1);
-            this.cachedEntityTag = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(tagId));
+            this.cachedEntityTag = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(tagId));
             return true;
         }
         ResourceLocation loc = ResourceLocation.tryParse(entityId);
@@ -118,9 +118,9 @@ public class EntityInteractionRule {
 
     private void logError(String message) {
         if (sourceFile != null) {
-            System.err.println("Block Rule Error in " + sourceFile + ": " + message);
+            System.err.println("Entity Rule Error in " + sourceFile + ": " + message);
         } else {
-            System.err.println("Block Rule Error: (Invalid SourceFile? <- Seen when sourceFile resolves to null) " + message);
+            System.err.println("Entity Rule Error: (Invalid SourceFile? <- Seen when sourceFile resolves to null) " + message);
         }
     }
 
