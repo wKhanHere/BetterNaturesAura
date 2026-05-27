@@ -51,7 +51,7 @@ public class MossGenRule {
         }
         if (blockInputId.startsWith("#")) {
             String tagId = blockInputId.substring(1);
-            this.cachedBlockInputTag = TagKey.create(Registries.BLOCK, new ResourceLocation(tagId));
+            this.cachedBlockInputTag = TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(tagId));
             return true;
         }
         ResourceLocation loc = ResourceLocation.tryParse(blockInputId);
