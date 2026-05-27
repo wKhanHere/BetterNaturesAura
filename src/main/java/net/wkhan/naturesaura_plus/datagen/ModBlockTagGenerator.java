@@ -1,5 +1,6 @@
 package net.wkhan.naturesaura_plus.datagen;
 
+import de.ellpeck.naturesaura.blocks.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -39,6 +40,26 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                                 Blocks.MUDDY_MANGROVE_ROOTS,
                                 Blocks.WARPED_WART_BLOCK,
                                 Blocks.NETHER_WART_BLOCK
+                        );
+
+                this.tag(ModTags.Blocks.HOPPER_UPGRADE_AFFECTED)
+                        .add(
+                                Blocks.HOPPER,
+                                ModBlocks.GRATED_CHUTE
+                        );
+
+                this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE_CHEST)
+                        .add(
+                                Blocks.CHEST,
+                                Blocks.BARREL
+                        );
+                this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE)
+                        .add(
+                                Blocks.COPPER_BLOCK,
+                                Blocks.IRON_BLOCK,
+                                Blocks.GOLD_BLOCK,
+                                Blocks.DIAMOND_BLOCK,
+                                Blocks.NETHERITE_BLOCK
                         );
         }
 }

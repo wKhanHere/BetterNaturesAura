@@ -21,6 +21,9 @@ public class ModTags {
         public static final TagKey<Block> TREE_RITUAL_SAPLINGS = tag("tree_ritual_saplings");
         public static final TagKey<Block> TREE_RITUAL_STEMS = tag("tree_ritual_stems");
         public static final TagKey<Block> TREE_RITUAL_LEAVES = tag("tree_ritual_leaves");
+        public static final TagKey<Block> HOPPER_UPGRADE_AFFECTED = tag("hopper_upgrade_affected");
+        public static final TagKey<Block> LOOT_FINDER_TREASURE = tag("loot_finder_treasure");
+        public static final TagKey<Block> LOOT_FINDER_TREASURE_CHEST = tag("loot_finder_treasure_chest");
 
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(ResourceLocation.fromNamespaceAndPath(NaturesAuraPlus.MODID, name));

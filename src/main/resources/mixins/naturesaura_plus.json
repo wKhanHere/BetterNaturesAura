@@ -10,7 +10,9 @@
     "AuraRepairMixin",
     "MossGenMixin",
     "TreeRitualMixin",
-    "BlockEntityWoodStandMixin"
+    "BlockEntityWoodStandMixin",
+    "BlockEntityHopperUpgradeMixin",
+    "ItemLootFinderMixin"
   ],
   "client": [],
   "server": []

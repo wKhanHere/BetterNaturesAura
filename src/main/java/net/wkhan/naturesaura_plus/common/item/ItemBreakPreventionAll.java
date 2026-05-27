@@ -10,6 +10,7 @@ package net.wkhan.naturesaura_plus.common.item;
 
 import de.ellpeck.naturesaura.items.ItemImpl;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -43,7 +44,6 @@ public class ItemBreakPreventionAll extends ItemImpl {
     public static boolean willTokenAppliedBroken(ItemStack stack, int damageAmount) {
         if (stack.isEmpty()) return false;
         if (!stack.hasTag()) return false;
-        assert stack.getTag() != null;
         if (!stack.getTag().getBoolean("naturesaura_plus:break_prevention")) return false;
         return ((stack.getDamageValue() + damageAmount) >= stack.getMaxDamage() - 1);
     }
@@ -61,11 +61,11 @@ public class ItemBreakPreventionAll extends ItemImpl {
         }
 
         @SubscribeEvent
-        public void onUseTick(LivingEntityUseItemEvent event) {
+        public void onUseStart(LivingEntityUseItemEvent.Start event) {
+            if (!event.isCancelable()) return;
             if (event.isCanceled()) return;
             ItemStack stack = event.getItem();
             if (!isTokenAppliedBroken(stack)) return;
-            if (!event.isCancelable()) return;
             event.setCanceled(true);
             Player player = (Player) event.getEntity();
             Level level = player.level();
@@ -86,6 +86,20 @@ public class ItemBreakPreventionAll extends ItemImpl {
         }
 
         @SubscribeEvent
+        public void onUseTick(LivingEntityUseItemEvent.Tick event) {
+            if (!event.isCancelable()) return;
+            if (event.isCanceled()) return;
+            ItemStack stack = event.getItem();
+            if (!isTokenAppliedBroken(stack)) return;
+            event.setCanceled(true);
+            Player player = (Player) event.getEntity();
+            player.displayClientMessage(
+                    Component.literal("The item is broken, you can't use it!").withStyle(ChatFormatting.YELLOW),
+                    true
+            );
+        }
+
+        @SubscribeEvent
         public void onAnvilUpdate(AnvilUpdateEvent event) {
 
             ItemStack right = event.getRight();
@@ -97,18 +111,18 @@ public class ItemBreakPreventionAll extends ItemImpl {
             if (!left.isDamageableItem()) {
                 return;
             }
-            if (!left.hasTag()) {
-                return;
+            if (left.hasTag()) {
+                if (left.getTag().getBoolean("naturesaura_plus:break_prevention") || left.getTag().getBoolean("Unbreakable")) return;
             }
-            if (left.getTag().getBoolean("naturesaura_plus:break_prevention") || left.getTag().getBoolean("Unbreakable")) {
-                return;
-            }
+
             if (left.is(ModTags.Items.CANNOT_APPLY_BREAK_PREVENTION)) {
                 return;
             }
 
             ItemStack output = left.copy();
-            output.getOrCreateTag().putBoolean("naturesaura_plus:break_prevention", true);
+            CompoundTag outputCompoundTag = output.getOrCreateTag();
+            outputCompoundTag.putBoolean("naturesaura_plus:break_prevention", true);
+            outputCompoundTag.remove("naturesaura:break_prevention");
             event.setOutput(output);
             event.setCost(AnvilCostRules.getCost(ResourceLocation.parse("naturesaura_plus:anvil_cost/steel_token")));
             event.setMaterialCost(1);
@@ -119,11 +133,7 @@ public class ItemBreakPreventionAll extends ItemImpl {
         @OnlyIn(Dist.CLIENT)
         public void onTooltip(ItemTooltipEvent event) {
             ItemStack stack = event.getItemStack();
-            if (!stack.hasTag())
-                return;
-            if (!stack.getTag().getBoolean("naturesaura_plus:break_prevention")) {
-                return;
-            }
+            if (!isTokenAppliedBroken(stack)) return;
 
             List<Component> tooltip = event.getToolTip();
             tooltip.add(Component.translatable("info.naturesaura_plus.break_prevention_token").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
