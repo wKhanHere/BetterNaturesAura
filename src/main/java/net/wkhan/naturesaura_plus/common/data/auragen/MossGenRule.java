@@ -46,7 +46,7 @@ public class MossGenRule {
 
     private boolean blockInputResolve(){
         if (blockInputId == null || blockInputId.isEmpty()) {
-            System.err.println("MossAuraGen Rule Error: Missing Block (Input Conversion By MossGen) ID'" + blockInputId + "'");
+            System.err.println("MossGen Rule Error: Missing Block (Input Conversion By MossGen) ID'" + blockInputId + "'");
             return false;
         }
         if (blockInputId.startsWith("#")) {
@@ -59,18 +59,18 @@ public class MossGenRule {
             this.cachedBlockInput = ForgeRegistries.BLOCKS.getValue(loc);
             return true;
         } else {
-            System.err.println("MossAuraGen Rule Error: Invalid Block (Input Conversion By MossGen) ID '" + blockInputId + "'");
+            System.err.println("MossGen Rule Error: Invalid Block (Input Conversion By MossGen) ID '" + blockInputId + "'");
             return false;
         }
     }
 
     private boolean blockResultResolve(){
         if (blockResultId == null || blockResultId.isEmpty()) {
-            System.err.println("MossAuraGen Rule Error: Missing (Result Conversion By MossGen) ID'" + blockResultId + "'");
+            System.err.println("MossGen Rule Error: Missing (Result Conversion By MossGen) ID'" + blockResultId + "'");
             return false;
         }
         if (blockResultId.startsWith("#")) {
-            System.err.println("MossAuraGen Rule Error: Tags must not be used in result field -> '" + blockResultId + "'");
+            System.err.println("MossGen Rule Error: Tags must not be used in result field -> '" + blockResultId + "'");
             return false;
         }
         ResourceLocation loc = ResourceLocation.tryParse(blockResultId);
@@ -78,7 +78,7 @@ public class MossGenRule {
             this.cachedBlockResult = ForgeRegistries.BLOCKS.getValue(loc);
             return true;
         } else {
-            System.err.println("MossAuraGen Rule Error: (Result Conversion By MossGen) ID'" + blockInputId + "'");
+            System.err.println("MossGen Rule Error: (Result Conversion By MossGen) ID'" + blockInputId + "'");
             return false;
         }
     }
@@ -86,9 +86,9 @@ public class MossGenRule {
 
     private void logError(String message) {
         if (sourceFile != null) {
-            System.err.println("MossAuraGen Rule Error in " + sourceFile + ": " + message);
+            System.err.println("MossGen Rule Error in " + sourceFile + ": " + message);
         } else {
-            System.err.println("MossAuraGen Rule Error: (Invalid SourceFile? <- Seen when sourceFile resolves to null) " + message);
+            System.err.println("MossGen Rule Error: (Invalid SourceFile? <- Seen when sourceFile resolves to null) " + message);
         }
     }
 
