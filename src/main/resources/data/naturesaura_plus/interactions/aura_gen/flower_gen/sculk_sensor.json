@@ -1,0 +1,8 @@
+{
+  "type": "auraGen:flowerGen",
+  "block_to_convert": "minecraft:sculk_sensor",
+  "aura_gain": 50000,
+  "lucidity": 20,
+  "obscurity": 5,
+  "obscurity_scale": 1
+}

@@ -141,5 +141,32 @@ public class NaturesAuraPlusUtils {
             }
             return count;
         }
+
+        public boolean isEmpty() {
+            return buffer.length == 0;
+        }
+
+        public Object[] getBuffer() {
+            return buffer;
+        }
+
+        public void clear() {
+            head = 0;
+            tail = 0;
+            count = 0;
+            //buffer = new Object[capacity];
+        }
+        
+        public int getHead() {
+            return head;
+        }
+
+        public int getTail() {
+            return tail;
+        }
+
+        public int getCapacity(){
+            return capacity;
+        }
     }
 }
