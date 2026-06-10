@@ -8,7 +8,6 @@
 
 package net.wkhan.naturesaura_plus.common.item;
 
-import de.ellpeck.naturesaura.items.ItemImpl;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -16,6 +15,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,9 +31,9 @@ import net.wkhan.naturesaura_plus.common.tag.ModTags;
 
 import java.util.List;
 
-public class ItemBreakPreventionAll extends ItemImpl {
-    public ItemBreakPreventionAll() {
-        super("break_prevention");
+public class ItemBreakPreventionAll extends Item {
+    public ItemBreakPreventionAll(Properties p_41383_) {
+        super(p_41383_);
         MinecraftForge.EVENT_BUS.register(new Events());
     }
 
@@ -42,10 +42,14 @@ public class ItemBreakPreventionAll extends ItemImpl {
     }
 
     public static boolean willTokenAppliedBroken(ItemStack stack, int damageAmount) {
+        if (!isTokenApplied(stack)) return false;
+        return ((stack.getDamageValue() + damageAmount) >= stack.getMaxDamage() - 1);
+    }
+
+    public static boolean isTokenApplied(ItemStack stack) {
         if (stack.isEmpty()) return false;
         if (!stack.hasTag()) return false;
-        if (!stack.getTag().getBoolean("naturesaura_plus:break_prevention")) return false;
-        return ((stack.getDamageValue() + damageAmount) >= stack.getMaxDamage() - 1);
+        return stack.getTag().getBoolean("naturesaura_plus:break_prevention");
     }
 
     public static class Events {
@@ -70,10 +74,10 @@ public class ItemBreakPreventionAll extends ItemImpl {
             Player player = (Player) event.getEntity();
             Level level = player.level();
             level.playSound(
-                    null,
-                    event.getEntity().getX(),
-                    event.getEntity().getY(),
-                    event.getEntity().getZ(),
+                    player,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
                     net.minecraft.sounds.SoundEvents.ITEM_BREAK,
                     net.minecraft.sounds.SoundSource.PLAYERS,
                     1.0F,
@@ -133,12 +137,12 @@ public class ItemBreakPreventionAll extends ItemImpl {
         @OnlyIn(Dist.CLIENT)
         public void onTooltip(ItemTooltipEvent event) {
             ItemStack stack = event.getItemStack();
-            if (!isTokenAppliedBroken(stack)) return;
-
+            if (!isTokenApplied(stack)) return;
             List<Component> tooltip = event.getToolTip();
             tooltip.add(Component.translatable("info.naturesaura_plus.break_prevention_token").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
             Component head = tooltip.get(0);
             if (head instanceof MutableComponent) {
+                if (!isTokenAppliedBroken(stack)) return;
                 ((MutableComponent) head).append(Component.translatable("info.naturesaura_plus.broken").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
             }
         }
