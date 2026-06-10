@@ -43,7 +43,6 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
     }
 
 
-
     @Inject(
             method = "use",
             at = @At("HEAD"),
