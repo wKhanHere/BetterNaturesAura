@@ -33,7 +33,7 @@ public class Config
             .defineInRange("lootFinderUseCooldownInTicks", 1200, 0, 72000);
 
     private static final ForgeConfigSpec.IntValue FLOWER_GEN_RANGE = BUILDER
-            .comment("Cubical range in blocks of the flower generator. (Default: 3) \n(Note, does not affect vertical range)")
+            .comment("Horizontal range in blocks of the flower generator. (Default: 3) \n(Note, does not affect vertical range)")
             .defineInRange("flowerGenRange", 3, 1, 10);
 
 
@@ -50,6 +50,14 @@ public class Config
             .defineInRange("flowerGenPowFactor", 0.5, -5, 10);
 
     //Make range config for moss gen
+    private static final ForgeConfigSpec.IntValue MOSS_GEN_RANGE = BUILDER
+            .comment("Horizontal range in blocks of the moss generator. (Default: 3) \n(Note, does not affect vertical range)")
+            .defineInRange("mossGenRange", 2, 1, 10);
+
+    private static final ForgeConfigSpec.IntValue MOSS_GEN_MEMORY_SIZE = BUILDER
+            .comment("Number of mosses the moss aura generator block remembers when determining if moss block is recent (Hence skipping if recent). (Default: 3)")
+            .defineInRange("mossGenMemorySize", 3, 0, 1000);
+
 
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
@@ -62,6 +70,8 @@ public class Config
     public static int flowerGenMemorySize;
     public static int flowerGenVitalityFloor;
     public static double flowerGenPowFactor;
+    public static int mossGenRange;
+    public static int mossGenMemorySize;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -74,5 +84,7 @@ public class Config
         flowerGenMemorySize = FLOWER_GEN_MEMORY_SIZE.get();
         flowerGenVitalityFloor = FLOWER_GEN_VITALITY_FLOOR.get();
         flowerGenPowFactor = FLOWER_GEN_POW_FACTOR.get();
+        mossGenRange = MOSS_GEN_RANGE.get();
+        mossGenMemorySize = MOSS_GEN_MEMORY_SIZE.get();
     }
 }

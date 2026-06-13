@@ -34,12 +34,12 @@ import vazkii.botania.api.mana.ManaItem;
 
 import java.util.Optional;
 
-public class ItemAuraManaHolder extends Item{ //Make this not implement ICurioItem and then handle it safely
+public class ItemAuraManaHolder extends Item{
     public ItemAuraManaHolder(Properties p_41383_) {
         super(p_41383_);
         MinecraftForge.EVENT_BUS.register(new ItemAuraManaHolderEventListener());
     }
-        // Add creative stack to creative mode tab
+
     private static final int MAX_AURA = 400000; //make config
     private static final int MAX_MANA = 500000; //make config
     private static final String MANA_TAG = "mana";
@@ -233,8 +233,7 @@ public class ItemAuraManaHolder extends Item{ //Make this not implement ICurioIt
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-//        return !isCreativeStack(stack);
-          return true;
+        return !isCreativeStack(stack);
     }
 
     @Override
