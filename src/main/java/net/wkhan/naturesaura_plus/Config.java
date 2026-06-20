@@ -66,6 +66,10 @@ public class Config
             .comment("Cubical size radius (half-length) for range of the animal generator in blocks. (Default: 5)")
             .defineInRange("animalGenRange", 5, 1, 10);
 
+    private static final ForgeConfigSpec.IntValue SLIME_GEN_RANGE = BUILDER
+            .comment("Cubical size radius (half-length) for range of the slime generator in blocks. (Default: 8)")
+            .defineInRange("animalGenRange", 8, 1, 32); //CHECK
+
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static int maxRitualStems;
@@ -81,6 +85,7 @@ public class Config
     public static int mossGenRange;
     public static int mossGenMemorySize;
     public static int animalGenRange;
+    public static int slimeGenRange;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -97,5 +102,6 @@ public class Config
         mossGenRange = MOSS_GEN_RANGE.get();
         mossGenMemorySize = MOSS_GEN_MEMORY_SIZE.get();
         animalGenRange = ANIMAL_GEN_RANGE.get();
+        slimeGenRange = SLIME_GEN_RANGE.get();
     }
 }

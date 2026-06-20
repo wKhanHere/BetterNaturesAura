@@ -19,7 +19,10 @@
     "event.ClientEventMixin",
     "auragen.AnimalGenMixin",
     "block.BlockFlowerGenMixin",
-    "block.BlockMossGenMixin"
+    "block.BlockMossGenMixin",
+    "block.BlockSlimeGenMixin",
+    "auragen.slimegen.SlimeGenMixin",
+    "auragen.slimegen.SlimeGenEventsMixin"
   ],
   "client": [],
   "server": []

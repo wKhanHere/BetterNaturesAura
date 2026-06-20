@@ -1,0 +1,6 @@
+{
+  "type": "aura_gen:slime_gen",
+  "entity": "minecraft:slime",
+  "aura_gain": 25000,
+  "use_slime_size": true
+}

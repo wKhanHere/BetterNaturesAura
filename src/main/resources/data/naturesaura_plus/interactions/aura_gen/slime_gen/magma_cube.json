@@ -1,0 +1,7 @@
+{
+  "type": "aura_gen:slime_gen",
+  "entity": "minecraft:magma_cube",
+  "aura_gain": 45000,
+  "use_slime_size": true,
+  "slime_color": 9708822
+}

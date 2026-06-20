@@ -17,8 +17,9 @@ public final class AuraGenRules {
     public record flowerValues(int auraAmount, byte lucidity, byte obscurity, float obscurityScale) {}
     public static final Map<Block, flowerValues> FLOWER_GENERATIONS = new HashMap<>();
 
-    public record slimeValues(int auraAmount, int slimeColor, int generationTimerModifier, float sizeModifier,
-                              boolean doSlimeSizeScaling, boolean doEntityDropLoot) {}
+    public record slimeValues(int auraAmount, int slimeColor, int minSizeForSlime, int flatGenerationTimer,
+                              float generationTimerModifier, float sizeModifier,
+                              boolean doSlimeSizeScaling, boolean doEntityDropLoot, boolean isFlatGenerationTimer) {}
     public static final Map<EntityType<?>, slimeValues> SLIME_GENERATIONS = new HashMap<>();
 
     public record animalValues(int minimumTimeAliveForGenerationTime, int maximumGenerationTime, float timeAliveModifierForGenerationTime,
@@ -75,7 +76,7 @@ public final class AuraGenRules {
         ForgeRegistries.BLOCKS.getValues().stream()
                 .filter(b -> b.defaultBlockState().is(mossBlockTag))
                 .forEach(b -> MOSS_GENERATIONS.put(b, new deMossedBlockAuraAmountPair(deMossedBlock, auraAmount)));
-    }
+    } //refactored
 
     public static void addFlowerGeneration(FlowerGenRule rule) {
         Block flowerBlock = rule.getBlockInput();
@@ -99,15 +100,19 @@ public final class AuraGenRules {
     public static void addSlimeGeneration(SlimeGenRule rule) {
         int auraAmount = rule.auraAmount();
         int slimeColor = rule.slimeColor();
-        int generationTimerModifier = rule.generationTimerModifier();
+        int minSizeForSlime = rule.minSizeForSlime();
+        int flatGenerationTimer = rule.flatGenerationTimer();
+        float generationTimerModifier = rule.generationTimerModifier();
         float sizeModifier = rule.sizeModifier();
         boolean doSlimeSizeScaling = rule.doSlimeSizeScaling();
         boolean doEntityDropLoot = rule.doEntityDropLoot();
+        boolean isFlatGenerationTimer = rule.isFlatGenerationTimer();
         EntityType<?> slime = rule.getEntity();
 
         if (slime != null) {
             SLIME_GENERATIONS.put(slime,
-                    new slimeValues(auraAmount,slimeColor,generationTimerModifier,sizeModifier,doSlimeSizeScaling,doEntityDropLoot));
+                    new slimeValues(auraAmount,slimeColor,minSizeForSlime,flatGenerationTimer,generationTimerModifier,
+                            sizeModifier,doSlimeSizeScaling,doEntityDropLoot,isFlatGenerationTimer));
             return;
         }
 
@@ -116,7 +121,8 @@ public final class AuraGenRules {
             ForgeRegistries.ENTITY_TYPES.getValues().stream()
                     .filter(e -> e.is(slimeTag))
                     .forEach(e -> SLIME_GENERATIONS.put(e,
-                            new slimeValues(auraAmount,slimeColor,generationTimerModifier, sizeModifier,doSlimeSizeScaling,doEntityDropLoot))
+                            new slimeValues(auraAmount,slimeColor,minSizeForSlime,flatGenerationTimer,generationTimerModifier,
+                                    sizeModifier,doSlimeSizeScaling,doEntityDropLoot,isFlatGenerationTimer))
             );
         }
     } //refactored
@@ -152,6 +158,6 @@ public final class AuraGenRules {
                                     isBabyValid, isFlatAuraGain, isFlatGenerationTimer))
                     );
         }
-    }
+    } //refactored
 }
 
