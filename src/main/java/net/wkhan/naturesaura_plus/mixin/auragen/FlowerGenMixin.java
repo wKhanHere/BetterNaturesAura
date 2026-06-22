@@ -80,7 +80,7 @@ public abstract class FlowerGenMixin extends BlockEntityImpl {
         int repeatFlower = naturesaura_plus$flowerMemory.countObject(flower) - 1;
         AuraGenRules.flowerValues stats = FLOWER_GENERATIONS.get(flower);
         byte lucidity = stats.lucidity();
-        double auraFactor = (1 - Math.pow(((double) (100 - this.naturesaura_plus$vitality)/flowerGenVitalityFloor),flowerGenPowFactor)); //make float
+        double auraFactor = (1 - Math.pow(((double) (100 - this.naturesaura_plus$vitality)/(100-flowerGenVitalityFloor)),flowerGenPowFactor)); //make float
         int auraAmount = (int) (stats.auraAmount() * auraFactor);
         int toAdd = Math.max(0, auraAmount);
 
