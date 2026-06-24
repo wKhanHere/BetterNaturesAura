@@ -194,6 +194,15 @@ public class NaturesAuraPlusUtils {
             return count;
         }
 
+        public int countObjectAny() {
+            int count = 0;
+            for (Object o : buffer) {
+                if (o == null) continue;
+                count++;
+            }
+            return count;
+        }
+
         public boolean isEmpty() {
             return buffer.length == 0;
         }

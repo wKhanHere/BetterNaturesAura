@@ -17,8 +17,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules;
+import net.wkhan.naturesaura_plus.common.data.auragen.FlowerGeneration;
+import net.wkhan.naturesaura_plus.common.network.ModNetwork;
+import net.wkhan.naturesaura_plus.common.network.packets.S2CPacketFlowerGenUpdate;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,7 +37,7 @@ import static net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules.FLOWER
 import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.circularBuffer;
 
 @Mixin(BlockEntityFlowerGenerator.class)
-public abstract class FlowerGenMixin extends BlockEntityImpl {
+public abstract class FlowerGenMixin extends BlockEntityImpl implements FlowerGeneration {
     public FlowerGenMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -80,7 +84,7 @@ public abstract class FlowerGenMixin extends BlockEntityImpl {
         int repeatFlower = naturesaura_plus$flowerMemory.countObject(flower) - 1;
         AuraGenRules.flowerValues stats = FLOWER_GENERATIONS.get(flower);
         byte lucidity = stats.lucidity();
-        double auraFactor = (1 - Math.pow(((double) (100 - this.naturesaura_plus$vitality)/(100-flowerGenVitalityFloor)),flowerGenPowFactor)); //make float
+        double auraFactor = (1 - Math.pow(((double) (100 - this.naturesaura_plus$vitality)/flowerGenVitalityFloor),flowerGenPowFactor)); //make float
         int auraAmount = (int) (stats.auraAmount() * auraFactor);
         int toAdd = Math.max(0, auraAmount);
 
@@ -93,6 +97,10 @@ public abstract class FlowerGenMixin extends BlockEntityImpl {
         }
 
         //this.sendToClients(); // Not implemented, idk how this works yet
+        S2CPacketFlowerGenUpdate msg = new S2CPacketFlowerGenUpdate(this.naturesaura_plus$vitality, flower, this.getBlockPos());
+
+        ModNetwork.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(
+                () -> this.level.getChunkAt(this.getBlockPos()) ), msg);
 
         if (toAdd > 0) {
             if (IAuraType.forLevel(level).isSimilar(NaturesAuraAPI.TYPE_OVERWORLD) && this.canGenerateRightNow(toAdd)) {
@@ -124,7 +132,7 @@ public abstract class FlowerGenMixin extends BlockEntityImpl {
     private void naturesaura_plus$writeNBT(CompoundTag compound, SaveType type, CallbackInfo ci) {
         ci.cancel();
         super.writeNBT(compound, type);
-        if (type == SaveType.SYNC) return;
+//        if (type == SaveType.SYNC) return;
         ByteTag vitality = ByteTag.valueOf(naturesaura_plus$vitality);
         compound.put("vitality", vitality);
         if (naturesaura_plus$flowerMemory.isEmpty()) return;
@@ -135,14 +143,11 @@ public abstract class FlowerGenMixin extends BlockEntityImpl {
         for (int i = 0; i < flowerMemoryBuffer.length; i++) {
             int orderedIndex = (naturesaura_plus$flowerMemory.getHead() + i) % capacity;
             Block flower = (Block) flowerMemoryBuffer[orderedIndex];
-
             if (flower == null) continue;
             CompoundTag tag = new CompoundTag();
             tag.putString("block", ForgeRegistries.BLOCKS.getKey(flower).toString());
             flowerMemoryList.add(tag);
-
         }
-
         compound.put("flower_memory", flowerMemoryList);
     }
 
@@ -155,7 +160,17 @@ public abstract class FlowerGenMixin extends BlockEntityImpl {
     private void naturesaura_plus$readNBT(CompoundTag compound, SaveType type, CallbackInfo ci) {
         ci.cancel();
         super.readNBT(compound, type);
-        if (type == SaveType.SYNC) return;
+//        if (type == SaveType.SYNC) {
+//            for(Tag t : compound.getList("flower_memory", 10)) {
+//                CompoundTag tag = (CompoundTag)t;
+//                Block flower = ForgeRegistries.BLOCKS.getValue(ResourceLocation.parse(tag.getString("block")));
+//                if (flower == null) continue;
+//                S2CPacketFlowerGenUpdate msg = new S2CPacketFlowerGenUpdate(this.naturesaura_plus$vitality, flower, this.getBlockPos());
+//                ModNetwork.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(
+//                        () -> this.level.getChunkAt(this.getBlockPos())), msg);
+//            }
+//            return;
+//        }
         naturesaura_plus$vitality = compound.getByte("vitality");
         for(Tag t : compound.getList("flower_memory", 10)) {
             CompoundTag tag = (CompoundTag)t;
@@ -163,5 +178,25 @@ public abstract class FlowerGenMixin extends BlockEntityImpl {
             if (flower == null) continue;
             naturesaura_plus$flowerMemory.writeObject(flower);
         }
+    }
+
+    @Override
+    public void naturesaura_plus$flowerTileAuraGeneratorSetVitality(byte vitality) {
+        this.naturesaura_plus$vitality = vitality;
+    }
+
+    @Override
+    public void naturesaura_plus$flowerTileAuraGeneratorWriteFlower(Block flower) {
+        this.naturesaura_plus$flowerMemory.writeObject(flower);
+    }
+
+    @Override
+    public int naturesaura_plus$flowerTileAuraGeneratorReadVitality() {
+        return this.naturesaura_plus$vitality;
+    }
+
+    @Override
+    public circularBuffer<Block> naturesaura_plus$flowerTileAuraGeneratorReadBuffer() {
+        return this.naturesaura_plus$flowerMemory;
     }
 }

@@ -45,9 +45,9 @@ public class Config
             .comment("Number of flowers the flower aura generator block remembers when calculating aura generated amount. (Default: 3)")
             .defineInRange("flowerGenMemorySize", 3, 1, 1000);
 
-    private static final ForgeConfigSpec.IntValue FLOWER_GEN_VITALITY_FLOOR = BUILDER
-            .comment("Defines the lowest value of vitality upto which the flower generator generates aura. (Default: 100)")
-            .defineInRange("flowerGenVitalityFloor", 0, 0, 100);
+    private static final ForgeConfigSpec.IntValue FLOWER_GEN_VITALITY_FLOOR = BUILDER //clarify
+            .comment("Defines the lowest value of vitality upto which the flower generator generates aura. (Default: 0)")
+            .defineInRange("flowerGenVitalityFloor", 100, 0, 100);
 
     private static final ForgeConfigSpec.DoubleValue FLOWER_GEN_POW_FACTOR = BUILDER
             .comment("The value of the power factor in the aura generation formula for flower generator. Check wiki for more info. (Default: 0.5)")
