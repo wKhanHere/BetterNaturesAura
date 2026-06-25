@@ -1,8 +1,0 @@
-{
-  "type": "aura_gen:flower_gen",
-  "block_to_convert": "minecraft:sunflower",
-  "aura_gain": 10000,
-  "lucidity": 10,
-  "obscurity": 50,
-  "obscurity_scale": 2
-}

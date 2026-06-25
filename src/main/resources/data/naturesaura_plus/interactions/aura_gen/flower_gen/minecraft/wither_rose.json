@@ -1,7 +1,7 @@
 {
   "type": "aura_gen:flower_gen",
-  "block_to_convert": "minecraft:poppy",
-  "aura_gain": 100000,
+  "block_to_convert": "minecraft:wither_rose",
+  "aura_gain": 2000,
   "lucidity": 0,
   "obscurity": 20,
   "obscurity_scale": 2

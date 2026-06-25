@@ -1,0 +1,8 @@
+{
+  "type": "aura_gen:flower_gen",
+  "block_to_convert": "naturesaura:aura_bloom",
+  "aura_gain": 100000,
+  "lucidity": 20,
+  "obscurity": 0,
+  "obscurity_scale": 0
+}

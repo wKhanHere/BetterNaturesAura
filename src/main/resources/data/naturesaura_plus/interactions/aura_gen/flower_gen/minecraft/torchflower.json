@@ -1,0 +1,8 @@
+{
+  "type": "aura_gen:flower_gen",
+  "block_to_convert": "minecraft:torchflower",
+  "aura_gain": 50000,
+  "lucidity": 15,
+  "obscurity": 10,
+  "obscurity_scale": 2
+}

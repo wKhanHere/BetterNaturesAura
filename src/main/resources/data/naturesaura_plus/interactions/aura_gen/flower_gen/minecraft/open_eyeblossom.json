@@ -1,0 +1,8 @@
+{
+  "type": "aura_gen:flower_gen",
+  "block_to_convert": "minecraft:open_eyeblossom",
+  "aura_gain": 60000,
+  "lucidity": 30,
+  "obscurity": 20,
+  "obscurity_scale": 2
+}
