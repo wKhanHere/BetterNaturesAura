@@ -1,0 +1,6 @@
+{
+  "type": "aura_gen:oak_gen",
+  "feature_to_replace": "minecraft:fancy_oak_bees_005",
+  "feature_replacement": "minecraft:oak_bees_005",
+  "aura_gain": 150000
+}

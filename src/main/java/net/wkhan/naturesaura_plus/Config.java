@@ -72,7 +72,11 @@ public class Config
 
     private static final ForgeConfigSpec.IntValue CHORUS_GEN_RANGE = BUILDER
             .comment("Cubical size radius (half-length) for range of the chorus generator to check for valid plants in blocks. (Default: 2)")
-            .defineInRange("chorusGenRange", 2, 1, 10); //CHECK
+            .defineInRange("chorusGenRange", 2, 1, 10);
+
+    private static final ForgeConfigSpec.IntValue OAK_GEN_RANGE = BUILDER
+            .comment("Cubical size radius (half-length) for range of the oak generator to check for tree/feature placements. (Default: 2)")
+            .defineInRange("oakGenRange", 10, 1, 32);
 
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
@@ -91,6 +95,7 @@ public class Config
     public static int animalGenRange;
     public static int slimeGenRange;
     public static int chorusGenRange;
+    public static int oakGenRange;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -109,5 +114,6 @@ public class Config
         animalGenRange = ANIMAL_GEN_RANGE.get();
         slimeGenRange = SLIME_GEN_RANGE.get();
         chorusGenRange = CHORUS_GEN_RANGE.get();
+        oakGenRange = OAK_GEN_RANGE.get();
     }
 }

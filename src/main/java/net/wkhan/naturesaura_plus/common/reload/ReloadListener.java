@@ -109,7 +109,7 @@ public class ReloadListener
                                     AuraGenRules.addSlimeGeneration(rule);
                                 });
                     }
-                    case "aura_gen:animal_gen" -> {
+                    case "aura_gen:animal_gen" -> { //refactored
                         DataResult<AnimalGenRule> result = AnimalGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(errorMessage -> System.err.println("AnimalGen JSON Error: " + errorMessage))
@@ -118,13 +118,22 @@ public class ReloadListener
                                     AuraGenRules.addAnimalGeneration(rule);
                                 });
                     }
-                    case "aura_gen:chorus_gen" -> {
+                    case "aura_gen:chorus_gen" -> { //refactored
                         DataResult<ChorusGenRule> result = ChorusGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(errorMessage -> System.err.println("ChorusGen JSON Error: " + errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.addChorusGeneration(rule);
+                                });
+                    }
+                    case "aura_gen:oak_gen" -> { //refactored
+                        DataResult<OakGenRule> result = OakGenRule.CODEC.parse(JsonOps.INSTANCE, json)
+                                .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
+                        result.resultOrPartial(errorMessage -> System.err.println("OakGen JSON Error: " + errorMessage))
+                                .ifPresent(rule -> {
+                                    loadedAuraRules.add(fileId.toString());
+                                    AuraGenRules.addOakGeneration(rule);
                                 });
                     }
 

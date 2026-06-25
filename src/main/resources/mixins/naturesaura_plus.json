@@ -17,14 +17,16 @@
     "event.TreeFertilizerGrowFeatureEventPostMixin",
     "item.ItemAuraCacheMixin",
     "event.ClientEventMixin",
-    "auragen.AnimalGenMixin",
+    "auragen.BlockAnimalGenMixin",
     "block.BlockFlowerGenMixin",
     "block.BlockMossGenMixin",
     "block.BlockSlimeGenMixin",
     "auragen.slimegen.SlimeGenMixin",
     "auragen.slimegen.SlimeGenEventsMixin",
     "auragen.ChorusGenMixin",
-    "block.BlockChorusGenMixin"
+    "block.BlockChorusGenMixin",
+    "auragen.oakgen.OakGenMixin",
+    "auragen.oakgen.BlockOakGenMixin"
   ],
   "client": [],
   "server": []

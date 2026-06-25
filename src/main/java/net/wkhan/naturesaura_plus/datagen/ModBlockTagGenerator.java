@@ -23,13 +23,16 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
         protected void addTags(HolderLookup.Provider pProvider) {
                 this.tag(ModTags.Blocks.TREE_RITUAL_SAPLINGS)
                         .addTag(BlockTags.SAPLINGS)
-                        .add(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM);
+                        .add(
+                                Blocks.BROWN_MUSHROOM,
+                                Blocks.RED_MUSHROOM
+                        );
 
                 this.tag(ModTags.Blocks.TREE_RITUAL_STEMS)
                         .addTag(BlockTags.LOGS)
                         .add(
-                                Blocks.BROWN_MUSHROOM_BLOCK, //Trust this makes sense in-game
-                                Blocks.RED_MUSHROOM_BLOCK, //And this too
+                                Blocks.BROWN_MUSHROOM_BLOCK,
+                                Blocks.RED_MUSHROOM_BLOCK,
                                 Blocks.MUSHROOM_STEM
                         );
 
@@ -53,6 +56,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                                 Blocks.CHEST,
                                 Blocks.BARREL
                         );
+
                 this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE)
                         .add(
                                 Blocks.COPPER_BLOCK,
@@ -61,17 +65,23 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                                 Blocks.DIAMOND_BLOCK,
                                 Blocks.NETHERITE_BLOCK
                         );
+
                 this.tag(ModTags.Blocks.TOWERING_PLANT_SOIL)
                         .add(
                                 Blocks.END_STONE
                         );
+
                 this.tag(ModTags.Blocks.TOWERING_PLANT_STEM)
                         .add(
                                 Blocks.CHORUS_PLANT
                         );
+
                 this.tag(ModTags.Blocks.TOWERING_PLANT_CAP)
                         .add(
                                 Blocks.CHORUS_FLOWER
                         );
+
+                this.tag(ModTags.Blocks.OAK_GEN_SAPLING)
+                        .addTag(BlockTags.SAPLINGS);
         }
 }

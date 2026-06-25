@@ -1,10 +1,12 @@
 package net.wkhan.naturesaura_plus.common.data.auragen;
 
 import de.ellpeck.naturesaura.api.NaturesAuraAPI;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
@@ -35,6 +37,9 @@ public final class AuraGenRules {
                                SoundEvent soundEvent, float soundVolume, float soundPitch) {}
     public static final Map<Block, chorusValues> CHORUS_GENERATIONS = new HashMap<>();
 
+    public record oakValues(ResourceKey<ConfiguredFeature<?,?>> featureReplacement, int auraAmount) {}
+    public static final Map<ResourceKey<ConfiguredFeature<?,?>>, oakValues> OAK_GENERATIONS = new HashMap<>();
+
     public static HashMap<String, Integer> auraRulesCount() {
         HashMap<String, Integer> rulesCount = new HashMap<>();
         rulesCount.put("Projectile Generations", NaturesAuraAPI.PROJECTILE_GENERATIONS.size());
@@ -43,6 +48,7 @@ public final class AuraGenRules {
         rulesCount.put("Slime Generations", SLIME_GENERATIONS.size());
         rulesCount.put("Animal Generations", ANIMAL_GENERATIONS.size());
         rulesCount.put("Chorus Generations", CHORUS_GENERATIONS.size());
+        rulesCount.put("Oak (Tree) Generations", OAK_GENERATIONS.size());
         return rulesCount;
     }
 
@@ -53,6 +59,7 @@ public final class AuraGenRules {
         SLIME_GENERATIONS.clear();
         ANIMAL_GENERATIONS.clear();
         CHORUS_GENERATIONS.clear();
+        OAK_GENERATIONS.clear();
     }
 
     public static void addProjectileGeneration(ProjectileGenRule rule) {
@@ -187,6 +194,14 @@ public final class AuraGenRules {
 
         for (Block soil : listSoil) CHORUS_GENERATIONS.put(soil, new chorusValues
                 (stem, cap, auraGainPerBlock, isSizeScaled, soundEvent, soundVolume, soundPitch));
+    }
+
+    public static void addOakGeneration(OakGenRule rule) {
+        ResourceKey<ConfiguredFeature<?,?>> featureToReplace = rule.featureToReplace();
+        ResourceKey<ConfiguredFeature<?,?>> featureReplacement = rule.featureReplacement();
+        int auraAmount = rule.auraAmount();
+
+        OAK_GENERATIONS.put(featureToReplace, new oakValues(featureReplacement, auraAmount));
     }
 }
 
