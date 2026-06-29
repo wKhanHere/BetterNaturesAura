@@ -1,0 +1,8 @@
+{
+  "type": "aura_gen:flower_gen",
+  "block_to_convert": "silly_oddities:cactus_flower",
+  "aura_gain": 30000,
+  "lucidity": 15,
+  "obscurity": 20,
+  "obscurity_scale": 1
+}

@@ -1,0 +1,8 @@
+{
+  "type": "aura_gen:flower_gen",
+  "block_to_convert": "deep_aether:echaisy",
+  "aura_gain": 27500,
+  "lucidity": 10,
+  "obscurity": 10,
+  "obscurity_scale": 2
+}

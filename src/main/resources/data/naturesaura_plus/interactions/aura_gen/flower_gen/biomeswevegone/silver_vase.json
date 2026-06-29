@@ -1,0 +1,8 @@
+{
+  "type": "aura_gen:flower_gen",
+  "block_to_convert": "biomeswevegone:silver_vase_flower",
+  "aura_gain": 25000,
+  "lucidity": 10,
+  "obscurity": 20,
+  "obscurity_scale": 2
+}
