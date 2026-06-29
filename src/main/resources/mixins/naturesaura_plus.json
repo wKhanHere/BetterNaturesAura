@@ -26,7 +26,9 @@
     "auragen.ChorusGenMixin",
     "block.BlockChorusGenMixin",
     "auragen.oakgen.OakGenMixin",
-    "auragen.oakgen.BlockOakGenMixin"
+    "auragen.oakgen.BlockOakGenMixin",
+    "block.BlockWoodStandMixin",
+    "misc.BlockContainerImplMixin"
   ],
   "client": [],
   "server": []
