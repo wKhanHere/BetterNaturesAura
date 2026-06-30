@@ -1,0 +1,6 @@
+{
+    "type": "aura_gen:moss_gen",
+    "block_to_convert": "botania:mossy_livingrock_bricks",
+    "block_result": "botania:livingrock_bricks",
+    "aura_gain": 4000
+}

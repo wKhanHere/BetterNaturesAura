@@ -1,0 +1,6 @@
+{
+    "type": "aura_gen:moss_gen",
+    "block_to_convert": "goety:mossy_cragrocks_slight",
+    "block_result": "goety:cragrocks",
+    "aura_gain": 4000
+}

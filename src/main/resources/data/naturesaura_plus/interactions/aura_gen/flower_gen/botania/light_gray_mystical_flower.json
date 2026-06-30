@@ -1,0 +1,8 @@
+{
+    "type": "aura_gen:flower_gen",
+    "block_to_convert": "botania:light_gray_mystical_flower",
+    "aura_gain": 35000,
+    "lucidity": 20,
+    "obscurity": 10,
+    "obscurity_scale": 2
+}

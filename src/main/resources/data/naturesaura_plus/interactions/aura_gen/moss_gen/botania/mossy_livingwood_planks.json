@@ -1,0 +1,6 @@
+{
+    "type": "aura_gen:moss_gen",
+    "block_to_convert": "botania:mossy_livingwood_planks",
+    "block_result": "botania:livingwood_planks",
+    "aura_gain": 4000
+}

@@ -1,0 +1,6 @@
+{
+    "type": "aura_gen:moss_gen",
+    "block_to_convert": "goety:mossy_crag_pavement",
+    "block_result": "goety:crag_pavement",
+    "aura_gain": 6000
+}
