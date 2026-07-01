@@ -43,7 +43,7 @@ public class ModWoodBlock extends RotatedPillarBlock {
             if (state.is(ancientLog))
                 event.setFinalState(ModBlocks.STRIPPED_ANCIENT_LOG.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS)));
             else if (state.is(ancientBark))
-                event.setFinalState(ModBlocks.STRIPPED_ANCIENT_WOOD.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS)));
+                event.setFinalState(ModBlocks.STRIPPED_ANCIENT_BARK.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS)));
         }
     }
 }
