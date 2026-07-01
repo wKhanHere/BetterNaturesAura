@@ -8,6 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
+import net.wkhan.naturesaura_plus.common.item.ModItems;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,5 +25,10 @@ public class ModItemTagGenerator extends ItemTagsProvider {
         this.tag(ModTags.Items.CANNOT_APPLY_BREAK_PREVENTION).add(Items.ELYTRA);
 
         this.tag(ModTags.Items.VALID_WOODEN_STAND_MATERIAL).addTag(ItemTags.LOGS);
+
+        this.tag(ItemTags.LOGS).add(
+                ModItems.STRIPPED_ANCIENT_LOG.get(),
+                ModItems.STRIPPED_ANCIENT_WOOD.get()
+        );
     }
 }

@@ -17,17 +17,17 @@ public class CreativeTabItemsEvent {
 
     @SubscribeEvent
     public static void addCustomItemsToTabs(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey().location().equals(ResourceLocation.fromNamespaceAndPath("naturesaura", "tab"))) {
-            event.accept(ModItems.BREAK_PREVENTION.get());
-            event.accept(ModItems.COFFEE.get());
-            event.accept(ModItems.AURA_COFFEE.get());
-            if (isBotaniaLoaded) {
-                event.accept(BotaniaModItems.AURA_MANA_HOLDER.get());
-                ItemStack auraManaHolder = new ItemStack(BotaniaModItems.AURA_MANA_HOLDER.get());
-                setCreativeStack(auraManaHolder);
-                event.accept(auraManaHolder);
-            }
+        if (!event.getTabKey().location().equals(ResourceLocation.fromNamespaceAndPath("naturesaura", "tab"))) return;
+        event.accept(ModItems.STRIPPED_ANCIENT_LOG.get());
+        event.accept(ModItems.STRIPPED_ANCIENT_WOOD.get());
+        event.accept(ModItems.BREAK_PREVENTION.get());
+        event.accept(ModItems.COFFEE.get());
+        event.accept(ModItems.AURA_COFFEE.get());
+        if (isBotaniaLoaded) {
+            event.accept(BotaniaModItems.AURA_MANA_HOLDER.get());
+            ItemStack auraManaHolder = new ItemStack(BotaniaModItems.AURA_MANA_HOLDER.get());
+            setCreativeStack(auraManaHolder);
+            event.accept(auraManaHolder);
         }
     }
-
 }

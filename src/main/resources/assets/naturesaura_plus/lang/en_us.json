@@ -2,13 +2,15 @@
   "info.naturesaura_plus.break_prevention_token": "Token of Fortitude Applied",
   "info.naturesaura_plus.broken": " (Broken)",
   "info.naturesaura_plus.aura_coffee": "It tastes bitter... but it smells like home.",
+  "info.naturesaura_plus.aura_mana_holder": "Mr. Sketchy has a good belt.",
+  "info.naturesaura_plus.coffee": "Pafeu makes good coffee.",
 
   "item.naturesaura_plus.break_prevention_token": "Token of Fortitude",
   "item.naturesaura_plus.aura_mana_holder": "Naturalist's Sash",
   "item.naturesaura_plus.coffee": "Coffee",
   "item.naturesaura_plus.aura_coffee": "Auric Coffee",
-  "info.naturesaura_plus.aura_mana_holder": "Mr. Sketchy has a good belt.",
-  "info.naturesaura_plus.coffee": "Pafeu makes good coffee.",
+  "block.naturesaura_plus.stripped_ancient_log": "Stripped Ancient Log",
+  "block.naturesaura_plus.stripped_ancient_bark": "Stripped Ancient Bark",
 
   "block.naturesaura.wood_stand": "Natural Stand",
   "advancement.naturesaura.wood_stand": "Aura of the Forest",

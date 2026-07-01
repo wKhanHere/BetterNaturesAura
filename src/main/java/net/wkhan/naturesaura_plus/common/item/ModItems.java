@@ -13,6 +13,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
+import net.wkhan.naturesaura_plus.common.block.ModBlocks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,11 +29,8 @@ public class ModItems {
 
     public static final RegistryObject<Item> COFFEE = ITEMS.register("coffee",
             () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
-                    .alwaysEat()
-                    .nutrition(4)
-                    .saturationMod(0.8f)
-                    .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100, 1), 1)
-                    .build())
+                    .alwaysEat().nutrition(4).saturationMod(0.8f)
+                    .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100, 1), 1).build())
                     .stacksTo(16).rarity(Rarity.COMMON)) {
                 @Override public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
                     return UseAnim.DRINK;
@@ -44,12 +42,15 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> AURA_COFFEE = ITEMS.register("aura_coffee",
-            () -> new ItemRecallCoffee(new Item.Properties().food(new FoodProperties.Builder()
-                            .alwaysEat()
-                            .nutrition(1)
-                            .saturationMod(0.2f)
-                            .build())
+            () -> new ItemRecallCoffee(new Item.Properties().food(new FoodProperties.Builder().alwaysEat()
+                    .nutrition(1).saturationMod(0.2f).build())
                     .stacksTo(16).rarity(Rarity.RARE)));
+
+    public static final RegistryObject<Item> STRIPPED_ANCIENT_LOG = ITEMS.register("stripped_ancient_log",
+            () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_LOG.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> STRIPPED_ANCIENT_WOOD = ITEMS.register("stripped_ancient_bark",
+            () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_WOOD.get(), new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

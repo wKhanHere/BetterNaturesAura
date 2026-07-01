@@ -1,6 +1,5 @@
 package net.wkhan.naturesaura_plus.datagen;
 
-import de.ellpeck.naturesaura.blocks.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -8,6 +7,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
+import net.wkhan.naturesaura_plus.common.block.ModBlocks;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,17 +30,13 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
 
                 this.tag(ModTags.Blocks.TREE_RITUAL_STEMS)
                         .addTag(BlockTags.LOGS)
-                        .add(
-                                Blocks.BROWN_MUSHROOM_BLOCK,
-                                Blocks.RED_MUSHROOM_BLOCK,
-                                Blocks.MUSHROOM_STEM
-                        );
+                        .add(Blocks.MUSHROOM_STEM);
 
                 this.tag(ModTags.Blocks.TREE_RITUAL_LEAVES)
                         .addTag(BlockTags.LEAVES)
                         .add(
-                                Blocks.MANGROVE_ROOTS,
-                                Blocks.MUDDY_MANGROVE_ROOTS,
+                                Blocks.BROWN_MUSHROOM_BLOCK,
+                                Blocks.RED_MUSHROOM_BLOCK,
                                 Blocks.WARPED_WART_BLOCK,
                                 Blocks.NETHER_WART_BLOCK
                         );
@@ -48,13 +44,14 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 this.tag(ModTags.Blocks.HOPPER_UPGRADE_AFFECTED)
                         .add(
                                 Blocks.HOPPER,
-                                ModBlocks.GRATED_CHUTE
+                                de.ellpeck.naturesaura.blocks.ModBlocks.GRATED_CHUTE
                         );
 
                 this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE_CHEST)
                         .add(
                                 Blocks.CHEST,
-                                Blocks.BARREL
+                                Blocks.BARREL,
+                                Blocks.SPAWNER
                         );
 
                 this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE)
@@ -83,5 +80,11 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
 
                 this.tag(ModTags.Blocks.OAK_GEN_SAPLING)
                         .addTag(BlockTags.SAPLINGS);
+
+                this.tag(BlockTags.LOGS)
+                        .add(
+                                ModBlocks.STRIPPED_ANCIENT_LOG.get(),
+                                ModBlocks.STRIPPED_ANCIENT_WOOD.get()
+                        );
         }
 }
