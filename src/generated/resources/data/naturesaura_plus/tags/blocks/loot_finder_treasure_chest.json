@@ -1,6 +1,7 @@
 {
   "values": [
     "minecraft:chest",
-    "minecraft:barrel"
+    "minecraft:barrel",
+    "minecraft:spawner"
   ]
 }
