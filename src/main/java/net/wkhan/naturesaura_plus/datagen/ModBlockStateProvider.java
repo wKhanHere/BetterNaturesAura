@@ -15,10 +15,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         logBlock((RotatedPillarBlock) ModBlocks.STRIPPED_ANCIENT_LOG.get());
-        axisBlock((RotatedPillarBlock) ModBlocks.STRIPPED_ANCIENT_WOOD.get(),
+        axisBlock((RotatedPillarBlock) ModBlocks.STRIPPED_ANCIENT_BARK.get(),
                 modLoc("block/stripped_ancient_log"), modLoc("block/stripped_ancient_log"));
 
         simpleBlockItem(ModBlocks.STRIPPED_ANCIENT_LOG.get(), models().getExistingFile(modLoc("block/stripped_ancient_log")));
-        simpleBlockItem(ModBlocks.STRIPPED_ANCIENT_WOOD.get(), models().getExistingFile(modLoc("block/stripped_ancient_bark")));
+        simpleBlockItem(ModBlocks.STRIPPED_ANCIENT_BARK.get(), models().getExistingFile(modLoc("block/stripped_ancient_bark")));
     }
 }

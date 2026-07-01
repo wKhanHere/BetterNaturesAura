@@ -20,7 +20,7 @@ public class ModBlocks {
                     .mapColor(MapColor.COLOR_PURPLE)
                     .strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
 
-    public static final RegistryObject<Block> STRIPPED_ANCIENT_WOOD = BLOCKS.register("stripped_ancient_bark",
+    public static final RegistryObject<Block> STRIPPED_ANCIENT_BARK = BLOCKS.register("stripped_ancient_bark",
             () -> new ModWoodBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_PURPLE)
                     .strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));

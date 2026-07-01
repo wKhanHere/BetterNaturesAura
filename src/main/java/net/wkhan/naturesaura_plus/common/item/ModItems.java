@@ -49,8 +49,8 @@ public class ModItems {
     public static final RegistryObject<Item> STRIPPED_ANCIENT_LOG = ITEMS.register("stripped_ancient_log",
             () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_LOG.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> STRIPPED_ANCIENT_WOOD = ITEMS.register("stripped_ancient_bark",
-            () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_WOOD.get(), new Item.Properties()));
+    public static final RegistryObject<Item> STRIPPED_ANCIENT_BARK = ITEMS.register("stripped_ancient_bark",
+            () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_BARK.get(), new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

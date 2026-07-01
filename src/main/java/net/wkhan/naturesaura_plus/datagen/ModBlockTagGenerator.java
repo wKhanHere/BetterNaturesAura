@@ -84,7 +84,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 this.tag(BlockTags.LOGS)
                         .add(
                                 ModBlocks.STRIPPED_ANCIENT_LOG.get(),
-                                ModBlocks.STRIPPED_ANCIENT_WOOD.get()
+                                ModBlocks.STRIPPED_ANCIENT_BARK.get()
                         );
         }
 }

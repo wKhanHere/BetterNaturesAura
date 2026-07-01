@@ -28,7 +28,7 @@ public class ModItemTagGenerator extends ItemTagsProvider {
 
         this.tag(ItemTags.LOGS).add(
                 ModItems.STRIPPED_ANCIENT_LOG.get(),
-                ModItems.STRIPPED_ANCIENT_WOOD.get()
+                ModItems.STRIPPED_ANCIENT_BARK.get()
         );
     }
 }

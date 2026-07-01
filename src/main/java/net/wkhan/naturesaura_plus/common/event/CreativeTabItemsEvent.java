@@ -19,7 +19,7 @@ public class CreativeTabItemsEvent {
     public static void addCustomItemsToTabs(BuildCreativeModeTabContentsEvent event) {
         if (!event.getTabKey().location().equals(ResourceLocation.fromNamespaceAndPath("naturesaura", "tab"))) return;
         event.accept(ModItems.STRIPPED_ANCIENT_LOG.get());
-        event.accept(ModItems.STRIPPED_ANCIENT_WOOD.get());
+        event.accept(ModItems.STRIPPED_ANCIENT_BARK.get());
         event.accept(ModItems.BREAK_PREVENTION.get());
         event.accept(ModItems.COFFEE.get());
         event.accept(ModItems.AURA_COFFEE.get());
