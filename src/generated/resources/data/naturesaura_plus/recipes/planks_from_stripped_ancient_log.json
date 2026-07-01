@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    [
+      {
+        "item": "naturesaura_plus:stripped_ancient_log"
+      },
+      {
+        "item": "naturesaura_plus:stripped_ancient_bark"
+      }
+    ]
+  ],
+  "result": {
+    "count": 2,
+    "item": "naturesaura:ancient_planks"
+  }
+}
