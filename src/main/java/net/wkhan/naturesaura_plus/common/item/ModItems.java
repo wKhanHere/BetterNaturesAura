@@ -21,6 +21,9 @@ import java.util.List;
 
 public class ModItems {
 
+    public static final DeferredRegister<Item> NATURES_AURA_ITEMS =
+            DeferredRegister.create(ForgeRegistries.ITEMS, "naturesaura");
+
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, NaturesAuraPlus.MODID);
 
@@ -46,13 +49,14 @@ public class ModItems {
                     .nutrition(1).saturationMod(0.2f).build())
                     .stacksTo(16).rarity(Rarity.RARE)));
 
-    public static final RegistryObject<Item> STRIPPED_ANCIENT_LOG = ITEMS.register("stripped_ancient_log",
+    public static final RegistryObject<Item> STRIPPED_ANCIENT_LOG = NATURES_AURA_ITEMS.register("stripped_ancient_log",
             () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_LOG.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> STRIPPED_ANCIENT_BARK = ITEMS.register("stripped_ancient_bark",
+    public static final RegistryObject<Item> STRIPPED_ANCIENT_BARK = NATURES_AURA_ITEMS.register("stripped_ancient_bark",
             () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_BARK.get(), new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
+        NATURES_AURA_ITEMS.register(eventBus);
     }
 }

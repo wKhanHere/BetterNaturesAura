@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelWriter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.wkhan.naturesaura_plus.common.data.TreeRitualTreeTracker;
+import net.wkhan.naturesaura_plus.data.TreeRitualTreeTracker;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

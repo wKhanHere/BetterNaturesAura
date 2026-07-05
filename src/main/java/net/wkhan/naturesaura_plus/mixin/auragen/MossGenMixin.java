@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
-import net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules;
+import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,8 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.wkhan.naturesaura_plus.config.AuraGenConfig.*;
-import static net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules.MOSS_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.MOSS_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.mossGenMemorySize;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.mossGenRange;
 
 @Mixin(BlockEntityMossGenerator.class)
 public abstract class MossGenMixin extends BlockEntityImpl {

@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.wkhan.naturesaura_plus.common.data.duckfaces.MultiBlockUtil;
+import net.wkhan.naturesaura_plus.data.duckfaces.MultiBlockUtil;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

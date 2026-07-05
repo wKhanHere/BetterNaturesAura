@@ -108,8 +108,12 @@ repositories {
     //     dir 'libs'
     // }
 
-    maven {url "https://cursemaven.com"}
-    maven { url 'https://maven.blamejared.com' }
+    maven {
+        url "https://cursemaven.com"
+    }
+    maven {
+        url 'https://maven.blamejared.com'
+    }
     mavenCentral()
 }
 
@@ -129,7 +133,7 @@ dependencies {
     implementation fg.deobf("curse.maven:kubejs-238086:8010958")
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:rhino-416294:6186971")
-    implementation fg.deobf("curse.maven:botania-225643:8138523")
+    implementation fg.deobf("curse.maven:botania-225643:8370023")
     implementation fg.deobf("curse.maven:create-328085:7178761")
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

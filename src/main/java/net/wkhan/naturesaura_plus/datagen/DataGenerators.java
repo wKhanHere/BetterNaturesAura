@@ -17,17 +17,19 @@ public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        PackOutput packOutput = generator.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        PackOutput output = generator.getPackOutput();
+        ExistingFileHelper helper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
-        generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
+        generator.addProvider(event.includeClient(), new ModItemModelProvider(output, helper));
+        generator.addProvider(event.includeClient(), new ModBlockStateProvider(output,"naturesaura" ,helper));
 
-        generator.addProvider(event.includeServer(), new ModEntityTagGenerator(packOutput,lookupProvider,existingFileHelper));
-        ModBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(), new ModBlockTagGenerator(packOutput, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModItemTagGenerator(packOutput,lookupProvider,blockTagGenerator.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput));
-        generator.addProvider(event.includeServer(), ModLootTableProvider.create(packOutput));
+        generator.addProvider(event.includeServer(), new ModEntityTagGenerator(output,lookupProvider,helper));
+        ModBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(),
+                new ModBlockTagGenerator(output, lookupProvider, helper));
+        generator.addProvider(event.includeServer(), new ModItemTagGenerator(output, lookupProvider,
+                blockTagGenerator.contentsGetter(), helper));
+        generator.addProvider(event.includeServer(), new ModRecipeProvider(output));
+        generator.addProvider(event.includeServer(), ModLootTableProvider.create(output));
     }
 }

@@ -4,10 +4,10 @@
   "ingredients": [
     [
       {
-        "item": "naturesaura_plus:stripped_ancient_log"
+        "item": "naturesaura:stripped_ancient_log"
       },
       {
-        "item": "naturesaura_plus:stripped_ancient_bark"
+        "item": "naturesaura:stripped_ancient_bark"
       }
     ]
   ],

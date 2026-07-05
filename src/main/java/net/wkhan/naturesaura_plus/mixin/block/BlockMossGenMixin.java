@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.config.AuraGenConfig.mossGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.mossGenRange;
 
 @Mixin(BlockMossGenerator.class)
 public abstract class BlockMossGenMixin extends BlockContainerImpl {

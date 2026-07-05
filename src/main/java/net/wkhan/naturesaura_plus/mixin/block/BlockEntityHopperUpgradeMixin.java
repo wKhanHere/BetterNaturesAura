@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.kubejs.KubeJSNaturesAuraPlus.HopperUpgradeBaseCheck;
+import static net.wkhan.naturesaura_plus.compat.kubejs.KubeJSNaturesAuraPlus.HopperUpgradeBaseCheck;
 import static net.wkhan.naturesaura_plus.common.tag.ModTags.Blocks.HOPPER_UPGRADE_AFFECTED;
 
 @Mixin(BlockEntityHopperUpgrade.class)

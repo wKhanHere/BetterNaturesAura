@@ -11,9 +11,9 @@ import net.minecraft.world.level.levelgen.feature.AbstractHugeMushroomFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.HugeMushroomFeatureConfiguration;
-import net.wkhan.naturesaura_plus.common.data.TreeRitualTreeTracker;
-import net.wkhan.naturesaura_plus.common.data.duckfaces.AbstractWoodStand;
-import net.wkhan.naturesaura_plus.common.data.duckfaces.MultiBlockUtil;
+import net.wkhan.naturesaura_plus.data.TreeRitualTreeTracker;
+import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
+import net.wkhan.naturesaura_plus.data.duckfaces.MultiBlockUtil;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.HashSet;

@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules;
+import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,9 +29,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Deque;
 import java.util.List;
 
-import static net.wkhan.naturesaura_plus.config.AuraGenConfig.chorusGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.chorusGenRange;
 import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.crawlConnectedBlocks;
-import static net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules.CHORUS_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.CHORUS_GENERATIONS;
 
 @Mixin(BlockEntityChorusGenerator.class)
 public abstract class ChorusGenMixin extends BlockEntityImpl {

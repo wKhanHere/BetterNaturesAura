@@ -4,12 +4,11 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.common.block.ModBlocks;
 
 public class ModBlockStateProvider extends BlockStateProvider {
-    public ModBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, NaturesAuraPlus.MODID, exFileHelper);
+    public ModBlockStateProvider(PackOutput output, String MODID, ExistingFileHelper exFileHelper) {
+        super(output, MODID, exFileHelper);
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
-import net.wkhan.naturesaura_plus.common.data.duckfaces.AbstractWoodStand;
+import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 
 @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID)

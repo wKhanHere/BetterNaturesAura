@@ -8,13 +8,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.wkhan.naturesaura_plus.common.block.ModBlocks;
-import net.wkhan.naturesaura_plus.common.network.ModNetwork;
+import net.wkhan.naturesaura_plus.network.ModNetwork;
 import net.wkhan.naturesaura_plus.compat.botania.BotaniaModItems;
 import net.wkhan.naturesaura_plus.common.item.ModItems;
-import net.wkhan.naturesaura_plus.common.reload.ReloadListener;
-import net.wkhan.naturesaura_plus.config.AuraGenConfig;
-import net.wkhan.naturesaura_plus.config.GameplayConfig;
-import net.wkhan.naturesaura_plus.config.MiscConfig;
+import net.wkhan.naturesaura_plus.data.reload.ReloadListener;
+import net.wkhan.naturesaura_plus.data.config.AuraGenConfig;
+import net.wkhan.naturesaura_plus.data.config.GameplayConfig;
+import net.wkhan.naturesaura_plus.data.config.MiscConfig;
 
 @Mod(NaturesAuraPlus.MODID)
 public class NaturesAuraPlus

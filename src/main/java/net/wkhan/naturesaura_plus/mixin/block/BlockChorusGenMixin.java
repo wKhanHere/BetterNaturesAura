@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 
-import static net.wkhan.naturesaura_plus.config.AuraGenConfig.chorusGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.chorusGenRange;
 
 @Mixin(BlockChorusGenerator.class)
 public abstract class BlockChorusGenMixin extends BlockContainerImpl implements IVisualizable {

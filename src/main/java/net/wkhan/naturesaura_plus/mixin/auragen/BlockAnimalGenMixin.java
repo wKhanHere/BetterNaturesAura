@@ -17,15 +17,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules;
+import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.config.AuraGenConfig.animalGenRange;
-import static net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules.ANIMAL_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.animalGenRange;
+import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.ANIMAL_GENERATIONS;
 
 @Mixin(BlockAnimalGenerator.class)
 public class BlockAnimalGenMixin extends BlockContainerImpl {

@@ -19,10 +19,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules;
-import net.wkhan.naturesaura_plus.common.data.duckfaces.FlowerGeneration;
-import net.wkhan.naturesaura_plus.common.network.ModNetwork;
-import net.wkhan.naturesaura_plus.common.network.packets.S2CPacketFlowerGenUpdate;
+import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
+import net.wkhan.naturesaura_plus.data.duckfaces.FlowerGeneration;
+import net.wkhan.naturesaura_plus.network.ModNetwork;
+import net.wkhan.naturesaura_plus.network.packets.S2CPacketFlowerGenUpdate;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,9 +32,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.wkhan.naturesaura_plus.config.AuraGenConfig.*;
-import static net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules.FLOWER_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.FLOWER_GENERATIONS;
 import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.circularBuffer;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.*;
 
 @Mixin(BlockEntityFlowerGenerator.class)
 public abstract class FlowerGenMixin extends BlockEntityImpl implements FlowerGeneration {

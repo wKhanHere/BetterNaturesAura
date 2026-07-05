@@ -9,15 +9,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules;
-import net.wkhan.naturesaura_plus.common.data.duckfaces.SlimeGeneration;
+import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
+import net.wkhan.naturesaura_plus.data.duckfaces.SlimeGeneration;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules.SLIME_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.SLIME_GENERATIONS;
 
 @Mixin(BlockEntitySlimeSplitGenerator.class)
 public abstract class SlimeGenMixin extends BlockEntityImpl implements SlimeGeneration {

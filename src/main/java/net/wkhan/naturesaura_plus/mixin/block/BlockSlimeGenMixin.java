@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.config.AuraGenConfig.slimeGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.slimeGenRange;
 
 @Mixin(BlockSlimeSplitGenerator.class)
 public abstract class BlockSlimeGenMixin extends BlockContainerImpl {

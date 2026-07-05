@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesaura:stripped_ancient_bark"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "naturesaura:blocks/stripped_ancient_bark"
+}

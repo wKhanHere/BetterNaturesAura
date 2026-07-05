@@ -21,6 +21,6 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return ModBlocks.BLOCKS.getEntries().stream().map(java.util.function.Supplier::get)::iterator;
+        return ModBlocks.NATURES_AURA_BLOCKS.getEntries().stream().map(java.util.function.Supplier::get)::iterator;
     }
 }

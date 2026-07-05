@@ -21,7 +21,7 @@ import java.util.List;
 
 import static net.wkhan.naturesaura_plus.common.tag.ModTags.Blocks.LOOT_FINDER_TREASURE;
 import static net.wkhan.naturesaura_plus.common.tag.ModTags.Blocks.LOOT_FINDER_TREASURE_CHEST;
-import static net.wkhan.naturesaura_plus.config.GameplayConfig.*;
+import static net.wkhan.naturesaura_plus.data.config.GameplayConfig.*;
 
 @Mixin(ItemLootFinder.class)
 public abstract class ItemLootFinderMixin extends ItemImpl {

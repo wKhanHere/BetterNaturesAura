@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.wkhan.naturesaura_plus.common.data.duckfaces.AbstractWoodStand;
+import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 
-import static net.wkhan.naturesaura_plus.common.client.render.DynamicWoodStandModel.STAND_MATERIAL;
+import static net.wkhan.naturesaura_plus.client.render.DynamicWoodStandModel.STAND_MATERIAL;
 
 @Mixin(BlockEntityWoodStand.class)
 public abstract class BlockEntityWoodStandMixin extends BlockEntityImpl implements AbstractWoodStand {

@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.level.SaplingGrowTreeEvent;
-import net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules;
-import net.wkhan.naturesaura_plus.common.data.duckfaces.OakGeneration;
+import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
+import net.wkhan.naturesaura_plus.data.duckfaces.OakGeneration;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
-import static net.wkhan.naturesaura_plus.config.AuraGenConfig.oakGenRange;
-import static net.wkhan.naturesaura_plus.common.data.auragen.AuraGenRules.OAK_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.oakGenRange;
+import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.OAK_GENERATIONS;
 
 @Mixin(BlockOakGenerator.class)
 public abstract class BlockOakGenMixin extends BlockContainerImpl {
