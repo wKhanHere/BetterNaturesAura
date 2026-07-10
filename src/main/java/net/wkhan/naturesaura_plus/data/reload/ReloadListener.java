@@ -15,10 +15,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.data.AnvilCostRules;
 import net.wkhan.naturesaura_plus.data.auragen.*;
-import net.wkhan.naturesaura_plus.data.block.BlockInteractionRule;
-import net.wkhan.naturesaura_plus.data.block.BlockInteractionRules;
-import net.wkhan.naturesaura_plus.data.entity.EntityInteractionRule;
-import net.wkhan.naturesaura_plus.data.entity.EntityInteractionRules;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +29,6 @@ public class ReloadListener
         super(new Gson(), "interactions");
     }
     protected static final List<String> loadedAuraRules = new ArrayList<>();
-    protected final List<String> loadedBlockRules = new ArrayList<>();
-    protected final List<String> loadedEntityRules = new ArrayList<>();
     protected final List<String> loadedAnvilCosts = new ArrayList<>();
 
     @Override
@@ -53,18 +47,6 @@ public class ReloadListener
                 }
                 String type = json.get("type").getAsString();
                 switch (type) {
-                    case "prevent_interact:entity" -> { //refactor
-                        EntityInteractionRule rule = new Gson().fromJson(json, EntityInteractionRule.class);
-                        rule.setSourceFile(fileId.toString());
-                        loadedEntityRules.add(fileId.toString());
-                        EntityInteractionRules.add(rule);
-                    }
-                    case "broken_prevent_interact:block" -> { //refactor
-                        BlockInteractionRule rule = new Gson().fromJson(json, BlockInteractionRule.class);
-                        rule.setSourceFile(fileId.toString());
-                        loadedBlockRules.add(fileId.toString());
-                        BlockInteractionRules.add(rule);
-                    }
                     case "anvil_cost:apply_steel_token" -> { //refactor
                         if (!json.has("levels")) {
                             System.err.println("Missing 'levels' field in anvil cost file: " + fileId);
@@ -146,19 +128,12 @@ public class ReloadListener
                 e.printStackTrace();
             }
         });
-
-        System.out.println("Entity Rules Loaded: " + loadedEntityRules);
-        System.out.println("Block Rules Loaded: " + loadedBlockRules);
         System.out.println("Anvil Costs Loaded: " + loadedAnvilCosts);
     }
 
     private void clearData() {
-        loadedBlockRules.clear();
-        loadedEntityRules.clear();
         loadedAnvilCosts.clear();
         loadedAuraRules.clear();
-        EntityInteractionRules.clear();
-        BlockInteractionRules.clear();
         AnvilCostRules.clear();
         AuraGenRules.auraGenerationClear();
     }
@@ -169,9 +144,7 @@ public class ReloadListener
         @SubscribeEvent
         public static void onTagsUpdated(TagsUpdatedEvent event) {
             addAuraGenerations();
-            System.out.println("Loaded " + EntityInteractionRules.size() + " entity rules, "
-                    + BlockInteractionRules.size() + " block rules, "
-                    + AnvilCostRules.size() + " anvil cost rules and \n"
+            System.out.println("Loaded " + AnvilCostRules.size() + " anvil cost rules and \n"
                     + AuraGenRules.auraRulesCount() + " aura gen rules.");
             System.out.println("Aura generation rules loaded: " + loadedAuraRules);
         }
