@@ -1,5 +1,4 @@
 /run/
-/gradle/
 /src/generated/resources/.cache/9d0451eff515cf7fd71d18e01e777edb168bcc1b
 /src/generated/resources/.cache/26d6d3b471b90004d134bf7ac0ac4fdef6bcdc58
 /src/generated/resources/.cache/89e1a7c63c9dd7f48a560b49e39d85bfaf75011f
@@ -12,3 +11,4 @@ gradlew.bat
 .gitignore
 .gitattributes
 /run-data/
+/.gradle/
