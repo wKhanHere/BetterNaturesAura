@@ -1,5 +1,7 @@
 package net.wkhan.naturesaura_plus.mixin.misc.breakprevention;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -10,9 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.wkhan.naturesaura_plus.data.HandHeldItemTracker;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
 
@@ -22,22 +21,21 @@ public abstract class PlayerMixin extends LivingEntity {
         super(p_20966_, p_20967_);
     }
 
-    @Inject(
-            method = "interactOn",
-            at = @At("HEAD")
+    @WrapMethod(
+            method = "interactOn"
     )
-    private void naturesaura_plus$tellLiesAboutHeldItem(Entity target, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private InteractionResult naturesaura_plus$tellLiesAboutHeldItem(Entity target, InteractionHand hand, Operation<InteractionResult> original) {
         Player player = (Player) (Object) this;
         ItemStack stack = player.getItemInHand(hand);
-        if (isTokenAppliedBroken(stack))
+        boolean tellLies = isTokenAppliedBroken(stack);
+        if (tellLies)
             HandHeldItemTracker.MASK_HAND_EMPTY.set(true);
-    }
-
-    @Inject(
-            method = "interactOn",
-            at = @At("RETURN")
-    )
-    private void naturesaura_plus$stopTellingLiesAboutHeldItem(Entity p_36158_, InteractionHand p_36159_, CallbackInfoReturnable<InteractionResult> cir) {
-        HandHeldItemTracker.MASK_HAND_EMPTY.set(false);
+        try {
+            return original.call(target, hand);
+        }
+        finally {
+            if (tellLies)
+                HandHeldItemTracker.MASK_HAND_EMPTY.remove();
+        }
     }
 }

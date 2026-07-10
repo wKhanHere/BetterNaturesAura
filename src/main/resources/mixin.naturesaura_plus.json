@@ -27,7 +27,7 @@
     "event.TreeFertilizerGrowFeatureEventPostMixin",
     "item.ItemAuraCacheMixin",
     "item.ItemLootFinderMixin",
-    "item.ItemStackMixin",
+    "misc.breakprevention.ItemStackMixin",
     "misc.breakprevention.LivingEntityMixin",
     "misc.breakprevention.PlayerMixin",
     "misc.treeritual.AbstractHugeMushroomFeatureMixin",
