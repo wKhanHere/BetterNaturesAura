@@ -15,17 +15,21 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -106,18 +110,44 @@ public class ClientCommonEvents {
     @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID,
             bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
     public static class duringGameplayClientEvents {
+        static boolean isLookingAtBlock;
+
+        @SubscribeEvent
+        public static void onClientTick(TickEvent.ClientTickEvent event) {
+            if (event.phase != TickEvent.Phase.END)
+                return;
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player == null || mc.level == null)
+                return;
+            HitResult hitResult = mc.hitResult;
+            if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK)
+                return; //Maybe make this a switch/if else chain to check for other hit results
+            BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
+            AttributeInstance blockReachAttribute = mc.player.getAttribute(ForgeMod.BLOCK_REACH.get());
+            double blockReach;
+            if (blockReachAttribute == null)
+                blockReach = 4.5 + 0.866;
+            else
+                blockReach = blockReachAttribute.getValue() + 0.866;
+            isLookingAtBlock = mc.player.distanceToSqr(Vec3.atCenterOf(blockPos)) < blockReach*blockReach;
+        }
 
         @SubscribeEvent
         public static void onOverlayRender(RenderGuiOverlayEvent.Post event) {
-            if (event.getOverlay() != VanillaGuiOverlay.CROSSHAIR.type()) return;
+            if (event.getOverlay() != VanillaGuiOverlay.CROSSHAIR.type())
+                return;
             Minecraft mc = Minecraft.getInstance();
-            if (mc.player == null || mc.level == null) return;
+            if (mc.player == null || mc.level == null)
+                return;
             HitResult hitResult = mc.hitResult;
-            if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) return;
-            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-            BlockPos blockPos = blockHitResult.getBlockPos();
+            if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK)
+                return;
+            BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
+            if (!isLookingAtBlock)
+                return;
             BlockEntity tile = mc.level.getBlockEntity(blockPos);
-            if (!(tile instanceof BlockEntityFlowerGenerator flowerGenerator)) return;
+            if (!(tile instanceof BlockEntityFlowerGenerator flowerGenerator))
+                return;
             boolean hasEye = false;
             for (Field field : auraItemFields) {
                 try {
@@ -127,7 +157,8 @@ public class ClientCommonEvents {
                     break;
                 } catch (Exception ignored) {}
             }
-            if (!hasEye) return;
+            if (!hasEye)
+                return;
             int yGuiOffset = 0;
             if (mc.player.getMainHandItem().getItem() instanceof ItemModBook && mc.player.getMainHandItem().hasTag() &&
                     (mc.player.getMainHandItem().getTag().getString("patchouli:book").equals("naturesaura:book"))) yGuiOffset = 20;
@@ -140,9 +171,11 @@ public class ClientCommonEvents {
                     mc, centerX-40, centerY + yGuiOffset, 15, "Vitality", null);
             NaturesAuraPlusUtils.circularBuffer<Block> flowerBuffer =
                     ((FlowerGeneration) flowerGenerator).naturesaura_plus$flowerTileAuraGeneratorReadBuffer();
-            if (flowerBuffer == null) return;
+            if (flowerBuffer == null)
+                return;
             int flowerCount = flowerBuffer.countObjectAny();
-            if (flowerCount == 0) return;
+            if (flowerCount == 0)
+                return;
             int itemSpacing = 20;
             int barWidth = flowerCount * itemSpacing;
             int barStartX = centerX - (barWidth / 2);
