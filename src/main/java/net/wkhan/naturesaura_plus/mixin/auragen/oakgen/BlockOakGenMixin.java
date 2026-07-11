@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
+import static net.wkhan.naturesaura_plus.data.CanopyDiminisherTreeTracker.OAK_GEN_POS;
 import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.oakGenRange;
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.OAK_GENERATIONS;
 
@@ -54,23 +55,30 @@ public abstract class BlockOakGenMixin extends BlockContainerImpl {
     )
     private void naturesaura_plus$onTreeGrowOakGen(SaplingGrowTreeEvent event, CallbackInfo ci) {
         ci.cancel();
+        if (OAK_GEN_POS.get() != null)
+            OAK_GEN_POS.remove();
         LevelAccessor level = event.getLevel();
         BlockPos pos = event.getPos();
         if (!(level instanceof Level lvl) || level.isClientSide() || !(IAuraType.forLevel(lvl).isSimilar(NaturesAuraAPI.TYPE_OVERWORLD)) //Make aura type check config driven
                 || !(level.getBlockState(pos).is(ModTags.Blocks.OAK_GEN_SAPLING))) return;
         Helper.getBlockEntitiesInArea(level, pos, oakGenRange, (tile) -> {
-            if (!(tile instanceof BlockEntityOakGenerator oakGen)) return false;
+            if (!(tile instanceof BlockEntityOakGenerator oakGen))
+                return false;
             Holder<ConfiguredFeature<?,?>> tree = event.getFeature();
-            if (tree == null) return false;
+            if (tree == null)
+                return false;
             Optional<ResourceKey<ConfiguredFeature<?,?>>> optionalKey = tree.unwrapKey();
-            if (optionalKey.isEmpty()) return false;
+            if (optionalKey.isEmpty())
+                return false;
             AuraGenRules.oakValues oakValues = OAK_GENERATIONS.get(optionalKey.get());
-            if (oakValues == null) return false;
+            if (oakValues == null)
+                return false;
             ResourceKey<ConfiguredFeature<?, ?>> replacement = oakValues.featureReplacement();
-            if (replacement == null) return true;
-            oakGen.scheduledBigTrees.add(pos);
+            if (replacement == null)
+                return true;
             ((OakGeneration) oakGen).naturesaura_plus$scheduledBigTreesAuraGainAdd(oakValues.auraAmount());
             event.setFeature(replacement);
+            OAK_GEN_POS.set(tile.getBlockPos());
             return true;
         });
     }

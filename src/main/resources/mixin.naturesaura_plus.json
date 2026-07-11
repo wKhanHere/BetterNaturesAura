@@ -13,6 +13,7 @@
     "auragen.PotionGenMixin",
     "auragen.oakgen.BlockOakGenMixin",
     "auragen.oakgen.OakGenMixin",
+    "auragen.oakgen.AbstractTreeGrowerMixin",
     "auragen.slimegen.SlimeGenEventsMixin",
     "auragen.slimegen.SlimeGenMixin",
     "block.BlockChorusGenMixin",
