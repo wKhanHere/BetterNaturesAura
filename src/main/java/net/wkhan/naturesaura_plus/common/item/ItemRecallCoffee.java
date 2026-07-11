@@ -4,8 +4,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
@@ -14,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +50,11 @@ public class ItemRecallCoffee extends Item {
             return false;
         });
 
+        ChunkPos targetChunk = new ChunkPos(BlockPos.containing(spawnPos));
+        serverLevel.getChunkSource()
+                .addRegionTicket(TicketType.POST_TELEPORT, targetChunk, 1, player.getId());
+        serverLevel.getChunk(targetChunk.x, targetChunk.z);
+
         pets.forEach(pet -> pet.teleportTo(spawnPos.x, spawnPos.y, spawnPos.z));
         serverPlayer.teleportTo(serverLevel, spawnPos.x, spawnPos.y, spawnPos.z, spawnAngle, 0.0F);
         return super.finishUsingItem(stack, level, entity);
@@ -58,21 +66,26 @@ public class ItemRecallCoffee extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> toolTip, TooltipFlag p_41424_) {
+    public void appendHoverText(@NotNull ItemStack p_41421_, @Nullable Level p_41422_, List<Component> toolTip, @NotNull TooltipFlag p_41424_) {
         toolTip.add(Component.translatable("info.naturesaura_plus.aura_coffee")
                 .setStyle(Style.EMPTY.withItalic(true).applyFormat(ChatFormatting.GRAY)));
     }
 
     public static ServerLevelVec3SpawnAnglePack simulateRespawnCheck(Player player) {
-        if (!(player instanceof ServerPlayer serverPlayer)) return null;
+        if (!(player instanceof ServerPlayer serverPlayer))
+            return null;
         BlockPos respawnPos = serverPlayer.getRespawnPosition();
         float respawnAngle = serverPlayer.getRespawnAngle();
         boolean isSpawnForced = serverPlayer.isRespawnForced();
-        ServerLevel defaultDimension = serverPlayer.getServer().overworld();
+        MinecraftServer server = serverPlayer.getServer();
+        if (server == null)
+            return null;
+        ServerLevel defaultDimension = server.overworld();
         ServerLevel targetDimension = serverPlayer.server.getLevel(serverPlayer.getRespawnDimension());
 
-        if (respawnPos == null || targetDimension == null) return new ServerLevelVec3SpawnAnglePack
-                (defaultDimension,Vec3.atBottomCenterOf(defaultDimension.getSharedSpawnPos()),respawnAngle);
+        if (respawnPos == null || targetDimension == null)
+            return new ServerLevelVec3SpawnAnglePack(defaultDimension,
+                    Vec3.atBottomCenterOf(defaultDimension.getSharedSpawnPos()),respawnAngle);
 
         Optional<Vec3> actualSpawnPoint = Player.findRespawnPositionAndUseSpawnBlock
                 (targetDimension, respawnPos, respawnAngle, isSpawnForced, true);

@@ -9,14 +9,17 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -72,7 +75,10 @@ public class HorsePetReviverEvent {
         LivingEntity entity = event.getEntity();
         if (!entity.level().isClientSide && entity instanceof AbstractHorse tameable) {
             if (tameable.isTamed() && tameable.getPersistentData().getBoolean("naturesaura:pet_reviver")) {
-                ServerLevel spawnLevel = tameable.level().getServer().overworld();
+                MinecraftServer server = tameable.level().getServer();
+                if (server == null)
+                    return;
+                ServerLevel spawnLevel = server.overworld();
                 Vec3 spawn = Vec3.atBottomCenterOf(spawnLevel.getSharedSpawnPos());
                 LivingEntity owner = tameable.getOwner();
                 if (owner instanceof ServerPlayer player) {
@@ -95,6 +101,12 @@ public class HorsePetReviverEvent {
                 }
 
                 spawnedPet.restoreFrom(tameable);
+
+                BlockPos targetPos = BlockPos.containing(spawn.x, spawn.y, spawn.z);
+                ChunkPos targetChunk = new ChunkPos(targetPos);
+                spawnLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, targetChunk, 1, spawnedPet.getId());
+                spawnLevel.getChunk(targetChunk.x, targetChunk.z);
+
                 spawnedPet.setDeltaMovement(0.0F, 0.0F, 0.0F);
                 spawnedPet.moveTo(spawn.x, spawn.y, spawn.z, tameable.getYRot(), tameable.getXRot());
 
