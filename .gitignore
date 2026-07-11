@@ -3,9 +3,5 @@
 /run-data/logs/
 /build/
 /.idea/
-gradlew
-gradlew.bat
-.gitignore
-.gitattributes
 /run-data/
 /.gradle/

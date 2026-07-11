@@ -21,28 +21,25 @@ public class PlayerAttackEvent {
         Player player = event.getEntity();
         ItemStack stack = player.getMainHandItem();
         Entity target = event.getTarget();
+        if(!isTokenAppliedBroken(stack))
+            return;
+        event.setCanceled(true);
 
-        if (isTokenAppliedBroken(stack)) {
-            event.setCanceled(true);
-
-            float cooldownScale = player.getAttackStrengthScale(0.5F);
-            player.resetAttackStrengthTicker();
-
-            if(player.level().isClientSide || !(target instanceof LivingEntity)) return;
-
-            float damageToDeal = (0.2F + cooldownScale * cooldownScale * 0.8F);
-            target.hurt(player.damageSources().playerAttack(player), damageToDeal);
-
-            player.level().playSound(
-                    null,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    SoundEvents.PLAYER_ATTACK_NODAMAGE,
-                    SoundSource.PLAYERS,
-                    1.0F,
-                    0.8F
-            );
-        }
+        float cooldownScale = player.getAttackStrengthScale(0.5F);
+        player.resetAttackStrengthTicker();
+        if(player.level().isClientSide || !(target instanceof LivingEntity))
+            return;
+        float damageToDeal = (0.2F + cooldownScale * cooldownScale * 0.8F);
+        target.hurt(player.damageSources().playerAttack(player), damageToDeal);
+        player.level().playSound(
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.PLAYER_ATTACK_NODAMAGE,
+                SoundSource.PLAYERS,
+                1.0F,
+                0.8F
+        );
     }
 }
