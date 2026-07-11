@@ -1,6 +1,7 @@
 package net.wkhan.naturesaura_plus.mixin.misc.breakprevention;
 
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -54,12 +55,12 @@ public abstract class ItemStackMixin extends CapabilityProvider<ItemStack> {
         if(!isTokenAppliedBroken(stack))
             return;
         p_41683_.playSound(
-                    p_41684_,
-                    p_41684_.blockPosition(),
-                    net.minecraft.sounds.SoundEvents.ITEM_BREAK,
-                    net.minecraft.sounds.SoundSource.PLAYERS,
-                    0.8F,
-                    0.8F + p_41683_.random.nextFloat() * 0.4F
+                p_41684_,
+                BlockPos.containing(p_41684_.getEyePosition()),
+                net.minecraft.sounds.SoundEvents.ITEM_BREAK,
+                net.minecraft.sounds.SoundSource.PLAYERS,
+                1F,
+                0.9F + p_41683_.random.nextFloat() * 0.2F
         );
         cir.setReturnValue(InteractionResultHolder.fail(stack));
     }
