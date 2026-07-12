@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
@@ -19,10 +20,14 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.ITeleporter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
+
+import static net.wkhan.naturesaura_plus.data.config.GameplayConfig.petRecallRange;
 
 public class ItemRecallCoffee extends Item {
     public ItemRecallCoffee(Properties p_41383_) {
@@ -40,9 +45,8 @@ public class ItemRecallCoffee extends Item {
         ServerLevel serverLevel = levelNVec3.serverLevel;
         float spawnAngle = levelNVec3.angle;
         ServerPlayer serverPlayer = (ServerPlayer) player;
-        int petTpRange = 2; //make config
-        List<LivingEntity> pets = serverLevel.getEntitiesOfClass(LivingEntity.class,
-                serverPlayer.getBoundingBox().inflate(petTpRange), target -> {
+        List<LivingEntity> pets = level.getEntitiesOfClass(LivingEntity.class,
+                serverPlayer.getBoundingBox().inflate(petRecallRange), target -> {
             if (target instanceof TamableAnimal pet)
                 return serverPlayer.getUUID().equals(pet.getOwnerUUID());
             else if (target instanceof AbstractHorse horse)
@@ -55,7 +59,23 @@ public class ItemRecallCoffee extends Item {
                 .addRegionTicket(TicketType.POST_TELEPORT, targetChunk, 1, player.getId());
         serverLevel.getChunk(targetChunk.x, targetChunk.z);
 
-        pets.forEach(pet -> pet.teleportTo(spawnPos.x, spawnPos.y, spawnPos.z));
+        pets.forEach(pet -> {
+            if (pet.level() == serverLevel) {
+                pet.teleportTo(spawnPos.x, spawnPos.y, spawnPos.z);
+                return;
+            }
+            pet.changeDimension(serverLevel, new ITeleporter() {
+                @Override
+                public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld,
+                                          float yaw, Function<Boolean, Entity> repositionEntity) {
+                    Entity recreatedPet = repositionEntity.apply(false);
+                    if (recreatedPet != null)
+                        recreatedPet.teleportTo(spawnPos.x, spawnPos.y, spawnPos.z);
+                    return recreatedPet;
+                }
+            });
+        });
+
         serverPlayer.teleportTo(serverLevel, spawnPos.x, spawnPos.y, spawnPos.z, spawnAngle, 0.0F);
         return super.finishUsingItem(stack, level, entity);
     }

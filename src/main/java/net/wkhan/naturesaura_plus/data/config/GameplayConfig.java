@@ -35,6 +35,10 @@ public class GameplayConfig {
             .comment("How long the loot finder particles stay, in ticks. (Default: 1,200)")
             .defineInRange("lootFinderLightLifeInTicks", 1200, 0, 72000);
 
+    private static final ForgeConfigSpec.IntValue PET_RECALL_RANGE = BUILDER
+            .comment("Maximum range upto which pets are selected to be teleported alongside owner upon using aura coffee. (Default: 4)")
+            .defineInRange("petRecallRange", 4, 1, 64);
+
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static int maxRitualStems;
@@ -43,6 +47,7 @@ public class GameplayConfig {
     public static int lootFinderRange;
     public static int lootFinderUseCooldownInTicks;
     public static int lootFinderLightLifeInTicks;
+    public static int petRecallRange;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -53,5 +58,6 @@ public class GameplayConfig {
         lootFinderRange = LOOT_FINDER_RANGE.get();
         lootFinderUseCooldownInTicks = LOOT_FINDER_USE_COOLDOWN.get();
         lootFinderLightLifeInTicks = LOOT_FINDER_LIGHT_LIFE.get();
+        petRecallRange = PET_RECALL_RANGE.get();
     }
 }
