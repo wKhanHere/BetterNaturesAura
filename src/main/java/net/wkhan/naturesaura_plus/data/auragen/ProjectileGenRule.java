@@ -6,11 +6,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
 
 public record ProjectileGenRule(
         Either<EntityType<?>, TagKey<EntityType<?>>> projectileId,
+        Item correspondingItem,
         int auraAmount
 ) {
 
@@ -18,6 +21,8 @@ public record ProjectileGenRule(
             instance.group(
                     NaturesAuraPlusUtils.elementOrTagCodec(ForgeRegistries.ENTITY_TYPES, Registries.ENTITY_TYPE)
                             .fieldOf("projectile").forGetter(ProjectileGenRule::projectileId),
+                    ForgeRegistries.ITEMS.getCodec().optionalFieldOf("corresponding_item", Items.AIR)
+                            .forGetter(ProjectileGenRule::correspondingItem),
                     Codec.INT.fieldOf("aura_gain").forGetter(ProjectileGenRule::auraAmount)
             ).apply(instance, ProjectileGenRule::new)
     );

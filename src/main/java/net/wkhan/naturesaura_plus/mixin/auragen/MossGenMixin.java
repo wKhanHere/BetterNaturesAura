@@ -77,7 +77,7 @@ public abstract class MossGenMixin extends BlockEntityImpl {
         BlockState state = this.level.getBlockState(offset);
         Block block = state.getBlock();
         naturesaura_plus$mossMemory.writeObject(block);
-        AuraGenRules.deMossedBlockAuraAmountPair resultAuraAmountPair = MOSS_GENERATIONS.get(block);
+        AuraGenRules.MossValues resultAuraAmountPair = MOSS_GENERATIONS.get(block);
 
         Block result = resultAuraAmountPair.deMossedBlock();
         int auraAmount = resultAuraAmountPair.auraAmount();

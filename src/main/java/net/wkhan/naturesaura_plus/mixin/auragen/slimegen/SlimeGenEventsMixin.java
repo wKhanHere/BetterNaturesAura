@@ -27,7 +27,7 @@ public abstract class SlimeGenEventsMixin {
     private void naturesaura_plus$slimeAuraGeneratorEvent(LivingDeathEvent event, CallbackInfo ci) {
         ci.cancel();
         LivingEntity entity = event.getEntity();
-        AuraGenRules.slimeValues slimeValues = SLIME_GENERATIONS.get(entity.getType());
+        AuraGenRules.SlimeValues slimeValues = SLIME_GENERATIONS.get(entity.getType());
         if (slimeValues == null) return;
         if (entity.level().isClientSide()) return;
         if (entity.getPersistentData().getBoolean("naturesaura:pet_reviver")) return;

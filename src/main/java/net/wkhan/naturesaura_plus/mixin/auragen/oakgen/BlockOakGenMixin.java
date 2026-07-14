@@ -70,7 +70,7 @@ public abstract class BlockOakGenMixin extends BlockContainerImpl {
             Optional<ResourceKey<ConfiguredFeature<?,?>>> optionalKey = tree.unwrapKey();
             if (optionalKey.isEmpty())
                 return false;
-            AuraGenRules.oakValues oakValues = OAK_GENERATIONS.get(optionalKey.get());
+            AuraGenRules.OakValues oakValues = OAK_GENERATIONS.get(optionalKey.get());
             if (oakValues == null)
                 return false;
             ResourceKey<ConfiguredFeature<?, ?>> replacement = oakValues.featureReplacement();

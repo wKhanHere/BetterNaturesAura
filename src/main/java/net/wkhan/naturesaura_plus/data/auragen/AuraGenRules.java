@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,28 +16,34 @@ import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.generateListFromEi
 
 public final class AuraGenRules {
 
-    public record deMossedBlockAuraAmountPair(Block deMossedBlock, int auraAmount) {}
-    public static final Map<Block, deMossedBlockAuraAmountPair> MOSS_GENERATIONS = new HashMap<>();
+    public static final Map<EntityType<?>, Item> ProjectileValues = new HashMap<>();
 
-    public record flowerValues(int auraAmount, byte lucidity, byte obscurity, float obscurityScale) {}
-    public static final Map<Block, flowerValues> FLOWER_GENERATIONS = new HashMap<>();
+    public record MossValues(Block deMossedBlock, int auraAmount) {}
+    public static final Map<Block, MossValues> MOSS_GENERATIONS = new HashMap<>();
 
-    public record slimeValues(int auraAmount, int slimeColor, int minSizeForSlime, int flatGenerationTimer,
+    public record FlowerValues(int auraAmount, byte lucidity, byte obscurity, float obscurityScale) {}
+    public static final Map<Block, FlowerValues> FLOWER_GENERATIONS = new HashMap<>();
+
+    public record SlimeValues(int auraAmount, int slimeColor, int minSizeForSlime, int flatGenerationTimer,
                               float generationTimerModifier, float sizeModifier,
                               boolean doSlimeSizeScaling, boolean doEntityDropLoot, boolean isFlatGenerationTimer) {}
-    public static final Map<EntityType<?>, slimeValues> SLIME_GENERATIONS = new HashMap<>();
+    public static final Map<EntityType<?>, SlimeValues> SLIME_GENERATIONS = new HashMap<>();
 
-    public record animalValues(int minimumTimeAliveForGenerationTime, int maximumGenerationTime, float timeAliveModifierForGenerationTime,
+    public record AnimalValues(int minimumTimeAliveForGenerationTime, int maximumGenerationTime, float timeAliveModifierForGenerationTime,
                                int minimumTimeAliveForAuraAmount, int maximumAuraAmount, float timeAliveModifierForAuraAmount,
                                boolean doEntityDropLoot, boolean isBabyValid, boolean isFlatAuraGain, boolean isFlatGenerationTimer) {}
-    public static final Map<EntityType<?>, animalValues> ANIMAL_GENERATIONS = new HashMap<>();
+    public static final Map<EntityType<?>, AnimalValues> ANIMAL_GENERATIONS = new HashMap<>();
 
-    public record chorusValues(Block stemBlock, Block capBlock, int auraGainPerBlock, boolean isSizeScaled,
+    public record ChorusValues(Block stemBlock, Block capBlock, int auraGainPerBlock, boolean isSizeScaled,
                                SoundEvent soundEvent, float soundVolume, float soundPitch) {}
-    public static final Map<Block, chorusValues> CHORUS_GENERATIONS = new HashMap<>();
+    public static final Map<Block, ChorusValues> CHORUS_GENERATIONS = new HashMap<>();
 
-    public record oakValues(ResourceKey<ConfiguredFeature<?,?>> featureReplacement, int auraAmount) {}
-    public static final Map<ResourceKey<ConfiguredFeature<?,?>>, oakValues> OAK_GENERATIONS = new HashMap<>();
+    public record OakValues(ResourceKey<ConfiguredFeature<?,?>> featureReplacement, int auraAmount) {}
+    public static final Map<ResourceKey<ConfiguredFeature<?,?>>, OakValues> OAK_GENERATIONS = new HashMap<>();
+
+    public static int numberOfAuraGens() {
+        return 9; //do something about this lol
+    }
 
     public static HashMap<String, Integer> auraRulesCount() {
         HashMap<String, Integer> rulesCount = new HashMap<>();
@@ -76,6 +83,7 @@ public final class AuraGenRules {
 
         if (projectile != null) {
                 NaturesAuraAPI.PROJECTILE_GENERATIONS.put(projectile, auraAmount);
+                ProjectileValues.put(projectile, rule.correspondingItem());
                 return;
         }
 
@@ -83,7 +91,10 @@ public final class AuraGenRules {
         if (projectileTag != null) {
                 ForgeRegistries.ENTITY_TYPES.getValues().stream()
                         .filter(e -> e.is(projectileTag))
-                        .forEach(e -> NaturesAuraAPI.PROJECTILE_GENERATIONS.put(e, auraAmount));
+                        .forEach(e -> {
+                            NaturesAuraAPI.PROJECTILE_GENERATIONS.put(e, auraAmount);
+                            ProjectileValues.put(e, rule.correspondingItem());
+                        });
         }
     }
     public static void addProjectileGenerations() {
@@ -100,13 +111,13 @@ public final class AuraGenRules {
         if (mossBlock == null && mossBlockTag == null) return;
 
         if (mossBlock != null) {
-            MOSS_GENERATIONS.put(mossBlock, new deMossedBlockAuraAmountPair(deMossedBlock, auraAmount));
+            MOSS_GENERATIONS.put(mossBlock, new MossValues(deMossedBlock, auraAmount));
             return;
         }
 
         ForgeRegistries.BLOCKS.getValues().stream()
                 .filter(b -> b.defaultBlockState().is(mossBlockTag))
-                .forEach(b -> MOSS_GENERATIONS.put(b, new deMossedBlockAuraAmountPair(deMossedBlock, auraAmount)));
+                .forEach(b -> MOSS_GENERATIONS.put(b, new MossValues(deMossedBlock, auraAmount)));
     }
     public static void addMossGenerations() {
         while(!mossRulesQueue.isEmpty()) addMossGeneration(mossRulesQueue.poll());
@@ -123,13 +134,13 @@ public final class AuraGenRules {
         float obscurityScale = rule.obscurityScale();
 
         if(flowerBlock != null) {
-            FLOWER_GENERATIONS.put(flowerBlock, new flowerValues(auraAmount, lucidity, obscurity, obscurityScale));
+            FLOWER_GENERATIONS.put(flowerBlock, new FlowerValues(auraAmount, lucidity, obscurity, obscurityScale));
             return;
         }
 
         ForgeRegistries.BLOCKS.getValues().stream()
                 .filter(b -> b.defaultBlockState().is(flowerBlockTag))
-                .forEach(b -> FLOWER_GENERATIONS.put(b, new flowerValues(auraAmount, lucidity, obscurity, obscurityScale)));
+                .forEach(b -> FLOWER_GENERATIONS.put(b, new FlowerValues(auraAmount, lucidity, obscurity, obscurityScale)));
     }
     public static void addFlowerGenerations() {
         while(!flowerRulesQueue.isEmpty()) addFlowerGeneration(flowerRulesQueue.poll());
@@ -150,7 +161,7 @@ public final class AuraGenRules {
 
         if (slime != null) {
             SLIME_GENERATIONS.put(slime,
-                    new slimeValues(auraAmount,slimeColor,minSizeForSlime,flatGenerationTimer,generationTimerModifier,
+                    new SlimeValues(auraAmount,slimeColor,minSizeForSlime,flatGenerationTimer,generationTimerModifier,
                             sizeModifier,doSlimeSizeScaling,doEntityDropLoot,isFlatGenerationTimer));
             return;
         }
@@ -160,7 +171,7 @@ public final class AuraGenRules {
             ForgeRegistries.ENTITY_TYPES.getValues().stream()
                     .filter(e -> e.is(slimeTag))
                     .forEach(e -> SLIME_GENERATIONS.put(e,
-                            new slimeValues(auraAmount,slimeColor,minSizeForSlime,flatGenerationTimer,generationTimerModifier,
+                            new SlimeValues(auraAmount,slimeColor,minSizeForSlime,flatGenerationTimer,generationTimerModifier,
                                     sizeModifier,doSlimeSizeScaling,doEntityDropLoot,isFlatGenerationTimer))
             );
         }
@@ -185,7 +196,7 @@ public final class AuraGenRules {
 
         if (animal != null) {
             ANIMAL_GENERATIONS.put(animal,
-                    new animalValues(minimumTimeAliveForGenerationTime, maximumGenerationTime, timeAliveModifierForGenerationTime,
+                    new AnimalValues(minimumTimeAliveForGenerationTime, maximumGenerationTime, timeAliveModifierForGenerationTime,
                             minimumTimeAliveForAuraAmount, maximumAuraAmount, timeAliveModifierForAuraAmount , doEntityDropLoot,
                             isBabyValid, isFlatAuraGain, isFlatGenerationTimer));
             return;
@@ -196,7 +207,7 @@ public final class AuraGenRules {
             ForgeRegistries.ENTITY_TYPES.getValues().stream()
                     .filter(e -> e.is(animalTag))
                     .forEach(e -> ANIMAL_GENERATIONS.put(e,
-                            new animalValues(minimumTimeAliveForGenerationTime, maximumGenerationTime, timeAliveModifierForGenerationTime,
+                            new AnimalValues(minimumTimeAliveForGenerationTime, maximumGenerationTime, timeAliveModifierForGenerationTime,
                                     minimumTimeAliveForAuraAmount, maximumAuraAmount, timeAliveModifierForAuraAmount , doEntityDropLoot,
                                     isBabyValid, isFlatAuraGain, isFlatGenerationTimer))
                     );
@@ -220,7 +231,7 @@ public final class AuraGenRules {
         Block stem = rule.stemBlock();
         Block cap = rule.capBlock();
 
-        for (Block soil : listSoil) CHORUS_GENERATIONS.put(soil, new chorusValues
+        for (Block soil : listSoil) CHORUS_GENERATIONS.put(soil, new ChorusValues
                 (stem, cap, auraGainPerBlock, isSizeScaled, soundEvent, soundVolume, soundPitch));
     }
     public static void addChorusGenerations() {
@@ -233,7 +244,7 @@ public final class AuraGenRules {
         ResourceKey<ConfiguredFeature<?,?>> featureReplacement = rule.featureReplacement();
         int auraAmount = rule.auraAmount();
 
-        OAK_GENERATIONS.put(featureToReplace, new oakValues(featureReplacement, auraAmount));
+        OAK_GENERATIONS.put(featureToReplace, new OakValues(featureReplacement, auraAmount));
     }
     public static void addOakGenerations() {
         while(!oakRulesQueue.isEmpty()) addOakGeneration(oakRulesQueue.poll());

@@ -42,7 +42,7 @@ public abstract class ChorusGenMixin extends BlockEntityImpl {
     @Shadow(remap = false) @Final private Deque<BlockPos> currentlyBreaking;
     @Shadow(remap = false) private int auraPerBlock;
     @Unique private String naturesaura_plus$chorusGenSoilBlock;
-    @Unique private AuraGenRules.chorusValues naturesaura_plus$chorusValues;
+    @Unique private AuraGenRules.ChorusValues naturesaura_plus$chorusValues;
     @Unique private void naturesaura_plus$clearInternalData() {
         this.currentlyBreaking.clear();
         this.auraPerBlock = 0;
