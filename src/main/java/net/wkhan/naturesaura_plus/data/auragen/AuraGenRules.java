@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,6 +16,8 @@ import java.util.*;
 import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.generateListFromEither;
 
 public final class AuraGenRules {
+
+    //todo: make a way to skip error messages for item/block ids that dont exist (and ideally somehow defined)
 
     public static final Map<EntityType<?>, Item> ProjectileValues = new HashMap<>();
 
@@ -41,9 +44,8 @@ public final class AuraGenRules {
     public record OakValues(ResourceKey<ConfiguredFeature<?,?>> featureReplacement, int auraAmount) {}
     public static final Map<ResourceKey<ConfiguredFeature<?,?>>, OakValues> OAK_GENERATIONS = new HashMap<>();
 
-    public static int numberOfAuraGens() {
-        return 9; //do something about this lol
-    }
+    public record PotionValues(boolean doAmplifierScaling, double flatAmplifierScale) {}
+    public static final Map<Potion, PotionValues> POTION_GENERATIONS = new HashMap<>();
 
     public static HashMap<String, Integer> auraRulesCount() {
         HashMap<String, Integer> rulesCount = new HashMap<>();

@@ -30,6 +30,12 @@ public class ModTags {
         public static final TagKey<Block> TOWERING_PLANT_CAP = tag("towering_plant_cap");
         public static final TagKey<Block> OAK_GEN_SAPLING = tag("oak_gen_sapling");
         public static final TagKey<Block> TREE_FERTILIZER_SAFE_IN_RITUAL = tag("tree_fertilizer_safe_in_ritual");
+        public static final TagKey<Block> EXCLUDE_IN_TREE_RITUAL_CLEANUP = tag("exclude_in_tree_ritual_cleanup");
+        public static final TagKey<Block> STRIPPED_LOGS = TagKey.create(Registries.BLOCK,
+                ResourceLocation.fromNamespaceAndPath("forge", "stripped_logs"));
+        public static final TagKey<Block> STRIPPED_WOOD = TagKey.create(Registries.BLOCK,
+                ResourceLocation.fromNamespaceAndPath("forge", "stripped_wood"));
+
 
         private static TagKey<Block> tag(String name) {
             return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(NaturesAuraPlus.MODID, name));

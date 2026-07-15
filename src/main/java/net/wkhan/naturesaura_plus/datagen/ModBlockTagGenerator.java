@@ -2,6 +2,7 @@ package net.wkhan.naturesaura_plus.datagen;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.BlockTagsProvider;
@@ -9,6 +10,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.common.block.ModBlocks;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -20,7 +22,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
         }
 
         @Override
-        protected void addTags(HolderLookup.Provider pProvider) {
+        protected void addTags(HolderLookup.@NotNull Provider pProvider) {
                 this.tag(ModTags.Blocks.TREE_RITUAL_SAPLINGS)
                         .addTag(BlockTags.SAPLINGS)
                         .add(
@@ -91,7 +93,34 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                         .add(
                                 de.ellpeck.naturesaura.blocks.ModBlocks.GOLD_POWDER,
                                 de.ellpeck.naturesaura.blocks.ModBlocks.PLACER,
-                                de.ellpeck.naturesaura.blocks.ModBlocks.WOOD_STAND
+                                de.ellpeck.naturesaura.blocks.ModBlocks.WOOD_STAND,
+                                Blocks.CHEST,
+                                Blocks.BARREL
                         );
+
+                this.tag(BlockTags.SAPLINGS)
+                        .add(
+                                de.ellpeck.naturesaura.blocks.ModBlocks.ANCIENT_SAPLING
+                        )
+                        .addOptional(
+                                ResourceLocation.fromNamespaceAndPath("malum","soulwood_growth")
+                        );
+
+                this.tag(ModTags.Blocks.EXCLUDE_IN_TREE_RITUAL_CLEANUP)
+                        .addOptional(
+                                ResourceLocation.fromNamespaceAndPath("malum", "blighted_soil")
+                        )
+                        .addOptionalTag(
+                                ResourceLocation.fromNamespaceAndPath("malum", "blighted_plants")
+                        );
+
+                this.tag(ModTags.Blocks.STRIPPED_LOGS).add(
+                        ModBlocks.STRIPPED_ANCIENT_LOG.get(),
+                        ModBlocks.STRIPPED_ANCIENT_BARK.get()
+                );
+
+                this.tag(ModTags.Blocks.STRIPPED_WOOD).add(
+                        ModBlocks.STRIPPED_ANCIENT_BARK.get()
+                );
         }
 }

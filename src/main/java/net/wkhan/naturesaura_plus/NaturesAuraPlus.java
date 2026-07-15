@@ -24,6 +24,7 @@ public class NaturesAuraPlus
     public static boolean isKubeJsLoaded;
     public static boolean isCuriosLoaded;
     public static boolean isBotaniaLoaded;
+    public static boolean isMalumLoaded;
 
     public NaturesAuraPlus(FMLJavaModLoadingContext context)
     {
@@ -32,6 +33,7 @@ public class NaturesAuraPlus
         isKubeJsLoaded = ModList.get().isLoaded("kubejs");
         isCuriosLoaded = ModList.get().isLoaded("curios");
         isBotaniaLoaded = ModList.get().isLoaded("botania");
+        isMalumLoaded = ModList.get().isLoaded("malum");
 
         ModItems.register(modEventBus);
         if (isBotaniaLoaded) BotaniaModItems.register(modEventBus);

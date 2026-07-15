@@ -25,7 +25,6 @@
     "block.BlockPotionGenMixin",
     "block.BlockSlimeGenMixin",
     "block.BlockWoodStandMixin",
-    "event.TreeFertilizerGrowFeatureEventPostMixin",
     "item.ItemAuraCacheMixin",
     "item.ItemLootFinderMixin",
     "misc.PetReviverEventsMixin",
@@ -33,9 +32,11 @@
     "misc.breakprevention.LivingEntityMixin",
     "misc.breakprevention.PlayerMixin",
     "misc.treeritual.AbstractHugeMushroomFeatureMixin",
+    "misc.treeritual.AbstractTreeGrowerMixin",
+    "misc.treeritual.AncientTreeFeatureMixin",
     "misc.treeritual.BlockEntityWoodStandMixin",
-    "misc.treeritual.FeatureMixin",
-    "misc.treeritual.TreeFeatureMixin",
+    "misc.treeritual.LevelMixin",
+    "misc.treeritual.TreeFertilizerItemMixin",
     "misc.treeritual.TreeRitualMixin"
   ],
   "client": [

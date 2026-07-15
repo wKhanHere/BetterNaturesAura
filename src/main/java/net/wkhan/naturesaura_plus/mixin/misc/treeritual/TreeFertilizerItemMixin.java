@@ -1,35 +1,32 @@
-package net.wkhan.naturesaura_plus.mixin.event;
+package net.wkhan.naturesaura_plus.mixin.misc.treeritual;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.simibubi.create.content.equipment.TreeFertilizerItem;
-import de.ellpeck.naturesaura.blocks.multi.Multiblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.SaplingGrowTreeEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.wkhan.naturesaura_plus.data.TreeRitualTreeTracker;
-import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
-import net.wkhan.naturesaura_plus.data.duckfaces.MultiBlockUtil;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.updateWoodStandMemoryIfRitual;
+
 @Mixin(TreeFertilizerItem.class)
-public class TreeFertilizerGrowFeatureEventPostMixin extends Item {
-    public TreeFertilizerGrowFeatureEventPostMixin(Properties p_41383_) {
+public class TreeFertilizerItemMixin extends Item {
+    public TreeFertilizerItemMixin(Properties p_41383_) {
         super(p_41383_);
     }
 
@@ -37,42 +34,11 @@ public class TreeFertilizerGrowFeatureEventPostMixin extends Item {
             method = "useOn"
     )
     private InteractionResult naturesaura_plus$initializeRitualData(UseOnContext context, Operation<InteractionResult> original) {
-        Level level = context.getLevel();
-        BlockPos saplingPos = context.getClickedPos();
-        ((MultiBlockUtil) Multiblocks.TREE_RITUAL).naturesaura_plus$allowAirInRitual();
-        boolean isRitual = Multiblocks.TREE_RITUAL.isComplete(level, saplingPos);
-        if (!isRitual)
-            return original.call(context);
-
-        Set<BlockPos> capturedStems = new HashSet<>();
-        Set<BlockPos> capturedLeaves = new HashSet<>();
-        Set<BlockPos> capturedDecorators = new HashSet<>();
-        TreeRitualTreeTracker.STEM_CACHE.set(capturedStems);
-        TreeRitualTreeTracker.LEAF_CACHE.set(capturedLeaves);
-        TreeRitualTreeTracker.DECORATOR_CACHE.set(capturedDecorators);
-
-        InteractionResult result;
-        try {
-            result = original.call(context);
-        } finally {
-            TreeRitualTreeTracker.STEM_CACHE.remove();
-            TreeRitualTreeTracker.LEAF_CACHE.remove();
-            TreeRitualTreeTracker.DECORATOR_CACHE.remove();
-        }
-
-        if (!result.consumesAction() || capturedStems.isEmpty())
-            return result;
-
-        Multiblocks.TREE_RITUAL.forEach(saplingPos, 'W', (standPos, matcher) -> {
-            BlockEntity tile = level.getBlockEntity(standPos);
-            if (tile instanceof AbstractWoodStand woodStand) {
-                woodStand.naturesaura_plus$setTreeStemCache(capturedStems.isEmpty() ? null : capturedStems);
-                woodStand.naturesaura_plus$setTreeLeafCache(capturedLeaves.isEmpty() ? null : capturedLeaves);
-                woodStand.naturesaura_plus$setTreeDecoratorCache(capturedDecorators.isEmpty() ? null : capturedDecorators);
-            }
-            return true;
-        });
-        return result;
+        return updateWoodStandMemoryIfRitual(
+                context.getLevel(), context.getClickedPos(),
+                () -> original.call(context),
+                InteractionResult::consumesAction
+        );
     }
 
     @WrapOperation(

@@ -26,8 +26,8 @@ public abstract class TreeRitualMixin implements MultiBlockUtil {
     @Shadow(remap=false) public abstract boolean forEach(BlockPos center, char c, BiFunction<BlockPos, Matcher, Boolean> function);
 
     @Unique public boolean naturesaura_plus$allowAir;
-    @Override public void naturesaura_plus$allowAirInRitual() {
-        this.naturesaura_plus$allowAir = true;
+    @Override public void naturesaura_plus$allowAirInRitual(Boolean allow) {
+        this.naturesaura_plus$allowAir = allow;
     }
 
     @Inject(

@@ -3,6 +3,7 @@ package net.wkhan.naturesaura_plus;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import de.ellpeck.naturesaura.blocks.multi.Multiblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -10,14 +11,20 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.wkhan.naturesaura_plus.data.TreeRitualTreeTracker;
+import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
+import net.wkhan.naturesaura_plus.data.duckfaces.MultiBlockUtil;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class NaturesAuraPlusUtils {
     public static Set<BlockPos> crawlConnectedBlocks(Level level, BlockPos startPos, int maxBlocks, Predicate<BlockState> isValid) {
@@ -263,5 +270,52 @@ public class NaturesAuraPlusUtils {
                 left -> List.of(left),
                 right -> forgeRegistry.tags().getTag(right).stream().toList()
         );
+    }
+
+    public static <T> T updateWoodStandMemoryIfRitual(Level level, BlockPos saplingPos, Supplier<T> originalCall, Predicate<T> grewSuccessfully) {
+        if (level == null || level.isClientSide())
+            return originalCall.get();
+
+        ((MultiBlockUtil) Multiblocks.TREE_RITUAL).naturesaura_plus$allowAirInRitual(true);
+        boolean isRitual = Multiblocks.TREE_RITUAL.isComplete(level, saplingPos);
+        ((MultiBlockUtil) Multiblocks.TREE_RITUAL).naturesaura_plus$allowAirInRitual(false);
+        if (!isRitual)
+            return originalCall.get();
+
+        Set<BlockPos> capturedStems = new HashSet<>();
+        Set<BlockPos> capturedLeaves = new HashSet<>();
+        Set<BlockPos> capturedDecorators = new HashSet<>();
+        TreeRitualTreeTracker.STEM_CACHE.set(capturedStems);
+        TreeRitualTreeTracker.LEAF_CACHE.set(capturedLeaves);
+        TreeRitualTreeTracker.DECORATOR_CACHE.set(capturedDecorators);
+
+        T result;
+        try {
+            result = originalCall.get();
+        } finally {
+            TreeRitualTreeTracker.STEM_CACHE.remove();
+            TreeRitualTreeTracker.LEAF_CACHE.remove();
+            TreeRitualTreeTracker.DECORATOR_CACHE.remove();
+        }
+
+        if (!grewSuccessfully.test(result) || capturedStems.isEmpty())
+            return result;
+
+        for (BlockPos leafPos : capturedLeaves) {
+            BlockState leafState = level.getBlockState(leafPos);
+            if (leafState.hasProperty(BlockStateProperties.PERSISTENT) && !leafState.getValue(BlockStateProperties.PERSISTENT))
+                level.setBlock(leafPos, leafState.setValue(BlockStateProperties.PERSISTENT, true), 3);
+        }
+
+        Multiblocks.TREE_RITUAL.forEach(saplingPos, 'W', (standPos, matcher) -> {
+            BlockEntity tile = level.getBlockEntity(standPos);
+            if (tile instanceof AbstractWoodStand woodStand) {
+                woodStand.naturesaura_plus$setTreeStemCache(capturedStems.isEmpty() ? null : capturedStems);
+                woodStand.naturesaura_plus$setTreeLeafCache(capturedLeaves.isEmpty() ? null : capturedLeaves);
+                woodStand.naturesaura_plus$setTreeDecoratorCache(capturedDecorators.isEmpty() ? null : capturedDecorators);
+            }
+            return true;
+        });
+        return result;
     }
 }
