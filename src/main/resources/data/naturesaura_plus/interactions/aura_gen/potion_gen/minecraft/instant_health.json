@@ -1,0 +1,6 @@
+{
+  "type": "aura_gen:potion_gen",
+  "potion": "minecraft:instant_health",
+  "do_duration_scaling": false,
+  "final_scale": 10000
+}

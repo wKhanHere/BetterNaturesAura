@@ -1,7 +1,0 @@
-{
-  "type": "aura_gen:potion_gen",
-  "potion": "minecraft:speed",
-  "incompatible_effects": [
-    "minecraft:strength"
-  ]
-}

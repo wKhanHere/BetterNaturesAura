@@ -21,7 +21,7 @@ public record PotionGenRule(
             instance.group(
                     ForgeRegistries.MOB_EFFECTS.getCodec().fieldOf("potion").forGetter(PotionGenRule::potion),
                     Codec.INT.optionalFieldOf("flat_amplifier_scale", 7).forGetter(PotionGenRule::flatAmplifierScale),
-                    Codec.INT.optionalFieldOf("flat_duration_scale", 4).forGetter(PotionGenRule::finalScale),
+                    Codec.INT.optionalFieldOf("final_scale", 4).forGetter(PotionGenRule::finalScale),
                     Codec.INT.optionalFieldOf("flat_amplifier", 1).forGetter(PotionGenRule::flatAmplifier),
                     ForgeRegistries.MOB_EFFECTS.getCodec().listOf()
                             .optionalFieldOf("incompatible_effects", new ArrayList<>()).forGetter(PotionGenRule::incompatibleEffects),
