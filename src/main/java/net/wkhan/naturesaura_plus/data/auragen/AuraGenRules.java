@@ -4,9 +4,9 @@ import de.ellpeck.naturesaura.api.NaturesAuraAPI;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -44,8 +44,9 @@ public final class AuraGenRules {
     public record OakValues(ResourceKey<ConfiguredFeature<?,?>> featureReplacement, int auraAmount) {}
     public static final Map<ResourceKey<ConfiguredFeature<?,?>>, OakValues> OAK_GENERATIONS = new HashMap<>();
 
-    public record PotionValues(boolean doAmplifierScaling, double flatAmplifierScale) {}
-    public static final Map<Potion, PotionValues> POTION_GENERATIONS = new HashMap<>();
+    public record PotionValues(int flatAmplifier, int finalScale, int flatAmplifierScale,
+                               Set<MobEffect> incompatibleEffects, boolean doAmplifierScaling, boolean doDurationScaling) {}
+    public static final Map<MobEffect, PotionValues> POTION_GENERATIONS = new HashMap<>();
 
     public static HashMap<String, Integer> auraRulesCount() {
         HashMap<String, Integer> rulesCount = new HashMap<>();
@@ -56,6 +57,7 @@ public final class AuraGenRules {
         rulesCount.put("Animal Generations", ANIMAL_GENERATIONS.size());
         rulesCount.put("Chorus Generations", CHORUS_GENERATIONS.size());
         rulesCount.put("Oak (Tree) Generations", OAK_GENERATIONS.size());
+        rulesCount.put("Potion Generations", POTION_GENERATIONS.size());
         return rulesCount;
     }
 
@@ -67,6 +69,7 @@ public final class AuraGenRules {
         ANIMAL_GENERATIONS.clear();
         CHORUS_GENERATIONS.clear();
         OAK_GENERATIONS.clear();
+        POTION_GENERATIONS.clear();
     }
     public static void addAuraGenerations() {
         addProjectileGenerations();
@@ -76,6 +79,7 @@ public final class AuraGenRules {
         addAnimalGenerations();
         addChorusGenerations();
         addOakGenerations();
+        addPotionGenerations();
     }
 
     public static final Queue<ProjectileGenRule> projectileRulesQueue = new ArrayDeque<>();
@@ -250,6 +254,24 @@ public final class AuraGenRules {
     }
     public static void addOakGenerations() {
         while(!oakRulesQueue.isEmpty()) addOakGeneration(oakRulesQueue.poll());
+    }
+
+    public static final Queue<PotionGenRule> potionRulesQueue = new ArrayDeque<>();
+    public static void addPotionGeneration(PotionGenRule rule) {
+        MobEffect potion = rule.potion();
+        int flatAmplifier = rule.flatAmplifier();
+        int finalScale = rule.finalScale();
+        int flatAmplifierScale = rule.flatAmplifierScale();
+        Set<MobEffect> incompatibleEffects = new HashSet<>(rule.incompatibleEffects());
+        boolean doAmplifierScaling = rule.doAmplifierScaling();
+        boolean doDurationScaling = rule.doDurationScaling();
+
+        POTION_GENERATIONS.put(potion,
+                new PotionValues(flatAmplifier, finalScale, flatAmplifierScale,
+                incompatibleEffects, doAmplifierScaling, doDurationScaling));
+    }
+    public static void addPotionGenerations() {
+        while(!potionRulesQueue.isEmpty()) addPotionGeneration(potionRulesQueue.poll());
     }
 }
 

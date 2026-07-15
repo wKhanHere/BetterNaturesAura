@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.data.AnvilCostRules;
 import net.wkhan.naturesaura_plus.data.auragen.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +35,8 @@ public class ReloadListener
     @Override
     protected void apply(
             Map<ResourceLocation, JsonElement> data,
-            ResourceManager manager,
-            ProfilerFiller profiler
+            @NotNull ResourceManager manager,
+            @NotNull ProfilerFiller profiler
     ) {
         clearData();
         data.forEach((fileId, jsonElement) -> {
@@ -119,6 +120,15 @@ public class ReloadListener
                                     AuraGenRules.oakRulesQueue.add(rule);
                                 });
                     }
+                    case "aura_gen:potion_gen" -> {
+                        DataResult<PotionGenRule> result = PotionGenRule.CODEC.parse(JsonOps.INSTANCE, json)
+                                .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
+                        result.resultOrPartial(errorMessage -> System.err.println("PotionGen JSON Error: " + errorMessage))
+                                .ifPresent(rule -> {
+                                    loadedAuraRules.add(fileId.toString());
+                                    AuraGenRules.potionRulesQueue.add(rule);
+                                });
+                    }
 
                     default -> System.err.println("Unknown rule type '" + type + "' in file: " + fileId);
                 }
@@ -144,7 +154,7 @@ public class ReloadListener
         @SubscribeEvent
         public static void onTagsUpdated(TagsUpdatedEvent event) {
             addAuraGenerations();
-            System.out.println("Loaded " + AnvilCostRules.size() + " anvil cost rules and \n"
+            System.out.println("Loaded " + AnvilCostRules.size() + " anvil cost rules and "
                     + AuraGenRules.auraRulesCount() + " aura gen rules.");
             System.out.println("Aura generation rules loaded: " + loadedAuraRules);
         }

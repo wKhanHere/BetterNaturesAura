@@ -58,7 +58,11 @@ public class AuraGenConfig
 
     private static final ForgeConfigSpec.IntValue POTION_CAP_PER_TICK = BUILDER
             .comment("Number of lingering potions the potion generator will accept for aura generation per tick. \nSet to -1 to remove the cap. (Default: 2)")
-            .defineInRange("potionCapForGenPerTick", 2, -1, 100);
+            .defineInRange("potionCapForGenPerTick", -1, -1, 100);
+
+    private static final ForgeConfigSpec.BooleanValue CHECK_MULTI_FOR_POTION_GEN = BUILDER
+            .comment("Whether the potion generator needs its multiblock to function or not. (Default: true")
+            .define("check_multi_for_potion_gen", true);
 
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
@@ -74,6 +78,7 @@ public class AuraGenConfig
     public static int oakGenRange;
     public static int potionGenRange;
     public static int potionCapForGenPerTick;
+    public static boolean checkMultiForPotionGen;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -90,5 +95,6 @@ public class AuraGenConfig
         oakGenRange = OAK_GEN_RANGE.get();
         potionGenRange = POTION_GEN_RANGE.get();
         potionCapForGenPerTick = POTION_CAP_PER_TICK.get();
+        checkMultiForPotionGen = CHECK_MULTI_FOR_POTION_GEN.get();
     }
 }
