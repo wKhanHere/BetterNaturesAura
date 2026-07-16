@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -45,8 +44,10 @@ public class ItemBreakPreventionAll extends Item {
     }
 
     public static boolean isTokenApplied(ItemStack stack) {
-        if (stack.isEmpty()) return false;
-        if (!stack.hasTag()) return false;
+        if (stack.isEmpty())
+            return false;
+        if (!stack.hasTag() || stack.getTag() == null)
+            return false;
         return stack.getTag().getBoolean("naturesaura_plus:break_prevention");
     }
 
@@ -70,17 +71,7 @@ public class ItemBreakPreventionAll extends Item {
             if (!isTokenAppliedBroken(stack)) return;
             event.setCanceled(true);
             Player player = (Player) event.getEntity();
-            Level level = player.level();
-            level.playSound(
-                    player,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    net.minecraft.sounds.SoundEvents.ITEM_BREAK,
-                    net.minecraft.sounds.SoundSource.PLAYERS,
-                    1.0F,
-                    1.0F
-                );
+            player.playSound(net.minecraft.sounds.SoundEvents.ITEM_BREAK, 1.0F, 1.0F);
             player.displayClientMessage(
                         Component.literal("The item is broken, you can't use it!").withStyle(ChatFormatting.YELLOW),
                         true
@@ -113,7 +104,7 @@ public class ItemBreakPreventionAll extends Item {
             if (!left.isDamageableItem()) {
                 return;
             }
-            if (left.hasTag()) {
+            if (left.hasTag() && left.getTag() != null) {
                 if (left.getTag().getBoolean("naturesaura_plus:break_prevention") || left.getTag().getBoolean("Unbreakable")) return;
             }
 

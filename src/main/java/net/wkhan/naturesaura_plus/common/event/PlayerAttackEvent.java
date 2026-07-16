@@ -1,7 +1,6 @@
 package net.wkhan.naturesaura_plus.common.event;
 
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -27,19 +26,10 @@ public class PlayerAttackEvent {
 
         float cooldownScale = player.getAttackStrengthScale(0.5F);
         player.resetAttackStrengthTicker();
-        if(player.level().isClientSide || !(target instanceof LivingEntity))
+        if(player.level().isClientSide() || !(target instanceof LivingEntity))
             return;
         float damageToDeal = (0.2F + cooldownScale * cooldownScale * 0.8F);
         target.hurt(player.damageSources().playerAttack(player), damageToDeal);
-        player.level().playSound(
-                null,
-                player.getX(),
-                player.getY(),
-                player.getZ(),
-                SoundEvents.PLAYER_ATTACK_NODAMAGE,
-                SoundSource.PLAYERS,
-                1.0F,
-                0.8F
-        );
+        player.playSound(SoundEvents.PLAYER_ATTACK_NODAMAGE, 1.0F, 0.8F);
     }
 }
