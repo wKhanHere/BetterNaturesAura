@@ -3,12 +3,21 @@ package net.wkhan.naturesaura_plus;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import de.ellpeck.naturesaura.Helper;
+import de.ellpeck.naturesaura.api.NaturesAuraAPI;
+import de.ellpeck.naturesaura.api.aura.container.IAuraContainer;
+import de.ellpeck.naturesaura.api.aura.item.IAuraRecharge;
 import de.ellpeck.naturesaura.blocks.multi.Multiblocks;
+import de.ellpeck.naturesaura.enchant.ModEnchantments;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,10 +26,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.wkhan.naturesaura_plus.data.TreeRitualTreeTracker;
 import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
 import net.wkhan.naturesaura_plus.data.duckfaces.MultiBlockUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -267,7 +278,7 @@ public class NaturesAuraPlusUtils {
 
     public static <T> List<T> generateListFromEither(Either<T,TagKey<T>> either, IForgeRegistry<T> forgeRegistry) {
         return either.map(
-                left -> List.of(left),
+                List::of,
                 right -> forgeRegistry.tags().getTag(right).stream().toList()
         );
     }
@@ -317,5 +328,42 @@ public class NaturesAuraPlusUtils {
             return true;
         });
         return result;
+    }
+
+    public static void inventoryAuraContainerTick(@NotNull ItemStack stackIn, @NotNull Level levelIn,
+                                                  @NotNull Entity entityIn, int itemSlot) {
+        if (levelIn.isClientSide() || !(entityIn instanceof Player player) || !player.isShiftKeyDown() || stackIn.isEmpty())
+            return;
+        LazyOptional<IAuraContainer> containerCap = stackIn.getCapability(NaturesAuraAPI.CAP_AURA_CONTAINER);
+        if (!containerCap.isPresent())
+            return;
+        Optional<IAuraContainer> optionalCap = containerCap.resolve();
+        if (optionalCap.isEmpty())
+            return;
+        Inventory inventory = player.getInventory();
+        IAuraContainer container = optionalCap.get();
+        int[] slotsToRecharge = new int[]{
+                inventory.selected, // Mainhand-slot
+                40,                 // Offhand-slot
+                36, 37, 38, 39      // Armor-slots (Boots, Leggings, Chestplate, Helmet)
+        };
+
+        for (int i : slotsToRecharge) {
+            ItemStack stack = inventory.getItem(i);
+            if (stack.isEmpty()) continue;
+            LazyOptional<IAuraRecharge> recharge = stack.getCapability(NaturesAuraAPI.CAP_AURA_RECHARGE);
+            if (recharge.isPresent() && recharge.resolve().isPresent()) {
+                boolean isSelectedItem = (i == inventory.selected || i == 40);
+                if (recharge.resolve().get().rechargeFromContainer(container, itemSlot, i, isSelectedItem))
+                    break;
+            }
+            else if (stack.getEnchantmentLevel(ModEnchantments.AURA_MENDING) > 0) {
+                boolean isArmor = (i >= 36 && i <= 39);
+                boolean isHand = (i == inventory.selected || i == 40);
+                if ((isArmor || isHand) && Helper.rechargeAuraItem(stack, container, 1000)) {
+                    break;
+                }
+            }
+        }
     }
 }

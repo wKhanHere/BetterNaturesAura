@@ -1,11 +1,8 @@
 package net.wkhan.naturesaura_plus.compat.botania;
 
-import de.ellpeck.naturesaura.Helper;
 import de.ellpeck.naturesaura.api.NaturesAuraAPI;
 import de.ellpeck.naturesaura.api.aura.container.IAuraContainer;
-import de.ellpeck.naturesaura.api.aura.item.IAuraRecharge;
 import de.ellpeck.naturesaura.api.aura.type.IAuraType;
-import de.ellpeck.naturesaura.enchant.ModEnchantments;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +11,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -33,11 +29,13 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import vazkii.botania.api.mana.ManaItem;
 
 import java.util.List;
 import java.util.Optional;
+
+import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.inventoryAuraContainerTick;
+import static net.wkhan.naturesaura_plus.data.config.GameplayConfig.*;
 
 public class ItemAuraManaHolder extends Item{
     public ItemAuraManaHolder(Properties p_41383_) {
@@ -45,8 +43,6 @@ public class ItemAuraManaHolder extends Item{
         MinecraftForge.EVENT_BUS.register(new ItemAuraManaHolderEventListener());
     }
 
-    private static final int MAX_AURA = 1200000; //make config
-    private static final int MAX_MANA = 2000000; //make config
     private static final String MANA_TAG = "mana";
     private static final String AURA_TAG = "aura";
     private static final String CREATIVE_TAG = "creative";
@@ -60,17 +56,17 @@ public class ItemAuraManaHolder extends Item{
     }
 
     private static boolean isCreativeStack(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().getBoolean(CREATIVE_TAG);
+        return stack.hasTag() && stack.getTag() != null && stack.getTag().getBoolean(CREATIVE_TAG);
     }
 
     public static void setCreativeStack(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean(CREATIVE_TAG, true);
-        tag.putInt(AURA_TAG,MAX_AURA);
-        tag.putInt(MANA_TAG,MAX_MANA);
+        tag.putInt(AURA_TAG,SASH_AURA_CAPACITY.get());
+        tag.putInt(MANA_TAG,SASH_MANA_CAPACITY.get());
     }
 
-    public static class DualAuraManaItemImpl implements ICurioItem, ManaItem, IAuraContainer, ICapabilityProvider {
+    public static class DualAuraManaItemImpl implements ManaItem, IAuraContainer, ICapabilityProvider {
         private final ItemStack stack;
         public DualAuraManaItemImpl(ItemStack stack) {
             this.stack = stack;
@@ -95,7 +91,7 @@ public class ItemAuraManaHolder extends Item{
 
         @Override
         public int storeAura(int aura_to_store, boolean simulate) {
-            int store = Math.min(aura_to_store, MAX_AURA - this.getStoredAura());
+            int store = Math.min(aura_to_store, SASH_AURA_CAPACITY.get() - this.getStoredAura());
             if (!simulate && !isCreativeStack(stack)) {
                 this.setAura(stack,this.getStoredAura() + store);
             }
@@ -121,12 +117,14 @@ public class ItemAuraManaHolder extends Item{
 
         @Override
         public int getStoredAura() {
+            if (!stack.hasTag() || stack.getTag() == null)
+                return 0;
             return stack.hasTag() ? stack.getTag().getInt(AURA_TAG) : 0;
         }
 
         @Override
         public int getMaxAura() {
-            return MAX_AURA;
+            return SASH_AURA_CAPACITY.get();
         }
 
         @Override
@@ -141,17 +139,19 @@ public class ItemAuraManaHolder extends Item{
 
         @Override
         public int getMana() {
-            return stack.hasTag() ? stack.getTag().getInt(MANA_TAG) : 0;
+            if (!stack.hasTag() || stack.getTag() == null)
+                return 0;
+            return (stack.getTag().contains(MANA_TAG)) ? stack.getTag().getInt(MANA_TAG) : 0;
         }
 
         @Override
         public int getMaxMana() {
-            return MAX_MANA;
+            return SASH_MANA_CAPACITY.get();
         }
 
         @Override
         public void addMana(int i) {
-            setMana(stack, Math.min(MAX_MANA, getMana() + i));
+            setMana(stack, Math.min(SASH_MANA_CAPACITY.get(), getMana() + i));
         }
 
         public void setMana(ItemStack stack, int mana) {
@@ -190,54 +190,24 @@ public class ItemAuraManaHolder extends Item{
     }
 
     @Override
-    public void inventoryTick(ItemStack stackIn, Level levelIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (levelIn.isClientSide || !(entityIn instanceof Player player) || !player.isShiftKeyDown()) return;
-        LazyOptional<IAuraContainer> containerCap = stackIn.getCapability(NaturesAuraAPI.CAP_AURA_CONTAINER);
-        if (!containerCap.isPresent()) return;
-        Inventory inventory = player.getInventory();
-        IAuraContainer container = containerCap.resolve().get();
-        int[] slotsToRecharge = new int[]{
-                inventory.selected, // Mainhand-slot
-                40,                 // Offhand-slot
-                36, 37, 38, 39      // Armor-slots (Boots, Leggings, Chestplate, Helmet)
-        };
-
-        for (int i : slotsToRecharge) {
-            ItemStack stack = inventory.getItem(i);
-            if (stack.isEmpty()) continue;
-            LazyOptional<IAuraRecharge> recharge = stack.getCapability(NaturesAuraAPI.CAP_AURA_RECHARGE);
-            if (recharge.isPresent()) {
-                boolean isSelectedItem = (i == inventory.selected || i == 40);
-                if (recharge.resolve().get().rechargeFromContainer(container, itemSlot, i, isSelectedItem)) {
-                    break;
-                }
-            }
-            else if (stack.getEnchantmentLevel(ModEnchantments.AURA_MENDING) > 0) {
-                boolean isArmor = (i >= 36 && i <= 39);
-                boolean isHand = (i == inventory.selected || i == 40);
-
-                if ((isArmor || isHand) && Helper.rechargeAuraItem(stack, container, 1000)) {
-                    break;
-                }
-            }
-        }
+    public void inventoryTick(@NotNull ItemStack stackIn, @NotNull Level levelIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected) {
+        inventoryAuraContainerTick(stackIn, levelIn, entityIn, itemSlot);
     }
 
     @Override
-    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+    public @NotNull Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         int aura = 0;
         int mana = 0;
-        if (stack.hasTag()) {
+        if (stack.hasTag() && stack.getTag() != null) {
             CompoundTag tag = stack.getTag();
             aura = tag.getInt(AURA_TAG);
             mana = tag.getInt(MANA_TAG);
         }
-
-        return Optional.of(new DualAuraManaItemImpl.RecordDualAuraMana(aura, MAX_AURA, mana, MAX_MANA));
+        return Optional.of(new DualAuraManaItemImpl.RecordDualAuraMana(aura, SASH_AURA_CAPACITY.get(), mana, SASH_MANA_CAPACITY.get()));
     }
 
     @Override
-    public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> toolTip, TooltipFlag p_41424_) {
+    public void appendHoverText(@NotNull ItemStack p_41421_, @Nullable Level p_41422_, List<Component> toolTip, @NotNull TooltipFlag p_41424_) {
         toolTip.add(Component.translatable(
              "info.naturesaura_plus.aura_mana_holder")
              .setStyle(Style.EMPTY.withItalic(true).applyFormat(ChatFormatting.GRAY))
@@ -245,7 +215,7 @@ public class ItemAuraManaHolder extends Item{
     }
 
     @Override
-    public boolean isBarVisible(ItemStack stack) {
+    public boolean isBarVisible(@NotNull ItemStack stack) {
         return !isCreativeStack(stack);
     }
 
@@ -254,17 +224,18 @@ public class ItemAuraManaHolder extends Item{
         int aura;
         int mana;
         String displayMode;
-        if (!stack.hasTag()) return 0;
+        if (!stack.hasTag() || stack.getTag() == null)
+            return 0;
 
         CompoundTag tag = stack.getTag();
         displayMode = tag.getString(DISPLAY_MODE_TAG);
         if (displayMode.equals(AURA_TAG)) {
             aura = tag.getInt(AURA_TAG);
-            return Math.round((float) (13 * aura) / MAX_AURA);
+            return Math.round((float) (13 * aura) / SASH_AURA_CAPACITY.get());
         }
         else if (displayMode.equals(MANA_TAG)) {
             mana = tag.getInt(MANA_TAG);
-            return Math.round((float) (13 * mana) / MAX_MANA);
+            return Math.round((float) (13 * mana) / SASH_MANA_CAPACITY.get());
         }
         return 0;
     }
@@ -272,7 +243,8 @@ public class ItemAuraManaHolder extends Item{
     @Override
     public int getBarColor(ItemStack stack) {
         String displayMode;
-        if (!stack.hasTag()) return 0;
+        if (!stack.hasTag() || stack.getTag() == null)
+            return 0;
 
         CompoundTag tag = stack.getTag();
         displayMode = tag.getString(DISPLAY_MODE_TAG);
@@ -316,7 +288,5 @@ public class ItemAuraManaHolder extends Item{
             }
             tag.putString(DISPLAY_MODE_TAG, AURA_TAG);
         }
-
-//        @SubscribeEvent
     }
 }
