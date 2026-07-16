@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -18,37 +19,35 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import vazkii.botania.api.mana.ManaItem;
 
 import java.util.List;
 import java.util.Optional;
 
 import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.inventoryAuraContainerTick;
+import static net.wkhan.naturesaura_plus.compat.curios.NaturesAuraPlusCuriosUtil.tryEquipCurio;
 import static net.wkhan.naturesaura_plus.data.config.GameplayConfig.*;
 
-public class ItemAuraManaHolder extends Item{
+public class ItemAuraManaHolder extends Item {
     public ItemAuraManaHolder(Properties p_41383_) {
         super(p_41383_);
-        MinecraftForge.EVENT_BUS.register(new ItemAuraManaHolderEventListener());
     }
 
     private static final String MANA_TAG = "mana";
     private static final String AURA_TAG = "aura";
     private static final String CREATIVE_TAG = "creative";
     private static final String DISPLAY_MODE_TAG = "displayMode";
-    public static final Capability<IAuraContainer> AURA_CAP = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<ManaItem> MANA_CAP = CapabilityManager.get(new CapabilityToken<>() {});
+    private static final Capability<ICurioItem> CURIO_CAP = CapabilityManager.get(new CapabilityToken<>() {});
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
@@ -66,7 +65,7 @@ public class ItemAuraManaHolder extends Item{
         tag.putInt(MANA_TAG,SASH_MANA_CAPACITY.get());
     }
 
-    public static class DualAuraManaItemImpl implements ManaItem, IAuraContainer, ICapabilityProvider {
+    public static class DualAuraManaItemImpl implements ICurioItem, ManaItem, IAuraContainer, ICapabilityProvider {
         private final ItemStack stack;
         public DualAuraManaItemImpl(ItemStack stack) {
             this.stack = stack;
@@ -74,15 +73,23 @@ public class ItemAuraManaHolder extends Item{
 
         private final LazyOptional<IAuraContainer> auraCapOpt = LazyOptional.of(() -> this);
         private final LazyOptional<ManaItem> manaCapOpt = LazyOptional.of(() -> this);
+        private final LazyOptional<ICurioItem> curioCapOpt = LazyOptional.of(() -> this); // Add Curios
 
+        @Override
+        public void curioTick(SlotContext slotContext, ItemStack stack) {
+            inventoryAuraContainerTick(stack, slotContext.entity().level(), slotContext.entity(), slotContext.index());
+        }
 
         @Override
         public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-            if (cap == NaturesAuraAPI.CAP_AURA_CONTAINER || cap == AURA_CAP) {
+            if (cap == NaturesAuraAPI.CAP_AURA_CONTAINER) {
                 return auraCapOpt.cast();
             }
             if (cap == MANA_CAP) {
                 return manaCapOpt.cast();
+            }
+            if (cap == CURIO_CAP) {
+                return curioCapOpt.cast();
             }
             return LazyOptional.empty();
         }
@@ -190,6 +197,16 @@ public class ItemAuraManaHolder extends Item{
     }
 
     @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown() && !isCreativeStack(stack))
+            return toggleBarDisplay(player, stack, level);
+        else if (!player.isShiftKeyDown())
+            return tryEquipCurio(player, stack, "belt", SoundEvents.ARMOR_EQUIP_LEATHER);
+        return super.use(level, player, hand);
+    }
+
+    @Override
     public void inventoryTick(@NotNull ItemStack stackIn, @NotNull Level levelIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected) {
         inventoryAuraContainerTick(stackIn, levelIn, entityIn, itemSlot);
     }
@@ -257,36 +274,17 @@ public class ItemAuraManaHolder extends Item{
         return 0xFFFFFFFF;
     }
 
-
-    public static class ItemAuraManaHolderEventListener {
-        public ItemAuraManaHolderEventListener() {}
-
-        @SubscribeEvent
-        public void onAirClick(PlayerInteractEvent.RightClickItem event) {
-            ItemStack stack = event.getItemStack();
-            Player player = event.getEntity();
-            if (!player.isShiftKeyDown()) return;
-            if (!(stack.getItem() instanceof ItemAuraManaHolder)) return;
-            if (isCreativeStack(stack)) return;
-            CompoundTag tag = stack.getOrCreateTag();
+    private InteractionResultHolder<ItemStack> toggleBarDisplay(Player player, ItemStack stack, Level level) {
+        CompoundTag tag = stack.getOrCreateTag();
+        player.swing(InteractionHand.MAIN_HAND, true);
+        player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
+        if (tag.getString(DISPLAY_MODE_TAG).equals(AURA_TAG)) {
+            tag.putString(DISPLAY_MODE_TAG, MANA_TAG);
             player.swing(InteractionHand.MAIN_HAND, true);
-            event.getLevel().playSound(
-                    player,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    SoundEvents.EXPERIENCE_ORB_PICKUP,
-                    net.minecraft.sounds.SoundSource.PLAYERS,
-                    1.0F,
-                    1.0F
-            );
-            if (tag.getString(DISPLAY_MODE_TAG).equals(AURA_TAG)) {
-                tag.putString(DISPLAY_MODE_TAG, MANA_TAG);
-                event.setResult(Event.Result.ALLOW);
-                player.swing(InteractionHand.MAIN_HAND, true);
-                return;
-            }
+        }
+        else {
             tag.putString(DISPLAY_MODE_TAG, AURA_TAG);
         }
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 }
