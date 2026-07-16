@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.MOSS_GENERATIONS;
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.mossGenMemorySize;
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.mossGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.MOSS_GEN_MEMORY_SIZE;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.MOSS_GEN_RANGE;
 
 @Mixin(BlockEntityMossGenerator.class)
 public abstract class MossGenMixin extends BlockEntityImpl {
@@ -32,7 +32,7 @@ public abstract class MossGenMixin extends BlockEntityImpl {
     }
 
     @Unique
-    private final NaturesAuraPlusUtils.circularBuffer<Block> naturesaura_plus$mossMemory = new NaturesAuraPlusUtils.circularBuffer<>(mossGenMemorySize) {};
+    private final NaturesAuraPlusUtils.circularBuffer<Block> naturesaura_plus$mossMemory = new NaturesAuraPlusUtils.circularBuffer<>(MOSS_GEN_MEMORY_SIZE.get()) {};
 
     //Magic Particles straight from Elpeck's code.
     @Inject(
@@ -43,16 +43,16 @@ public abstract class MossGenMixin extends BlockEntityImpl {
     )
     private void naturesaura_plus$mossAuraGenerator(CallbackInfo ci) {
         ci.cancel();
-
-        if (this.level.isClientSide()) return;
-
-        if (this.level.getGameTime() % 20L != 0L) {
+        if (this.level == null)
             return;
-        }
+        if (this.level.isClientSide())
+            return;
+        if (this.level.getGameTime() % 20L != 0L)
+            return;
 
         LevelData data = (LevelData) ILevelData.getLevelData(this.level);
         List<BlockPos> possibleOffsets = new ArrayList<>();
-        int range = mossGenRange;
+        int range = MOSS_GEN_RANGE.get();
 
         for(int x = -range; x <= range; ++x) {
             for(int y = -range; y <= range; ++y) {

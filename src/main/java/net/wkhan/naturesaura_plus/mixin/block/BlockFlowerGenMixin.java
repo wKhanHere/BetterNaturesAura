@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.flowerGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.FLOWER_GEN_RANGE;
 
 @Mixin(BlockFlowerGenerator.class)
 public abstract class BlockFlowerGenMixin extends BlockContainerImpl {
@@ -27,6 +27,6 @@ public abstract class BlockFlowerGenMixin extends BlockContainerImpl {
     )
     private void naturesaura_plus$visualizationBoundsFlowerGen(Level level, BlockPos pos, CallbackInfoReturnable<AABB> cir) {
         cir.cancel();
-        cir.setReturnValue((new AABB(pos)).inflate(flowerGenRange,1,flowerGenRange));
+        cir.setReturnValue((new AABB(pos)).inflate(FLOWER_GEN_RANGE.get(),1, FLOWER_GEN_RANGE.get()));
     }
 }

@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
 import static net.wkhan.naturesaura_plus.data.CanopyDiminisherTreeTracker.OAK_GEN_POS;
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.oakGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.OAK_GEN_RANGE;
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.OAK_GENERATIONS;
 
 @Mixin(BlockOakGenerator.class)
@@ -44,7 +44,7 @@ public abstract class BlockOakGenMixin extends BlockContainerImpl {
     )
     private void naturesaura_plus$visualizationBoundsMossGen(Level level, BlockPos pos, CallbackInfoReturnable<AABB> cir) {
         cir.cancel();
-        cir.setReturnValue((new AABB(pos)).inflate(oakGenRange));
+        cir.setReturnValue((new AABB(pos)).inflate(OAK_GEN_RANGE.get()));
     }
 
     @Inject(
@@ -61,7 +61,7 @@ public abstract class BlockOakGenMixin extends BlockContainerImpl {
         BlockPos pos = event.getPos();
         if (!(level instanceof Level lvl) || level.isClientSide() || !(IAuraType.forLevel(lvl).isSimilar(NaturesAuraAPI.TYPE_OVERWORLD)) //Make aura type check config driven
                 || !(level.getBlockState(pos).is(ModTags.Blocks.OAK_GEN_SAPLING))) return;
-        Helper.getBlockEntitiesInArea(level, pos, oakGenRange, (tile) -> {
+        Helper.getBlockEntitiesInArea(level, pos, OAK_GEN_RANGE.get(), (tile) -> {
             if (!(tile instanceof BlockEntityOakGenerator oakGen))
                 return false;
             Holder<ConfiguredFeature<?,?>> tree = event.getFeature();

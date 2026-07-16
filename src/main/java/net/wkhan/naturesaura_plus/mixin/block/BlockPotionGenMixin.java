@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.potionGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.POTION_GEN_RANGE;
 
 @Mixin(BlockPotionGenerator.class)
 public abstract class BlockPotionGenMixin extends BlockContainerImpl implements IVisualizable {
@@ -21,7 +21,7 @@ public abstract class BlockPotionGenMixin extends BlockContainerImpl implements 
 
     @OnlyIn(Dist.CLIENT)
     public AABB getVisualizationBounds(Level level, BlockPos pos) {
-        return (new AABB(pos)).inflate(potionGenRange);
+        return (new AABB(pos)).inflate(POTION_GEN_RANGE.get());
     }
 
     @OnlyIn(Dist.CLIENT)

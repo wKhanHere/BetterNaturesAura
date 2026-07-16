@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.slimeGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.SLIME_GEN_RANGE;
 
 @Mixin(BlockSlimeSplitGenerator.class)
 public abstract class BlockSlimeGenMixin extends BlockContainerImpl {
@@ -27,6 +27,6 @@ public abstract class BlockSlimeGenMixin extends BlockContainerImpl {
     )
     private void naturesaura_plus$visualizationBoundsMossGen(Level level, BlockPos pos, CallbackInfoReturnable<AABB> cir) {
         cir.cancel();
-        cir.setReturnValue((new AABB(pos)).inflate(slimeGenRange));
+        cir.setReturnValue((new AABB(pos)).inflate(SLIME_GEN_RANGE.get()));
     }
 }

@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.animalGenRange;
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.ANIMAL_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.ANIMAL_GEN_RANGE;
 
 @Mixin(BlockAnimalGenerator.class)
 public class BlockAnimalGenMixin extends BlockContainerImpl {
@@ -66,7 +66,7 @@ public class BlockAnimalGenMixin extends BlockContainerImpl {
         if (entity.getPersistentData().getBoolean("naturesaura:pet_reviver")) return;
         AuraGenRules.AnimalValues animalValues = ANIMAL_GENERATIONS.get(entityType);
         BlockPos pos = entity.blockPosition();
-        Helper.getBlockEntitiesInArea(entity.level(), pos, animalGenRange, (tile) -> {
+        Helper.getBlockEntitiesInArea(entity.level(), pos, ANIMAL_GEN_RANGE.get(), (tile) -> {
             if (!(tile instanceof BlockEntityAnimalGenerator gen)) return false;
             CompoundTag data = entity.getPersistentData();
             if (gen.isBusy()) return false;
@@ -103,6 +103,6 @@ public class BlockAnimalGenMixin extends BlockContainerImpl {
     )
     private void naturesaura_plus$visualizationBoundsAnimalGen(Level level, BlockPos pos, CallbackInfoReturnable<AABB> cir) {
         cir.cancel();
-        cir.setReturnValue((new AABB(pos)).inflate(animalGenRange));
+        cir.setReturnValue((new AABB(pos)).inflate(ANIMAL_GEN_RANGE.get()));
     }
 }

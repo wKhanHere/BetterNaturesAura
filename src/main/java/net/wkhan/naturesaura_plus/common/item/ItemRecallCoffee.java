@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
-import static net.wkhan.naturesaura_plus.data.config.GameplayConfig.petRecallRange;
+import static net.wkhan.naturesaura_plus.data.config.GameplayConfig.PET_RECALL_RANGE;
 
 public class ItemRecallCoffee extends Item {
     public ItemRecallCoffee(Properties p_41383_) {
@@ -46,7 +46,7 @@ public class ItemRecallCoffee extends Item {
         float spawnAngle = levelNVec3.angle;
         ServerPlayer serverPlayer = (ServerPlayer) player;
         List<LivingEntity> pets = level.getEntitiesOfClass(LivingEntity.class,
-                serverPlayer.getBoundingBox().inflate(petRecallRange), target -> {
+                serverPlayer.getBoundingBox().inflate(PET_RECALL_RANGE.get()), target -> {
             if (target instanceof TamableAnimal pet)
                 return serverPlayer.getUUID().equals(pet.getOwnerUUID());
             else if (target instanceof AbstractHorse horse)

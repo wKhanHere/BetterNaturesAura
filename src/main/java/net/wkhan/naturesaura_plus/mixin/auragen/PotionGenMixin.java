@@ -47,19 +47,19 @@ public class PotionGenMixin extends BlockEntityImpl {
         BlockPos pos = this.worldPosition;
         if (level == null || level.isClientSide() || level.getGameTime() % 10L != 0L)
             return;
-        if (checkMultiForPotionGen && !Multiblocks.POTION_GENERATOR.isComplete(level, pos))
+        if (CHECK_MULTI_FOR_POTION_GEN.get() && !Multiblocks.POTION_GENERATOR.isComplete(level, pos))
             return;
 
         int added = 0;
         List<AreaEffectCloud> areaEffectCloudList = level
-                .getEntitiesOfClass(AreaEffectCloud.class, new AABB(pos).inflate(potionGenRange));
+                .getEntitiesOfClass(AreaEffectCloud.class, new AABB(pos).inflate(POTION_GEN_RANGE.get()));
 
         Set<MobEffect> appliedEffects = new HashSet<>();
         cloudLoop: for (AreaEffectCloud areaEffectCloud : areaEffectCloudList) {
             if (!areaEffectCloud.isAlive())
                 continue;
 
-            if (potionCapForGenPerTick != -1 && added > potionCapForGenPerTick) {
+            if ( POTION_CAP_PER_TICK.get() != -1 && added >  POTION_CAP_PER_TICK.get()) {
                 float newRadius = areaEffectCloud.getRadius() - 0.25F;
                 if (newRadius < 0.5F)
                     areaEffectCloud.kill();

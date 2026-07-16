@@ -41,29 +41,29 @@ public abstract class ItemLootFinderMixin extends ItemImpl {
         cir.cancel();
         ItemStack stack = playerIn.getItemInHand(handIn);
         NaturesAuraAPI.IInternalHooks inst = NaturesAuraAPI.instance();
-        if (!inst.extractAuraFromPlayer(playerIn, lootFinderAuraCost, false)) {
+        if (!inst.extractAuraFromPlayer(playerIn, LOOT_FINDER_AURA_COST.get(), false)) {
             cir.setReturnValue(new InteractionResultHolder<>(InteractionResult.FAIL, stack));
             return;
         }
         if (!levelIn.isClientSide) return;
         inst.setParticleDepth(false);
-        inst.setParticleSpawnRange(lootFinderRange);
+        inst.setParticleSpawnRange(LOOT_FINDER_RANGE.get());
         inst.setParticleCulling(false);
         BlockPos centre = playerIn.blockPosition();
-        Helper.getBlockEntitiesInArea(levelIn, centre, lootFinderRange, (tile) -> {
+        Helper.getBlockEntitiesInArea(levelIn, centre, LOOT_FINDER_RANGE.get(), (tile) -> {
             if (tile.getBlockState().is(LOOT_FINDER_TREASURE_CHEST)) {
                 inst.spawnMagicParticle((float) tile.getBlockPos().getX() + 0.5F, (float) tile.getBlockPos().getY() + 0.5F,
                         (float) tile.getBlockPos().getZ() + 0.5F, 0.0F, 0.0F, 0.0F,
-                        16761095, 6.0F, lootFinderLightLifeInTicks, 0.0F, false, true);
+                        16761095, 6.0F, LOOT_FINDER_LIGHT_LIFE.get(), 0.0F, false, true);
             }
             return false;
         });
 
-        List<BlockPos> foundBlocks = NaturesAuraPlusUtils.scanSphereAgainstTag(levelIn, centre, lootFinderRange, LOOT_FINDER_TREASURE);
+        List<BlockPos> foundBlocks = NaturesAuraPlusUtils.scanSphereAgainstTag(levelIn, centre, LOOT_FINDER_RANGE.get(), LOOT_FINDER_TREASURE);
         foundBlocks.forEach(pos ->
                 inst.spawnMagicParticle((float) pos.getX() + 0.5F, (float) pos.getY() + 0.5F,
                         (float) pos.getZ() + 0.5F, 0.0F, 0.0F, 0.0F,
-                        12434877, 6.0F, lootFinderLightLifeInTicks, 0.0F, false, true)
+                        12434877, 6.0F, LOOT_FINDER_LIGHT_LIFE.get(), 0.0F, false, true)
                 );
 
         inst.setParticleDepth(true);
@@ -71,7 +71,7 @@ public abstract class ItemLootFinderMixin extends ItemImpl {
         inst.setParticleCulling(true);
         playerIn.swing(handIn);
 
-        playerIn.getCooldowns().addCooldown(this, lootFinderUseCooldownInTicks);
+        playerIn.getCooldowns().addCooldown(this, LOOT_FINDER_USE_COOLDOWN.get());
         cir.setReturnValue(new InteractionResultHolder<>(InteractionResult.SUCCESS, stack));
     }
 }

@@ -29,9 +29,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Deque;
 import java.util.List;
 
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.chorusGenRange;
 import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.crawlConnectedBlocks;
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.CHORUS_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.CHORUS_GEN_RANGE;
 
 @Mixin(BlockEntityChorusGenerator.class)
 public abstract class ChorusGenMixin extends BlockEntityImpl {
@@ -61,9 +61,14 @@ public abstract class ChorusGenMixin extends BlockEntityImpl {
     )
     private void naturesaura_plus$chorusGenTick(CallbackInfo ci) {
         ci.cancel();
-        if (this.level.isClientSide()) return;
-        if (this.level.getGameTime() % 5L != 0L) return;
-        if (this.currentlyBreaking.isEmpty()) return;
+        if (this.level == null)
+            return;
+        if (this.level.isClientSide())
+            return;
+        if (this.level.getGameTime() % 5L != 0L)
+            return;
+        if (this.currentlyBreaking.isEmpty())
+            return;
         BlockPos pos = this.currentlyBreaking.removeLast(); //might not work
         Block block = this.level.getBlockState(pos).getBlock();
         if (naturesaura_plus$chorusValues == null || (block != this.naturesaura_plus$chorusValues.stemBlock()
@@ -90,12 +95,15 @@ public abstract class ChorusGenMixin extends BlockEntityImpl {
     )
     private void naturesaura_plus$chorusGenRedstonePower(int newPower, CallbackInfo ci) {
         ci.cancel();
+        if (this.level == null)
+            return;
+
         if (this.redstonePower > 0 || newPower <= 0 || !this.currentlyBreaking.isEmpty()) {
             super.onRedstonePowerChange(newPower);
             return;
         }
         naturesaura_plus$clearInternalData();
-        int range = chorusGenRange;
+        int range = CHORUS_GEN_RANGE.get();
         chorusClimb:
         for(int x = -range; x <= range; ++x) {
             for(int y = -range; y <= range; ++y) {

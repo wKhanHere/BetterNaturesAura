@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.slimeGenRange;
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.SLIME_GENERATIONS;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.SLIME_GEN_RANGE;
 
 @Mixin(targets = "de.ellpeck.naturesaura.blocks.BlockSlimeSplitGenerator$Events")
 public abstract class SlimeGenEventsMixin {
@@ -32,7 +32,7 @@ public abstract class SlimeGenEventsMixin {
         if (entity.level().isClientSide()) return;
         if (entity.getPersistentData().getBoolean("naturesaura:pet_reviver")) return;
         if (entity instanceof Slime slime && slime.getSize() < slimeValues.minSizeForSlime()) return;
-        Helper.getBlockEntitiesInArea(entity.level(), entity.blockPosition(), slimeGenRange, (tile) -> {
+        Helper.getBlockEntitiesInArea(entity.level(), entity.blockPosition(), SLIME_GEN_RANGE.get(), (tile) -> {
             if (!(tile instanceof BlockEntitySlimeSplitGenerator gen)) return false;
             if (gen.isBusy()) return false;
             if (!(slimeValues.doEntityDropLoot())) entity.getPersistentData().putBoolean("naturesaura:no_drops", true);

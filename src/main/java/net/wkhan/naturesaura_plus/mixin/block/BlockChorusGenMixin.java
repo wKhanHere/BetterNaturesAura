@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.chorusGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.CHORUS_GEN_RANGE;
 
 @Mixin(BlockChorusGenerator.class)
 public abstract class BlockChorusGenMixin extends BlockContainerImpl implements IVisualizable {
@@ -22,7 +22,7 @@ public abstract class BlockChorusGenMixin extends BlockContainerImpl implements 
 
     @OnlyIn(Dist.CLIENT)
     public AABB getVisualizationBounds(Level level, BlockPos pos) {
-        return (new AABB(pos)).inflate(chorusGenRange);
+        return (new AABB(pos)).inflate(CHORUS_GEN_RANGE.get());
     }
 
     @OnlyIn(Dist.CLIENT)

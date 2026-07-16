@@ -44,7 +44,7 @@ public abstract class FlowerGenMixin extends BlockEntityImpl implements FlowerGe
 
     @Unique private byte naturesaura_plus$vitality = 100;
 
-    @Unique private final circularBuffer<Block> naturesaura_plus$flowerMemory = new circularBuffer<>(flowerGenMemorySize) {};
+    @Unique private final circularBuffer<Block> naturesaura_plus$flowerMemory = new circularBuffer<>(FLOWER_GEN_MEMORY_SIZE.get()) {};
 
     //Magic particles are copied straight from Elpeck's code
     @Inject(
@@ -60,7 +60,7 @@ public abstract class FlowerGenMixin extends BlockEntityImpl implements FlowerGe
         if (level.isClientSide || level.getGameTime() % 10 != 0L) return;
 
         List<BlockPos> possible = new ArrayList<>();
-        int range = flowerGenRange;
+        int range = FLOWER_GEN_RANGE.get();
         for(int x = -range; x <= range; ++x) {
             for(int y = -1; y <= 1; ++y) {
                 for(int z = -range; z <= range; ++z) {
@@ -84,7 +84,7 @@ public abstract class FlowerGenMixin extends BlockEntityImpl implements FlowerGe
         int repeatFlower = naturesaura_plus$flowerMemory.countObject(flower) - 1;
         AuraGenRules.FlowerValues stats = FLOWER_GENERATIONS.get(flower);
         byte lucidity = stats.lucidity();
-        double auraFactor = (1 - Math.pow(((double) (100 - this.naturesaura_plus$vitality)/flowerGenVitalityFloor),flowerGenPowFactor)); //make float
+        double auraFactor = (1 - Math.pow(((double) (100 - this.naturesaura_plus$vitality)/FLOWER_GEN_VITALITY_FLOOR.get()),FLOWER_GEN_POW_FACTOR.get())); //make float
         int auraAmount = (int) (stats.auraAmount() * auraFactor);
         int toAdd = Math.max(0, auraAmount);
 
