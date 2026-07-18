@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
-import static net.wkhan.naturesaura_plus.data.CanopyDiminisherTreeTracker.OAK_GEN_POS;
+import static net.wkhan.naturesaura_plus.data.trackers.CanopyDiminisherTreeTracker.OAK_GEN_POS;
 import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.OAK_GEN_RANGE;
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.OAK_GENERATIONS;
 

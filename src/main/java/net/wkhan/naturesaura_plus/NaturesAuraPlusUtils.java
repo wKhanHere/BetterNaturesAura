@@ -28,7 +28,7 @@ import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.wkhan.naturesaura_plus.data.TreeRitualTreeTracker;
+import net.wkhan.naturesaura_plus.data.trackers.TreeRitualTreeTracker;
 import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
 import net.wkhan.naturesaura_plus.data.duckfaces.MultiBlockUtil;
 import org.jetbrains.annotations.NotNull;

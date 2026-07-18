@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.data.CanopyDiminisherTreeTracker.OAK_GEN_POS;
+import static net.wkhan.naturesaura_plus.data.trackers.CanopyDiminisherTreeTracker.OAK_GEN_POS;
 
 @Mixin(AbstractTreeGrower.class)
 public abstract class AbstractTreeGrowerMixin {

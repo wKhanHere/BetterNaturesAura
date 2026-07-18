@@ -11,6 +11,10 @@ public class GameplayConfig {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
+    public static final ForgeConfigSpec.IntValue BREAK_PREVENTION_APPLY_COST = BUILDER
+            .comment("Levels cost required to apply Token of Fortitude to an item. (Default: 30)")
+            .defineInRange("breakPreventionApplyCost", 30, 1, 1000);
+
     public static final ForgeConfigSpec.IntValue LOOT_FINDER_AURA_COST = BUILDER
             .comment("The aura cost of using the loot finder item. (Default: 100,000)")
             .defineInRange("lootFinderAuraCost", 100000, 0, 1200000);

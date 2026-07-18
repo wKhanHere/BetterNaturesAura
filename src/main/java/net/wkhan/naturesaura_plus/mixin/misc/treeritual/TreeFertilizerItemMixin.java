@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.SaplingGrowTreeEvent;
 import net.minecraftforge.eventbus.api.Event;
-import net.wkhan.naturesaura_plus.data.TreeRitualTreeTracker;
+import net.wkhan.naturesaura_plus.data.trackers.TreeRitualTreeTracker;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

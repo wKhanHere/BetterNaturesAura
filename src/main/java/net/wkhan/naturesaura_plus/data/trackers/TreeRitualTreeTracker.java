@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.data;
+package net.wkhan.naturesaura_plus.data.trackers;
 
 import net.minecraft.core.BlockPos;
 
