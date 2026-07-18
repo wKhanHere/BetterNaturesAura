@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.wkhan.naturesaura_plus.common.block.ModBlocks;
+import net.wkhan.naturesaura_plus.data.reload.LogCleaner;
 import net.wkhan.naturesaura_plus.network.ModNetwork;
 import net.wkhan.naturesaura_plus.compat.botania.BotaniaModItems;
 import net.wkhan.naturesaura_plus.common.item.ModItems;
@@ -24,16 +25,15 @@ public class NaturesAuraPlus
     public static boolean isKubeJsLoaded;
     public static boolean isCuriosLoaded;
     public static boolean isBotaniaLoaded;
-    public static boolean isMalumLoaded;
 
     public NaturesAuraPlus(FMLJavaModLoadingContext context)
     {
+        LogCleaner.init();
         IEventBus modEventBus = context.getModEventBus();
 
         isKubeJsLoaded = ModList.get().isLoaded("kubejs");
         isCuriosLoaded = ModList.get().isLoaded("curios");
         isBotaniaLoaded = ModList.get().isLoaded("botania");
-        isMalumLoaded = ModList.get().isLoaded("malum");
 
         ModItems.register(modEventBus);
         if (isBotaniaLoaded) BotaniaModItems.register(modEventBus);
