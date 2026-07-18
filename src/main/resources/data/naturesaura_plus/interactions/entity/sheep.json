@@ -1,6 +1,0 @@
-{
-  "type":"prevent_interact:entity",
-  "entity":"minecraft:sheep",
-  "item": "minecraft:shears",
-  "interaction": "broken_tool"
-}
