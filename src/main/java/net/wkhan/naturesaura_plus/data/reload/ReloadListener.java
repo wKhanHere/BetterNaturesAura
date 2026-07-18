@@ -10,11 +10,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
-import net.wkhan.naturesaura_plus.data.AnvilCostRules;
 import net.wkhan.naturesaura_plus.data.auragen.*;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,15 +23,16 @@ import java.util.List;
 import java.util.Map;
 
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.addAuraGenerations;
+import static net.wkhan.naturesaura_plus.data.config.MiscConfig.SHOW_AURA_GEN_RULES_IN_LOG;
+import static org.apache.logging.log4j.LogManager.getLogger;
 
-public class ReloadListener
-        extends SimpleJsonResourceReloadListener {
-
+public class ReloadListener extends SimpleJsonResourceReloadListener {
     public ReloadListener() {
         super(new Gson(), "interactions");
     }
+
+    private static final Logger LOGGER = getLogger();
     protected static final List<String> loadedAuraRules = new ArrayList<>();
-    protected final List<String> loadedAnvilCosts = new ArrayList<>();
 
     @Override
     protected void apply(
@@ -43,24 +45,16 @@ public class ReloadListener
             try {
                 JsonObject json = jsonElement.getAsJsonObject();
                 if (!json.has("type")) {
-                    System.err.println("Missing 'type' field in rule file: " + fileId);
+                    LOGGER.error("Missing 'type' field in rule file: {}", fileId);
                     return;
                 }
                 String type = json.get("type").getAsString();
                 switch (type) {
-                    case "anvil_cost:apply_steel_token" -> { //refactor
-                        if (!json.has("levels")) {
-                            System.err.println("Missing 'levels' field in anvil cost file: " + fileId);
-                            return;
-                        }
-                        loadedAnvilCosts.add(fileId.toString());
-                        int cost = json.get("levels").getAsInt();
-                        AnvilCostRules.add(fileId, cost);
-                    }
                     case "aura_gen:projectile_gen" -> {
                         DataResult<ProjectileGenRule> result = ProjectileGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
-                        result.resultOrPartial(errorMessage -> System.err.println("ProjectileGen JSON Error: " + errorMessage))
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] ProjectileGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.projectileRulesQueue.add(rule);
@@ -69,7 +63,8 @@ public class ReloadListener
                     case "aura_gen:moss_gen" -> {
                         DataResult<MossGenRule> result = MossGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
-                        result.resultOrPartial(errorMessage -> System.err.println("MossGen JSON Error: " + errorMessage))
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] MossGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.mossRulesQueue.add(rule);
@@ -78,7 +73,8 @@ public class ReloadListener
                     case "aura_gen:flower_gen" -> {
                         DataResult<FlowerGenRule> result = FlowerGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
-                        result.resultOrPartial(errorMessage -> System.err.println("FlowerGen JSON Error: " + errorMessage))
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] FlowerGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.flowerRulesQueue.add(rule);
@@ -87,7 +83,8 @@ public class ReloadListener
                     case "aura_gen:slime_gen" -> { 
                         DataResult<SlimeGenRule> result = SlimeGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
-                        result.resultOrPartial(errorMessage -> System.err.println("SlimeGen JSON Error: " + errorMessage))
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] SlimeGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.slimeRulesQueue.add(rule);
@@ -96,7 +93,8 @@ public class ReloadListener
                     case "aura_gen:animal_gen" -> { 
                         DataResult<AnimalGenRule> result = AnimalGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
-                        result.resultOrPartial(errorMessage -> System.err.println("AnimalGen JSON Error: " + errorMessage))
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] AnimalGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.animalRulesQueue.add(rule);
@@ -105,7 +103,8 @@ public class ReloadListener
                     case "aura_gen:chorus_gen" -> { 
                         DataResult<ChorusGenRule> result = ChorusGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
-                        result.resultOrPartial(errorMessage -> System.err.println("ChorusGen JSON Error: " + errorMessage))
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] ChorusGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.chorusRulesQueue.add(rule);
@@ -114,7 +113,8 @@ public class ReloadListener
                     case "aura_gen:oak_gen" -> { 
                         DataResult<OakGenRule> result = OakGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
-                        result.resultOrPartial(errorMessage -> System.err.println("OakGen JSON Error: " + errorMessage))
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] OakGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.oakRulesQueue.add(rule);
@@ -123,28 +123,36 @@ public class ReloadListener
                     case "aura_gen:potion_gen" -> {
                         DataResult<PotionGenRule> result = PotionGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
-                        result.resultOrPartial(errorMessage -> System.err.println("PotionGen JSON Error: " + errorMessage))
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] PotionGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.potionRulesQueue.add(rule);
                                 });
                     }
+                    case "aura_gen:firework_gen" -> {
+                        DataResult<FireworkGenRule> result = FireworkGenRule.CODEC.parse(JsonOps.INSTANCE, json)
+                                .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
+                        result.resultOrPartial(
+                                errorMessage -> LOGGER.error("[NaturesAuraPlus] FireworkGen JSON Error: {}", errorMessage))
+                                .ifPresent(rule -> {
+                                    loadedAuraRules.add(fileId.toString());
+                                    AuraGenRules.addFireworkGeneration(rule);
+                                });
+                    }
 
-                    default -> System.err.println("Unknown rule type '" + type + "' in file: " + fileId);
+                    default -> LOGGER.error("Unknown rule type '{}' in file: {}", type, fileId);
                 }
             }
-                catch (Exception e) { // I know this is sucky.
-                System.err.println("Failed to load interaction rule: " + fileId);
-                e.printStackTrace();
+            catch (Exception e) { // I know this is sucky.
+                LOGGER.error("Failed to load interaction rule: {}", fileId);
             }
         });
-        System.out.println("Anvil Costs Loaded: " + loadedAnvilCosts);
     }
 
     private void clearData() {
-        loadedAnvilCosts.clear();
+        LogCleaner.init();
         loadedAuraRules.clear();
-        AnvilCostRules.clear();
         AuraGenRules.auraGenerationClear();
     }
 
@@ -153,10 +161,12 @@ public class ReloadListener
 
         @SubscribeEvent
         public static void onTagsUpdated(TagsUpdatedEvent event) {
+            if (event.getPhase() != EventPriority.LOW)
+                return;
             addAuraGenerations();
-            System.out.println("Loaded " + AnvilCostRules.size() + " anvil cost rules and "
-                    + AuraGenRules.auraRulesCount() + " aura gen rules.");
-            System.out.println("Aura generation rules loaded: " + loadedAuraRules);
+            System.out.println("Number of aura gen rules loaded: " + AuraGenRules.auraRulesCount());
+            if (SHOW_AURA_GEN_RULES_IN_LOG.get())
+                System.out.println("Aura generation rules loaded: " + loadedAuraRules);
         }
     }
 }

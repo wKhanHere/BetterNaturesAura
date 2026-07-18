@@ -48,6 +48,8 @@ public final class AuraGenRules {
                                Set<MobEffect> incompatibleEffects, boolean doAmplifierScaling, boolean doDurationScaling) {}
     public static final Map<MobEffect, PotionValues> POTION_GENERATIONS = new HashMap<>();
 
+    public static final Map<Integer, Object> FIREWORK_GENERATION = new HashMap<>();
+
     public static HashMap<String, Integer> auraRulesCount() {
         HashMap<String, Integer> rulesCount = new HashMap<>();
         rulesCount.put("Projectile Generations", NaturesAuraAPI.PROJECTILE_GENERATIONS.size());
@@ -58,6 +60,7 @@ public final class AuraGenRules {
         rulesCount.put("Chorus Generations", CHORUS_GENERATIONS.size());
         rulesCount.put("Oak (Tree) Generations", OAK_GENERATIONS.size());
         rulesCount.put("Potion Generations", POTION_GENERATIONS.size());
+        rulesCount.put("Firework Generations", FIREWORK_GENERATION.size());
         return rulesCount;
     }
 
@@ -70,6 +73,7 @@ public final class AuraGenRules {
         CHORUS_GENERATIONS.clear();
         OAK_GENERATIONS.clear();
         POTION_GENERATIONS.clear();
+        FIREWORK_GENERATION.clear();
     }
     public static void addAuraGenerations() {
         addProjectileGenerations();
@@ -272,6 +276,17 @@ public final class AuraGenRules {
     }
     public static void addPotionGenerations() {
         while(!potionRulesQueue.isEmpty()) addPotionGeneration(potionRulesQueue.poll());
+    }
+
+    public static void addFireworkGeneration(FireworkGenRule rule) {
+        FIREWORK_GENERATION.put(0, rule.explosionFlickerFactor());
+        FIREWORK_GENERATION.put(1, rule.explosionTrailFactor());
+        FIREWORK_GENERATION.put(2, rule.explosionTypesListFactor());
+        FIREWORK_GENERATION.put(3, rule.explosionColorFactor());
+        FIREWORK_GENERATION.put(4, rule.flightTimeScale());
+        FIREWORK_GENERATION.put(5, rule.flatReleaseTimer());
+        FIREWORK_GENERATION.put(6, rule.finalScale());
+        FIREWORK_GENERATION.put(7, rule.doFlightTimeScaling());
     }
 }
 

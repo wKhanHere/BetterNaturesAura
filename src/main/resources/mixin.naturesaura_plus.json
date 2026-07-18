@@ -8,6 +8,7 @@
   "mixins": [
     "auragen.BlockAnimalGenMixin",
     "auragen.ChorusGenMixin",
+    "auragen.FireworkGenMixin",
     "auragen.FlowerGenMixin",
     "auragen.MossGenMixin",
     "auragen.PotionGenMixin",
@@ -20,6 +21,7 @@
     "block.BlockContainerImplMixin",
     "block.BlockDispenserMixin",
     "block.BlockEntityHopperUpgradeMixin",
+    "block.BlockFireworkGenMixin",
     "block.BlockFlowerGenMixin",
     "block.BlockMossGenMixin",
     "block.BlockPotionGenMixin",
