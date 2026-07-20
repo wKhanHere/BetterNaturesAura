@@ -14,11 +14,8 @@
   "block.naturesaura.stripped_ancient_log": "Stripped Ancient Log",
   "block.naturesaura.stripped_ancient_bark": "Stripped Ancient Bark",
 
+  "block.naturesaura.blast_furnace_booster": "Smelter's Friend",
   "block.naturesaura.wood_stand": "Natural Stand",
   "advancement.naturesaura.wood_stand": "Aura of the Forest",
-  "advancement.naturesaura.wood_stand.desc": "Create a Natural Stand for the Ritual of the Forest.",
-
-  "schools.naturesaura_plus.void": "Void",
-  "death.attack.void_magic": "%1$s was engulfed by the void.",
-  "death.attack.void_magic.player": "%1$s was engulfed by the void at the hands of %2$s"
+  "advancement.naturesaura.wood_stand.desc": "Create a Natural Stand for the Ritual of the Forest."
 }

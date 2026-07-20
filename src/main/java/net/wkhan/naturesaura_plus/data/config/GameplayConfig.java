@@ -43,6 +43,18 @@ public class GameplayConfig {
             .comment("Mana capacity for the Naturalist Sash. (Default: 2,000,000)")
             .defineInRange("sashManaCapacity", 2000000, 1, Integer.MAX_VALUE);
 
+    public static final ForgeConfigSpec.IntValue FURNACE_BOOSTER_AURA_COST = BUILDER
+            .comment("The aura cost per recipe for the furnace booster block. (Default: 6,500)")
+            .defineInRange("furnaceBoosterAuraCost", 6500, 0, 1000000);
+
+    public static final ForgeConfigSpec.BooleanValue CHECK_TAG_FOR_FURNACE_BOOST = BUILDER
+            .comment("Whether the furnace booster should check the input item in furnace against\n the tag #naturesaura_plus:valid_smeltable_to_boost to decide whether to double the smelted output or not (Default: false)")
+            .define("allow_all_for_furnace_boost", false);
+
+    public static final ForgeConfigSpec.IntValue FURNACE_BOOSTER_CHANCE = BUILDER
+            .comment("The aura cost per recipe for the furnace booster block. (Default: 45)")
+            .defineInRange("furnaceBoosterChance", 45, 0, 100);
+
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
     @SubscribeEvent

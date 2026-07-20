@@ -30,6 +30,7 @@
     "item.ItemAuraCacheMixin",
     "item.ItemLootFinderMixin",
     "misc.PetReviverEventsMixin",
+    "misc.blastfurnacebooster.BlastFurnaceBoosterMixin",
     "misc.breakprevention.ItemStackMixin",
     "misc.breakprevention.LivingEntityMixin",
     "misc.breakprevention.PlayerMixin",

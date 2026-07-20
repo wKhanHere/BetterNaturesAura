@@ -122,5 +122,11 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 this.tag(ModTags.Blocks.STRIPPED_WOOD).add(
                         ModBlocks.STRIPPED_ANCIENT_BARK.get()
                 );
+
+                this.tag(ModTags.Blocks.FURNACE_FOR_BOOSTER).add(
+                        Blocks.FURNACE,
+                        Blocks.BLAST_FURNACE,
+                        Blocks.SMOKER
+                );
         }
 }

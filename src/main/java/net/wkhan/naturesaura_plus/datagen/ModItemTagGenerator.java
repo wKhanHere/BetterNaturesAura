@@ -30,5 +30,7 @@ public class ModItemTagGenerator extends ItemTagsProvider {
                 ModItems.STRIPPED_ANCIENT_LOG.get(),
                 ModItems.STRIPPED_ANCIENT_BARK.get()
         );
+
+        this.tag(ModTags.Items.VALID_SMELTABLE_TO_BOOST);
     }
 }

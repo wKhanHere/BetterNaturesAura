@@ -12,6 +12,7 @@ public class ModTags {
     public static class Items {
         public static final TagKey<Item> CANNOT_APPLY_BREAK_PREVENTION = tag("cannot_apply_break_prevention");
         public static final TagKey<Item> VALID_WOODEN_STAND_MATERIAL = tag("valid_wooden_stand_material");
+        public static final TagKey<Item> VALID_SMELTABLE_TO_BOOST = tag("valid_smeltable_to_boost");
 
         private static TagKey<Item> tag(String name) {
             return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NaturesAuraPlus.MODID, name));
@@ -35,6 +36,7 @@ public class ModTags {
                 ResourceLocation.fromNamespaceAndPath("forge", "stripped_logs"));
         public static final TagKey<Block> STRIPPED_WOOD = TagKey.create(Registries.BLOCK,
                 ResourceLocation.fromNamespaceAndPath("forge", "stripped_wood"));
+        public static final TagKey<Block> FURNACE_FOR_BOOSTER = tag("furnace_for_booster");
 
 
         private static TagKey<Block> tag(String name) {
