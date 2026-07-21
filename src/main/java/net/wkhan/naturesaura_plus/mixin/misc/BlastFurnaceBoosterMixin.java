@@ -1,4 +1,4 @@
-package net.wkhan.naturesaura_plus.mixin.misc.blastfurnacebooster;
+package net.wkhan.naturesaura_plus.mixin.misc;
 
 import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import de.ellpeck.naturesaura.blocks.tiles.BlockEntityBlastFurnaceBooster;

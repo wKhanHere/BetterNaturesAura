@@ -62,7 +62,7 @@ public class AuraGenConfig
 
     public static final ForgeConfigSpec.BooleanValue CHECK_MULTI_FOR_POTION_GEN = BUILDER
             .comment("Whether the potion generator needs its multiblock to function or not. (Default: true")
-            .define("check_multi_for_potion_gen", true);
+            .define("checkMultiForPotionGen", true);
 
     public static final ForgeConfigSpec.IntValue FIREWORK_GEN_RANGE = BUILDER
             .comment("Cubical size radius (half-length) for range of the firework generator to check for dropped fireworks. (Default: 10)")
