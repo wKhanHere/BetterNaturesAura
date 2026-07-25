@@ -1,0 +1,9 @@
+{
+  "values": [
+    "naturesaura:ancient_sapling",
+    {
+      "id": "malum:soulwood_growth",
+      "required": false
+    }
+  ]
+}

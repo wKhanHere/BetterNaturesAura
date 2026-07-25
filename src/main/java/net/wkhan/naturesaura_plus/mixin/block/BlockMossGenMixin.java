@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.mossGenRange;
+import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.MOSS_GEN_RANGE;
+
 
 @Mixin(BlockMossGenerator.class)
 public abstract class BlockMossGenMixin extends BlockContainerImpl {
@@ -27,7 +28,7 @@ public abstract class BlockMossGenMixin extends BlockContainerImpl {
     )
     private void naturesaura_plus$visualizationBoundsMossGen(Level level, BlockPos pos, CallbackInfoReturnable<AABB> cir) {
         cir.cancel();
-        cir.setReturnValue((new AABB(pos)).inflate(mossGenRange));
+        cir.setReturnValue((new AABB(pos)).inflate(MOSS_GEN_RANGE.get()));
     }
 
 }

@@ -1,9 +1,11 @@
 {
   "info.naturesaura_plus.break_prevention_token": "Token of Fortitude Applied",
   "info.naturesaura_plus.broken": " (Broken)",
-  "info.naturesaura_plus.aura_coffee": "It tastes bitter... but it smells like home.",
+  "info.naturesaura_plus.aura_coffee": "It tastes bitter... but it smells like home. \nPerhaps your pets too yearn to return...",
   "info.naturesaura_plus.aura_mana_holder": "Mr. Sketchy has a good belt.",
   "info.naturesaura_plus.coffee": "Pafeu makes good coffee.",
+
+  "info.naturesaura_plus.projectile": "Aura: %1$d",
 
   "item.naturesaura_plus.break_prevention_token": "Token of Fortitude",
   "item.naturesaura_plus.aura_mana_holder": "Naturalist's Sash",
@@ -12,11 +14,8 @@
   "block.naturesaura.stripped_ancient_log": "Stripped Ancient Log",
   "block.naturesaura.stripped_ancient_bark": "Stripped Ancient Bark",
 
+  "block.naturesaura.blast_furnace_booster": "Smelter's Friend",
   "block.naturesaura.wood_stand": "Natural Stand",
   "advancement.naturesaura.wood_stand": "Aura of the Forest",
-  "advancement.naturesaura.wood_stand.desc": "Create a Natural Stand for the Ritual of the Forest.",
-
-  "schools.naturesaura_plus.void": "Void",
-  "death.attack.void_magic": "%1$s was engulfed by the void.",
-  "death.attack.void_magic.player": "%1$s was engulfed by the void at the hands of %2$s"
+  "advancement.naturesaura.wood_stand.desc": "Create a Natural Stand for the Ritual of the Forest."
 }

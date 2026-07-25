@@ -4,7 +4,6 @@ package net.wkhan.naturesaura_plus.common.event;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -61,16 +60,7 @@ public class PlayerTickEvent {
             );
         }
 
-        player.level().playSound(
-                null,
-                player.getX(),
-                player.getY(),
-                player.getZ(),
-                SoundEvents.ITEM_BREAK,
-                SoundSource.PLAYERS,
-                1.0f,
-                1.0f
-        );
+        player.playSound(SoundEvents.ITEM_BREAK, 1.0f, 1.0f);
     }
 
     private static void dropAsIndestructibleAndFrozen(Player player, ItemStack stack) {

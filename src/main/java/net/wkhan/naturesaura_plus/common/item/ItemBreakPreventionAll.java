@@ -13,21 +13,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.wkhan.naturesaura_plus.data.AnvilCostRules;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 
 import java.util.List;
+
+import static net.wkhan.naturesaura_plus.data.config.GameplayConfig.BREAK_PREVENTION_APPLY_COST;
 
 public class ItemBreakPreventionAll extends Item {
     public ItemBreakPreventionAll(Properties p_41383_) {
@@ -45,8 +44,10 @@ public class ItemBreakPreventionAll extends Item {
     }
 
     public static boolean isTokenApplied(ItemStack stack) {
-        if (stack.isEmpty()) return false;
-        if (!stack.hasTag()) return false;
+        if (stack.isEmpty())
+            return false;
+        if (!stack.hasTag() || stack.getTag() == null)
+            return false;
         return stack.getTag().getBoolean("naturesaura_plus:break_prevention");
     }
 
@@ -70,17 +71,7 @@ public class ItemBreakPreventionAll extends Item {
             if (!isTokenAppliedBroken(stack)) return;
             event.setCanceled(true);
             Player player = (Player) event.getEntity();
-            Level level = player.level();
-            level.playSound(
-                    player,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    net.minecraft.sounds.SoundEvents.ITEM_BREAK,
-                    net.minecraft.sounds.SoundSource.PLAYERS,
-                    1.0F,
-                    1.0F
-                );
+            player.playSound(net.minecraft.sounds.SoundEvents.ITEM_BREAK, 1.0F, 1.0F);
             player.displayClientMessage(
                         Component.literal("The item is broken, you can't use it!").withStyle(ChatFormatting.YELLOW),
                         true
@@ -103,30 +94,23 @@ public class ItemBreakPreventionAll extends Item {
 
         @SubscribeEvent
         public void onAnvilUpdate(AnvilUpdateEvent event) {
-
             ItemStack right = event.getRight();
-            if (!(right.getItem() == ModItems.BREAK_PREVENTION.get())) {
+            if (!(right.getItem() == ModItems.BREAK_PREVENTION.get()))
                 return;
-            }
-
             ItemStack left = event.getLeft();
-            if (!left.isDamageableItem()) {
+            if (!left.isDamageableItem())
                 return;
-            }
-            if (left.hasTag()) {
-                if (left.getTag().getBoolean("naturesaura_plus:break_prevention") || left.getTag().getBoolean("Unbreakable")) return;
-            }
-
-            if (left.is(ModTags.Items.CANNOT_APPLY_BREAK_PREVENTION)) {
+            if (left.hasTag() && left.getTag() != null)
+                if (left.getTag().getBoolean("naturesaura_plus:break_prevention")
+                        || left.getTag().getBoolean("Unbreakable")) return;
+            if (left.is(ModTags.Items.CANNOT_APPLY_BREAK_PREVENTION))
                 return;
-            }
-
             ItemStack output = left.copy();
             CompoundTag outputCompoundTag = output.getOrCreateTag();
             outputCompoundTag.putBoolean("naturesaura_plus:break_prevention", true);
             outputCompoundTag.remove("naturesaura:break_prevention");
             event.setOutput(output);
-            event.setCost(AnvilCostRules.getCost(ResourceLocation.parse("naturesaura_plus:anvil_cost/steel_token")));
+            event.setCost(BREAK_PREVENTION_APPLY_COST.get());
             event.setMaterialCost(1);
         }
 

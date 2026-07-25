@@ -49,7 +49,7 @@ public abstract class SlimeGenMixin extends BlockEntityImpl implements SlimeGene
 
     @Override
     public void naturesaura_plus$slimeTileAuraGeneratorStart(Entity entity) {
-        AuraGenRules.slimeValues slimeValues = SLIME_GENERATIONS.get(entity.getType());
+        AuraGenRules.SlimeValues slimeValues = SLIME_GENERATIONS.get(entity.getType());
         float size;
         size = slimeValues.sizeModifier();
         if (slimeValues.doSlimeSizeScaling()) {

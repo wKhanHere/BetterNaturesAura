@@ -1,6 +1,0 @@
-{
-  "type":"prevent_interact:entity",
-  "entity":"minecraft:creeper",
-  "item": "minecraft:flint_and_steel",
-  "interaction": "broken_tool"
-}

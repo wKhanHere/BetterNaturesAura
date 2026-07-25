@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "malum:blighted_soil",
+      "required": false
+    },
+    {
+      "id": "#malum:blighted_plants",
+      "required": false
+    }
+  ]
+}

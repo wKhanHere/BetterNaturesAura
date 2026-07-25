@@ -1,110 +1,84 @@
 package net.wkhan.naturesaura_plus.compat.curios;
 
-import de.ellpeck.naturesaura.Helper;
-import de.ellpeck.naturesaura.api.NaturesAuraAPI;
-import de.ellpeck.naturesaura.api.aura.container.IAuraContainer;
-import de.ellpeck.naturesaura.api.aura.item.IAuraRecharge;
-import de.ellpeck.naturesaura.enchant.ModEnchantments;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
+
+import java.util.Optional;
 
 import static net.wkhan.naturesaura_plus.common.event.PlayerTickEvent.handleItemTransfer;
 import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 public class NaturesAuraPlusCuriosUtil {
 
-    private static final Capability<ICurio> CURIOS_CAP = CapabilityManager.get(new CapabilityToken<>() {});
+    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack, String curioSlotId) {
+        return tryEquipCurio(player, stack, curioSlotId, SoundEvents.EMPTY);
+    }
 
-    public static void attachMergedCapability(AttachCapabilitiesEvent<ItemStack> event) {
-        final ItemStack stack = event.getObject();
+    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack, String curioSlotId, SoundEvent soundEvent) {
+        return tryEquipCurio(player, stack, curioSlotId, soundEvent, 1.0F, 1.0F);
+    }
 
-        ICurio curioWrapper = new ICurio() {
-            @Override
-            public ItemStack getStack() {
-                return event.getObject();
-            }
+    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack, String curioSlotId,
+                                                                   SoundEvent equipSoundEvent, float soundVol, float soundPitch) {
+        Optional<ICuriosItemHandler> curiosInventory = CuriosApi.getCuriosInventory(player).resolve();
+        if (curiosInventory.isEmpty())
+            return InteractionResultHolder.pass(stack);
 
-            @Override
-            public void curioTick(SlotContext slotContext) {
-                Entity entity = slotContext.getWearer();
-                if (entity.level().isClientSide || !(entity instanceof Player player) || !player.isShiftKeyDown() || stack.isEmpty()) return;
-                LazyOptional<IAuraContainer> containerCap = stack.getCapability(NaturesAuraAPI.CAP_AURA_CONTAINER);
-                if (!containerCap.isPresent()) return;
-                int curioSlotIndex = slotContext.index();
-                Inventory inventory = player.getInventory();
-                IAuraContainer container = containerCap.resolve().get();
-                int[] slotsToRecharge = new int[]{
-                        inventory.selected, // Mainhand-slot
-                        40,                 // Offhand-slot
-                        36, 37, 38, 39      // Armor-slots (Boots, Leggings, Chestplate, Helmet)
-                };
+        ItemStack toInsert = stack.copy();
+        toInsert.setCount(1);
 
-                for (int i : slotsToRecharge) {
-                    ItemStack stack = inventory.getItem(i);
-                    if (stack.isEmpty()) continue;
-                    LazyOptional<IAuraRecharge> recharge = stack.getCapability(NaturesAuraAPI.CAP_AURA_RECHARGE);
-                    if (recharge.isPresent()) {
-                        boolean isSelectedItem = (i == inventory.selected || i == 40);
-                        if (recharge.resolve().get().rechargeFromContainer(container, curioSlotIndex, i, isSelectedItem)) {
-                            break;
-                        }
-                    }
-                    else if (stack.getEnchantmentLevel(ModEnchantments.AURA_MENDING) > 0) {
-                        boolean isArmor = (i >= 36 && i <= 39);
-                        boolean isHand = (i == inventory.selected || i == 40);
+        SlotContext context = new SlotContext(curioSlotId, player, 0, false, true);
+        if (!CuriosApi.isStackValid(context, toInsert)) //I guess I need this for reasons?
+            return InteractionResultHolder.pass(stack);
 
-                        if ((isArmor || isHand) && Helper.rechargeAuraItem(stack, container, 1000)) {
-                            break;
-                        }
-                    }
-                }
-            }
-        };
+        Optional<ICurioStacksHandler> optHandler = curiosInventory.get().getStacksHandler(curioSlotId);
+        if (optHandler.isEmpty())
+            return InteractionResultHolder.pass(stack);
+        IDynamicStackHandler dynamicStackHandler = optHandler.get().getStacks();
 
-        ICapabilityProvider provider = new ICapabilityProvider() {
-            private final LazyOptional<ICurio> curioCapOpt = LazyOptional.of(() -> curioWrapper);
+        for (int i = 0; i < dynamicStackHandler.getSlots(); i++) {
+            if (!dynamicStackHandler.getStackInSlot(i).isEmpty())
+                continue;
+            dynamicStackHandler.insertItem(i, toInsert, false);
+            stack.shrink(1);
+            player.playSound(equipSoundEvent, soundVol, soundPitch);
+            return InteractionResultHolder.sidedSuccess(stack, player.level().isClientSide());
+        }
 
-            @Override
-            public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-                if (cap == CURIOS_CAP) {
-                    return curioCapOpt.cast();
-                }
-                return LazyOptional.empty();
-            }
-        };
+        ItemStack oldCurio = dynamicStackHandler.extractItem(0, 1, false);
+        dynamicStackHandler.setStackInSlot(0, toInsert);
+        player.playSound(equipSoundEvent, soundVol, soundPitch);
 
-        event.addCapability(ResourceLocation.fromNamespaceAndPath("naturesaura_plus", "curio_item"), provider);
+        stack.shrink(1);
+        if (stack.isEmpty())
+            return InteractionResultHolder.sidedSuccess(oldCurio, player.level().isClientSide());
+        else if (!player.getInventory().add(oldCurio))
+            player.drop(oldCurio, false);
+        return InteractionResultHolder.sidedSuccess(stack, player.level().isClientSide());
     }
 
     public static void handleCuriosUnequip(Player player) {
-        var optionalHandler = CuriosApi.getCuriosHelper().getCuriosHandler(player);
-        if (!optionalHandler.isPresent()) return;
-
-        ICuriosItemHandler handler = optionalHandler.resolve().orElseThrow();
-        var equipped = handler.getEquippedCurios();
+        LazyOptional<ICuriosItemHandler> optionalHandler = CuriosApi.getCuriosInventory(player);
+        if (!optionalHandler.isPresent())
+            return;
+        ICuriosItemHandler handler = optionalHandler.resolve().orElseThrow();//why do I have a or else throw here?
+        IItemHandlerModifiable equipped = handler.getEquippedCurios();
 
         for (int i = 0; i < equipped.getSlots(); i++) {
-            ItemStack stack = equipped.getStackInSlot(i);
-            if (isTokenAppliedBroken(stack)) {
-                ItemStack extracted = equipped.extractItem(i, 1, false);
-                handleItemTransfer(player, extracted, "One of your curio broke!");
-            }
+            if (!isTokenAppliedBroken(equipped.getStackInSlot(i)))
+                return;
+            ItemStack extracted = equipped.extractItem(i, 1, false);
+            handleItemTransfer(player, extracted, "One of your curio broke!");
         }
     }
 }

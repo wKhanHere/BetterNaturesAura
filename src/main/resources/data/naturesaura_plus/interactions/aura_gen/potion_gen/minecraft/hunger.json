@@ -1,0 +1,4 @@
+{
+  "type": "aura_gen:potion_gen",
+  "potion": "minecraft:hunger"
+}
