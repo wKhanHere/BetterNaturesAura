@@ -66,7 +66,7 @@ public class AuraGenConfig
 
     public static final ForgeConfigSpec.IntValue FIREWORK_GEN_RANGE = BUILDER
             .comment("Cubical size radius (half-length) for range of the firework generator to check for dropped fireworks. (Default: 10)")
-            .defineInRange("oakGenRange", 4, 1, 32);
+            .defineInRange("fireworkGenRange", 4, 1, 32);
 
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 

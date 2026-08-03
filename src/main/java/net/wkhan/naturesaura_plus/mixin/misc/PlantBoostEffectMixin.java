@@ -57,16 +57,16 @@ public abstract class PlantBoostEffectMixin {
             BlockPos plantPos = Helper.getClosestAirAboveGround(level, new BlockPos(x, y, z), this.dist / 2).below();
             if (plantPos.distSqr(pos) > this.dist * this.dist || !level.isLoaded(plantPos) ||
                     NaturesAuraAPI.instance().isEffectPowderActive(level, plantPos, NAME))
-                return;
+                continue;
 
             BlockState state = level.getBlockState(plantPos);
             if (state.is(AURA_BONEMEAL_BLACKLIST) || (ENABLE_WHITELIST_AURA_BONEMEAL.get() && !state.is(AURA_BONEMEAL_WHITELIST)))
-                return;
+                continue;
             Block block = state.getBlock();
             if (!(block instanceof BonemealableBlock growable))
-                return;
+                continue;
             if (EXCEPTIONS.contains(block) || !growable.isValidBonemealTarget(level, plantPos, state, false))
-                return;
+                continue;
 
             try {
                 growable.performBonemeal((ServerLevel)level, level.random, plantPos, state);

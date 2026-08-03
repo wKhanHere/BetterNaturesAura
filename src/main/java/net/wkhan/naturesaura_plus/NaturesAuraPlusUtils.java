@@ -226,7 +226,7 @@ public class NaturesAuraPlusUtils {
         }
 
         public boolean isEmpty() {
-            return buffer.length == 0;
+            return this.count == 0;
         }
 
         public Object[] getBuffer() {
