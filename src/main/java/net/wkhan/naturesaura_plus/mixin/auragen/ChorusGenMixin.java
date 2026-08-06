@@ -148,9 +148,8 @@ public abstract class ChorusGenMixin extends BlockEntityImpl {
 
             compound.put("breaking", list);
             compound.putInt("aura", this.auraPerBlock);
-            if (!currentlyBreaking.isEmpty() &&
-                    !compound.getString("soil_block").equals(this.naturesaura_plus$chorusGenSoilBlock))
-                compound.put("soil_block", StringTag.valueOf(this.naturesaura_plus$chorusGenSoilBlock)); //check
+            if (!currentlyBreaking.isEmpty() && this.naturesaura_plus$chorusGenSoilBlock != null)
+                compound.putString("soil_block", this.naturesaura_plus$chorusGenSoilBlock);
         }
     }
 

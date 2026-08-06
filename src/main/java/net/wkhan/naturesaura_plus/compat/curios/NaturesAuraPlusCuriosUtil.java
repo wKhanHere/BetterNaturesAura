@@ -87,7 +87,7 @@ public class NaturesAuraPlusCuriosUtil {
 
         for (int i = 0; i < equipped.getSlots(); i++) {
             if (!isTokenAppliedBroken(equipped.getStackInSlot(i)))
-                return;
+                continue;
             ItemStack extracted = equipped.extractItem(i, 1, false);
             handleItemTransfer(player, extracted, "One of your curio broke!");
         }
