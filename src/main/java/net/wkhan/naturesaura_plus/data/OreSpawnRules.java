@@ -10,20 +10,24 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Queue;
+import java.util.*;
+
+import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.computeAgainstPriorty;
 
 public final class OreSpawnRules {
-    public record OreSpawnValues(Reference2IntOpenHashMap<Block> baseBlockAndAuraDrain, SimpleWeightedRandomList<Block> outputOres) {}
-    public static final HashMap<Pair<ResourceKey<DimensionType>, ResourceKey<Biome>>, OreSpawnValues> ORE_SPAWNS = new HashMap<>();
+    public record OreSpawnValues(@Nullable List<ResourceKey<Biome>> biomes, Reference2IntOpenHashMap<Block> baseBlockAndAuraDrain,
+                                 SimpleWeightedRandomList<Block> outputOres, int priority) implements PriorityRule{
+        @Override
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<ResourceKey<DimensionType>, OreSpawnValues> ORE_SPAWNS = new HashMap<>();
 
     public static final Queue<OreSpawnRule> oreRulesQueue = new ArrayDeque<>();
     public static void addOreSpawn(OreSpawnRule rule) {
-        Pair<ResourceKey<DimensionType>, ResourceKey<Biome>> dimensionBiomePair = ImmutablePair.of(rule.dimensionType(), rule.biome());
         Reference2IntOpenHashMap<Block> baseBlockAndAuraDrain = new Reference2IntOpenHashMap<>(rule.baseBlockAndAuraDrain().size());
         baseBlockAndAuraDrain.defaultReturnValue(0);
         SimpleWeightedRandomList.Builder<Block> outputOres = new SimpleWeightedRandomList.Builder<>();
@@ -42,16 +46,27 @@ public final class OreSpawnRules {
                                 .forEach(block -> outputOres.add(block, weight)));
         }
 
-        OreSpawnValues oreSpawnValues = new OreSpawnValues(baseBlockAndAuraDrain, outputOres.build());
+        List<ResourceKey<Biome>> biomes;
+        if (rule.biomes() != null)
+            biomes = new ArrayList<>(rule.biomes());
+        else
+            biomes = null;
 
-        ORE_SPAWNS.merge(dimensionBiomePair, oreSpawnValues, (existing, incoming) -> {
-            Reference2IntOpenHashMap<Block> newBaseBlockAndAuraDrain = new Reference2IntOpenHashMap<>(existing.baseBlockAndAuraDrain());
-            newBaseBlockAndAuraDrain.putAll(incoming.baseBlockAndAuraDrain());
+        OreSpawnValues oreSpawnValues = new OreSpawnValues(biomes, baseBlockAndAuraDrain, outputOres.build(), rule.priority());
+
+        computeAgainstPriorty(ORE_SPAWNS, rule.dimensionType(), oreSpawnValues, (oldValue, newValue) -> {
+            List<ResourceKey<Biome>> finalBiomes = new ArrayList<>();
+            if (oldValue.biomes() != null)
+                finalBiomes.addAll(oldValue.biomes());
+            if (newValue.biomes() != null)
+                finalBiomes.addAll(newValue.biomes());
+            Reference2IntOpenHashMap<Block> newBaseBlockAndAuraDrain = new Reference2IntOpenHashMap<>(oldValue.baseBlockAndAuraDrain());
+            newBaseBlockAndAuraDrain.putAll(newValue.baseBlockAndAuraDrain());
 
             SimpleWeightedRandomList.Builder<Block> newOutputOres = new SimpleWeightedRandomList.Builder<>();
-            existing.outputOres().unwrap().forEach(entry -> newOutputOres.add(entry.getData(), entry.getWeight().asInt()));
-            incoming.outputOres().unwrap().forEach(entry -> newOutputOres.add(entry.getData(), entry.getWeight().asInt()));
-            return new OreSpawnValues(newBaseBlockAndAuraDrain, newOutputOres.build());
+            oldValue.outputOres().unwrap().forEach(entry -> newOutputOres.add(entry.getData(), entry.getWeight().asInt()));
+            newValue.outputOres().unwrap().forEach(entry -> newOutputOres.add(entry.getData(), entry.getWeight().asInt()));
+            return new OreSpawnValues(finalBiomes, newBaseBlockAndAuraDrain, newOutputOres.build(), oldValue.priority());
         });
     }
 }

@@ -160,7 +160,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                 }
             }
             catch (Exception e) {
-                LOGGER.error("Failed to load interaction rule: {}", fileId);
+                LOGGER.error("Failed to load rule: {}\nHere's your stack:\n", fileId, e);
             }
         });
     }

@@ -30,7 +30,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.wkhan.naturesaura_plus.data.OreSpawnRules;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -100,10 +99,12 @@ public abstract class OreSpawnEffectMixin {
             return;
         Optional<ResourceKey<DimensionType>> dimensionType = chunk.getLevel().dimensionTypeRegistration().unwrapKey();
         Optional<ResourceKey<Biome>> biomeType = chunk.getLevel().getBiome(pos).unwrapKey();
-        if (dimensionType.isEmpty() || biomeType.isEmpty())
+        if (dimensionType.isEmpty())
             return;
-        OreSpawnRules.OreSpawnValues oreSpawnValues = ORE_SPAWNS.get(ImmutablePair.of(dimensionType.get(), biomeType.get()));
+        OreSpawnRules.OreSpawnValues oreSpawnValues = ORE_SPAWNS.get(dimensionType.get());
         if (oreSpawnValues == null)
+            return;
+        if (oreSpawnValues.biomes() != null && !oreSpawnValues.biomes().isEmpty() && (biomeType.isEmpty() || !oreSpawnValues.biomes().contains(biomeType.get())))
             return;
         Reference2IntOpenHashMap<Block> baseBlocks = oreSpawnValues.baseBlockAndAuraDrain();
         SimpleWeightedRandomList<Block> outputOres = oreSpawnValues.outputOres();

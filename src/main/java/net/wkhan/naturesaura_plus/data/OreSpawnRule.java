@@ -12,12 +12,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 public record OreSpawnRule(
         ResourceKey<DimensionType> dimensionType,
-        ResourceKey<Biome> biome,
+        @Nullable List<ResourceKey<Biome>> biomes,
         Map<Either<Block, TagKey<Block>>, Integer> baseBlockAndAuraDrain,
         SimpleWeightedRandomList<Either<Block, TagKey<Block>>> outputOres,
         int priority
@@ -25,7 +27,8 @@ public record OreSpawnRule(
     public static final Codec<OreSpawnRule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     ResourceKey.codec(Registries.DIMENSION_TYPE).fieldOf("dimension").forGetter(OreSpawnRule::dimensionType),
-                    ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(OreSpawnRule::biome),
+                    ResourceKey.codec(Registries.BIOME).listOf()
+                            .optionalFieldOf("biomes",List.of()).forGetter(OreSpawnRule::biomes),
                     Codec.unboundedMap(NaturesAuraPlusUtils.elementOrTagCodec(ForgeRegistries.BLOCKS, Registries.BLOCK), Codec.INT)
                             .fieldOf("base_block_to_aura_drain").forGetter(OreSpawnRule::baseBlockAndAuraDrain),
                     SimpleWeightedRandomList.wrappedCodecAllowingEmpty(NaturesAuraPlusUtils

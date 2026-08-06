@@ -1,0 +1,23 @@
+{
+  "type": "powder_ore_spawn",
+  "dimension": "minecraft:overworld",
+  "base_block_to_aura_drain": {
+    "minecraft:stone": 20000,
+    "minecraft:deepslate": 10000,
+    "minecraft:glass": 5000
+  },
+  "ores": [
+    {
+      "data": "#forge:ores/iron",
+      "weight": 40
+    },
+    {
+      "data": "#forge:ores/gold",
+      "weight": 20
+    },
+    {
+      "data": "#forge:ores/diamond",
+      "weight": 5
+    }
+  ]
+}
