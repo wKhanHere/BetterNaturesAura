@@ -68,7 +68,7 @@ public class GameplayConfig {
         BUILDER.pop();
 
 
-        BUILDER.comment("Furnace Booster").push("Furnace Booster");
+        BUILDER.comment("Furnace Booster").push("Furnace-Booster");
         FURNACE_BOOSTER_AURA_COST = BUILDER
                 .comment("The aura cost per recipe for the furnace booster block. (Default: 6,500)")
                 .defineInRange("furnaceBoosterAuraCost", 6500, 0, 1000000);
@@ -109,7 +109,7 @@ public class GameplayConfig {
         BUILDER.pop();
 
 
-        BUILDER.comment("Environmental Aura Bone-Meal").push("Aura Bone-Meal");
+        BUILDER.comment("Environmental Aura Bone-Meal").push("Aura-BoneMeal");
         ENABLE_WHITELIST_AURA_BONEMEAL = BUILDER
                 .comment("Whether the tag #naturesaura_plus:aura_bonemeal_whitelist is checked before allowing environmental bone-mealing due aura excess.\nThe tag #naturesaura_plus:aura_bonemeal_blacklist, however, still takes precedence. (Default: false)")
                 .define("useAuraBoneMealWhiteList", false);
