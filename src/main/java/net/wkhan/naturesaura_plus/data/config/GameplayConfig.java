@@ -76,11 +76,11 @@ public class GameplayConfig {
             .defineInRange("oreSpawnRangeScale", 150000D, 1D, Integer.MAX_VALUE);
 
     public static final ForgeConfigSpec.IntValue MIN_ORE_SPAWN_RANGE = BUILDER
-            .comment("Minimum radius for range of the of the Powder of the Bountiful Core. (Default: 5)")
+            .comment("Minimum radius for range of the Powder of the Bountiful Core. (Default: 5)")
             .defineInRange("minOreSpawnRange", 5, 1, Integer.MAX_VALUE);
 
     public static final ForgeConfigSpec.IntValue MAX_ORE_SPAWN_RANGE = BUILDER
-            .comment("Maximum radius for range of the of the Powder of the Bountiful Core. (Default: 20)")
+            .comment("Maximum radius for range of the Powder of the Bountiful Core. (Default: 20)")
             .defineInRange("maxOreSpawnRange", 20, 1, Integer.MAX_VALUE);
 
     public static final ForgeConfigSpec.IntValue MAX_ORE_PLACE_ATTEMPTS = BUILDER
