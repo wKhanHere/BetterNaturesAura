@@ -1,0 +1,7 @@
+{
+  "type": "aura_gen:slime_gen",
+  "entity": "tconstruct:terracube",
+  "aura_gain": 20000,
+  "use_slime_size": true,
+  "slime_color": 12237498
+}
