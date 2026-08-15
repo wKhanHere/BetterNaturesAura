@@ -14,21 +14,22 @@ import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static net.wkhan.naturesaura_plus.common.event.PlayerTickEvent.handleItemTransfer;
 import static net.wkhan.naturesaura_plus.common.item.ItemBreakPreventionAll.isTokenAppliedBroken;
 
 public class NaturesAuraPlusCuriosUtil {
 
-    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack, String curioSlotId) {
-        return tryEquipCurio(player, stack, curioSlotId, SoundEvents.EMPTY);
+    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack) {
+        return tryEquipCurio(player, stack, SoundEvents.EMPTY);
     }
 
-    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack, String curioSlotId, SoundEvent soundEvent) {
-        return tryEquipCurio(player, stack, curioSlotId, soundEvent, 1.0F, 1.0F);
+    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack, SoundEvent soundEvent) {
+        return tryEquipCurio(player, stack, soundEvent, 1.0F, 1.0F);
     }
 
-    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack, String curioSlotId,
+    public static InteractionResultHolder<ItemStack> tryEquipCurio(Player player, ItemStack stack,
                                                                    SoundEvent equipSoundEvent, float soundVol, float soundPitch) {
         Optional<ICuriosItemHandler> curiosInventory = CuriosApi.getCuriosInventory(player).resolve();
         if (curiosInventory.isEmpty())
@@ -36,24 +37,34 @@ public class NaturesAuraPlusCuriosUtil {
 
         ItemStack toInsert = stack.copy();
         toInsert.setCount(1);
+        Set<String> curioSlots = CuriosApi.getItemStackSlots(stack, player).keySet();
+        String fallbackCurioSlotId = null;
 
-        SlotContext context = new SlotContext(curioSlotId, player, 0, false, true);
-        if (!CuriosApi.isStackValid(context, toInsert)) //I guess I need this for reasons?
-            return InteractionResultHolder.pass(stack);
+        for (String curioSlotId : curioSlots){
+            if (fallbackCurioSlotId == null)
+                fallbackCurioSlotId = curioSlotId;
+            SlotContext context = new SlotContext(curioSlotId, player, 0, false, true);
+            if (!CuriosApi.isStackValid(context, toInsert)) //I guess I need this for reasons?
+                return InteractionResultHolder.pass(stack);
 
-        Optional<ICurioStacksHandler> optHandler = curiosInventory.get().getStacksHandler(curioSlotId);
+            Optional<ICurioStacksHandler> optHandler = curiosInventory.get().getStacksHandler(curioSlotId);
+            if (optHandler.isEmpty())
+                return InteractionResultHolder.pass(stack);
+            IDynamicStackHandler dynamicStackHandler = optHandler.get().getStacks();
+
+            for (int i = 0; i < dynamicStackHandler.getSlots(); i++) {
+                if (!dynamicStackHandler.getStackInSlot(i).isEmpty())
+                    continue;
+                dynamicStackHandler.insertItem(i, toInsert, false);
+                stack.shrink(1);
+                player.playSound(equipSoundEvent, soundVol, soundPitch);
+                return InteractionResultHolder.sidedSuccess(stack, player.level().isClientSide());
+            }
+        }
+        Optional<ICurioStacksHandler> optHandler = curiosInventory.get().getStacksHandler(fallbackCurioSlotId);
         if (optHandler.isEmpty())
             return InteractionResultHolder.pass(stack);
         IDynamicStackHandler dynamicStackHandler = optHandler.get().getStacks();
-
-        for (int i = 0; i < dynamicStackHandler.getSlots(); i++) {
-            if (!dynamicStackHandler.getStackInSlot(i).isEmpty())
-                continue;
-            dynamicStackHandler.insertItem(i, toInsert, false);
-            stack.shrink(1);
-            player.playSound(equipSoundEvent, soundVol, soundPitch);
-            return InteractionResultHolder.sidedSuccess(stack, player.level().isClientSide());
-        }
 
         ItemStack oldCurio = dynamicStackHandler.extractItem(0, 1, false);
         dynamicStackHandler.setStackInSlot(0, toInsert);
@@ -76,7 +87,7 @@ public class NaturesAuraPlusCuriosUtil {
 
         for (int i = 0; i < equipped.getSlots(); i++) {
             if (!isTokenAppliedBroken(equipped.getStackInSlot(i)))
-                return;
+                continue;
             ItemStack extracted = equipped.extractItem(i, 1, false);
             handleItemTransfer(player, extracted, "One of your curio broke!");
         }

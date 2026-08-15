@@ -2,6 +2,7 @@ package net.wkhan.naturesaura_plus.data.auragen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 import java.util.List;
 
@@ -13,8 +14,9 @@ public record FireworkGenRule(
         int flightTimeScale,
         int flatReleaseTimer,
         float finalScale,
-        boolean doFlightTimeScaling
-) {
+        boolean doFlightTimeScaling,
+        int priority
+) implements PriorityRule {
 
     private static final List<Float> defaultTypesValues = List.of(0.0F, 1.0F, 0.5F, 20.0F, 0.5F);
 
@@ -28,7 +30,13 @@ public record FireworkGenRule(
                     Codec.INT.optionalFieldOf("flight_time_scale", 15).forGetter(FireworkGenRule::flightTimeScale),
                     Codec.INT.optionalFieldOf("flat_release_timer", 40).forGetter(FireworkGenRule::flatReleaseTimer),
                     Codec.FLOAT.optionalFieldOf("final_scale", 10000.0F).forGetter(FireworkGenRule::finalScale),
-                    Codec.BOOL.optionalFieldOf("scale_timer_to_flight_time", false).forGetter(FireworkGenRule::doFlightTimeScaling)
+                    Codec.BOOL.optionalFieldOf("scale_timer_to_flight_time", false).forGetter(FireworkGenRule::doFlightTimeScaling),
+                    Codec.INT.optionalFieldOf("priority", 1).forGetter(FireworkGenRule::priority)
             ).apply(instance, FireworkGenRule::new)
     );
+
+    @Override
+    public int getPriority() {
+        return priority;
+    }
 }

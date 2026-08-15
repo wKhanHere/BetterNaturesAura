@@ -37,6 +37,8 @@ public class ModTags {
         public static final TagKey<Block> STRIPPED_WOOD = TagKey.create(Registries.BLOCK,
                 ResourceLocation.fromNamespaceAndPath("forge", "stripped_wood"));
         public static final TagKey<Block> FURNACE_FOR_BOOSTER = tag("furnace_for_booster");
+        public static final TagKey<Block> AURA_BONEMEAL_BLACKLIST = tag("aura_bonemeal_blacklist");
+        public static final TagKey<Block> AURA_BONEMEAL_WHITELIST = tag("aura_bonemeal_whitelist");
 
 
         private static TagKey<Block> tag(String name) {

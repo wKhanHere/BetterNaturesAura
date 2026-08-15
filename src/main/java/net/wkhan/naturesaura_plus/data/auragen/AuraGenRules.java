@@ -1,6 +1,5 @@
 package net.wkhan.naturesaura_plus.data.auragen;
 
-import de.ellpeck.naturesaura.api.NaturesAuraAPI;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
@@ -10,49 +9,100 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 import java.util.*;
 
-import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.generateListFromEither;
+import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.*;
 
 public final class AuraGenRules {
+    public record ProjectileValues(int auraAmount, Item item, int priority) implements PriorityRule {
+        @Override public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<EntityType<?>, ProjectileValues> PROJECTILE_GENERATIONS = new HashMap<>();
+    public static final Queue<ProjectileGenRule> projectileRulesQueue = new ArrayDeque<>();
 
-    //todo: make a way to skip error messages for item/block ids that dont exist (and ideally somehow defined)
+    public record MossValues(Block deMossedBlock, int auraAmount, int priority) implements PriorityRule {
+        @Override
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<Block, MossValues> MOSS_GENERATIONS = new HashMap<>();
+    public static final Queue<MossGenRule> mossRulesQueue = new ArrayDeque<>();
 
-    public static final Map<EntityType<?>, Item> ProjectileValues = new HashMap<>();
-
-    public record MossValues(Block deMossedBlock, int auraAmount) {}
-    public static final Map<Block, MossValues> MOSS_GENERATIONS = new HashMap<>();
-
-    public record FlowerValues(int auraAmount, byte lucidity, byte obscurity, float obscurityScale) {}
-    public static final Map<Block, FlowerValues> FLOWER_GENERATIONS = new HashMap<>();
+    public record FlowerValues(int auraAmount, byte lucidity, byte obscurity,
+                               float obscurityScale, int priority) implements PriorityRule {
+        @Override
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<Block, FlowerValues> FLOWER_GENERATIONS = new HashMap<>();
+    public static final Queue<FlowerGenRule> flowerRulesQueue = new ArrayDeque<>();
 
     public record SlimeValues(int auraAmount, int slimeColor, int minSizeForSlime, int flatGenerationTimer,
                               float generationTimerModifier, float sizeModifier,
-                              boolean doSlimeSizeScaling, boolean doEntityDropLoot, boolean isFlatGenerationTimer) {}
-    public static final Map<EntityType<?>, SlimeValues> SLIME_GENERATIONS = new HashMap<>();
+                              boolean doSlimeSizeScaling, boolean doEntityDropLoot, boolean isFlatGenerationTimer,
+                              int priority) implements PriorityRule {
+        @Override
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<EntityType<?>, SlimeValues> SLIME_GENERATIONS = new HashMap<>();
+    public static final Queue<SlimeGenRule> slimeRulesQueue = new ArrayDeque<>();
 
     public record AnimalValues(int minimumTimeAliveForGenerationTime, int maximumGenerationTime, float timeAliveModifierForGenerationTime,
                                int minimumTimeAliveForAuraAmount, int maximumAuraAmount, float timeAliveModifierForAuraAmount,
-                               boolean doEntityDropLoot, boolean isBabyValid, boolean isFlatAuraGain, boolean isFlatGenerationTimer) {}
-    public static final Map<EntityType<?>, AnimalValues> ANIMAL_GENERATIONS = new HashMap<>();
+                               boolean doEntityDropLoot, boolean isBabyValid, boolean isFlatAuraGain, boolean isFlatGenerationTimer,
+                               int priority) implements PriorityRule {
+        @Override
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<EntityType<?>, AnimalValues> ANIMAL_GENERATIONS = new HashMap<>();
+    public static final Queue<AnimalGenRule> animalRulesQueue = new ArrayDeque<>();
 
     public record ChorusValues(Block stemBlock, Block capBlock, int auraGainPerBlock, boolean isSizeScaled,
-                               SoundEvent soundEvent, float soundVolume, float soundPitch) {}
-    public static final Map<Block, ChorusValues> CHORUS_GENERATIONS = new HashMap<>();
+                               SoundEvent soundEvent, float soundVolume, float soundPitch, int priority) implements PriorityRule {
+        @Override
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<Block, ChorusValues> CHORUS_GENERATIONS = new HashMap<>();
+    public static final Queue<ChorusGenRule> chorusRulesQueue = new ArrayDeque<>();
 
-    public record OakValues(ResourceKey<ConfiguredFeature<?,?>> featureReplacement, int auraAmount) {}
-    public static final Map<ResourceKey<ConfiguredFeature<?,?>>, OakValues> OAK_GENERATIONS = new HashMap<>();
+    public record OakValues(ResourceKey<ConfiguredFeature<?,?>> featureReplacement, int auraAmount,
+                            int priority) implements PriorityRule {
+        @Override
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<ResourceKey<ConfiguredFeature<?,?>>, OakValues> OAK_GENERATIONS = new HashMap<>();
+    public static final Queue<OakGenRule> oakRulesQueue = new ArrayDeque<>();
 
     public record PotionValues(int flatAmplifier, int finalScale, int flatAmplifierScale,
-                               Set<MobEffect> incompatibleEffects, boolean doAmplifierScaling, boolean doDurationScaling) {}
-    public static final Map<MobEffect, PotionValues> POTION_GENERATIONS = new HashMap<>();
+                               Set<MobEffect> incompatibleEffects, boolean doAmplifierScaling, boolean doDurationScaling,
+                               int priority) implements PriorityRule {
+        @Override
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public static final HashMap<MobEffect, PotionValues> POTION_GENERATIONS = new HashMap<>();
+    public static final Queue<PotionGenRule> potionRulesQueue = new ArrayDeque<>();
 
-    public static final Map<Integer, Object> FIREWORK_GENERATION = new HashMap<>();
+    public static final HashMap<Integer, Object> FIREWORK_GENERATION = new HashMap<>();
 
     public static HashMap<String, Integer> auraRulesCount() {
         HashMap<String, Integer> rulesCount = new HashMap<>();
-        rulesCount.put("Projectile Generations", NaturesAuraAPI.PROJECTILE_GENERATIONS.size());
+        rulesCount.put("Projectile Generations", PROJECTILE_GENERATIONS.size());
         rulesCount.put("Moss Generations", MOSS_GENERATIONS.size());
         rulesCount.put("Flower Generations", FLOWER_GENERATIONS.size());
         rulesCount.put("Slime Generations", SLIME_GENERATIONS.size());
@@ -63,9 +113,8 @@ public final class AuraGenRules {
         rulesCount.put("Firework Generations", FIREWORK_GENERATION.size());
         return rulesCount;
     }
-
     public static void auraGenerationClear() {
-        NaturesAuraAPI.PROJECTILE_GENERATIONS.clear();
+        PROJECTILE_GENERATIONS.clear();
         MOSS_GENERATIONS.clear();
         FLOWER_GENERATIONS.clear();
         SLIME_GENERATIONS.clear();
@@ -76,208 +125,126 @@ public final class AuraGenRules {
         FIREWORK_GENERATION.clear();
     }
     public static void addAuraGenerations() {
-        addProjectileGenerations();
-        addMossGenerations();
-        addFlowerGenerations();
-        addSlimeGenerations();
-        addAnimalGenerations();
-        addChorusGenerations();
-        addOakGenerations();
-        addPotionGenerations();
+        processRuleQueue(projectileRulesQueue, AuraGenRules::addProjectileGeneration);
+        processRuleQueue(mossRulesQueue, AuraGenRules::addMossGeneration);
+        processRuleQueue(flowerRulesQueue, AuraGenRules::addFlowerGeneration);
+        processRuleQueue(slimeRulesQueue, AuraGenRules::addSlimeGeneration);
+        processRuleQueue(animalRulesQueue, AuraGenRules::addAnimalGeneration);
+        processRuleQueue(chorusRulesQueue, AuraGenRules::addChorusGeneration);
+        processRuleQueue(oakRulesQueue, AuraGenRules::addOakGeneration);
+        processRuleQueue(potionRulesQueue, AuraGenRules::addPotionGeneration);
     }
 
-    public static final Queue<ProjectileGenRule> projectileRulesQueue = new ArrayDeque<>();
     public static void addProjectileGeneration(ProjectileGenRule rule) {
-        int auraAmount = rule.auraAmount();
         EntityType<?> projectile = rule.getProjectile();
+        ProjectileValues projectileValues = new ProjectileValues(rule.auraAmount(), rule.correspondingItem(), rule.priority());
 
         if (projectile != null) {
-                NaturesAuraAPI.PROJECTILE_GENERATIONS.put(projectile, auraAmount);
-                ProjectileValues.put(projectile, rule.correspondingItem());
-                return;
+            computeAgainstPriorty(PROJECTILE_GENERATIONS, projectile, projectileValues, null);
+            return;
         }
 
         TagKey<EntityType<?>> projectileTag = rule.getProjectileTag();
         if (projectileTag != null) {
-                ForgeRegistries.ENTITY_TYPES.getValues().stream()
-                        .filter(e -> e.is(projectileTag))
-                        .forEach(e -> {
-                            NaturesAuraAPI.PROJECTILE_GENERATIONS.put(e, auraAmount);
-                            ProjectileValues.put(e, rule.correspondingItem());
-                        });
+            ForgeRegistries.ENTITY_TYPES.tags().getTag(projectileTag)
+                        .forEach(e -> computeAgainstPriorty(PROJECTILE_GENERATIONS, e, projectileValues, null));
         }
     }
-    public static void addProjectileGenerations() {
-        while(!projectileRulesQueue.isEmpty()) addProjectileGeneration(projectileRulesQueue.poll());
-    }
-
-    public static final Queue<MossGenRule> mossRulesQueue = new ArrayDeque<>();
     public static void addMossGeneration(MossGenRule rule) {
-        int auraAmount = rule.auraAmount();
         Block mossBlock = rule.getBlockInput();
         TagKey<Block> mossBlockTag = rule.getBlockInputTag();
-        Block deMossedBlock = rule.getBlockOutput();
+        MossValues mossValues = new MossValues(rule.getBlockOutput(), rule.auraAmount(), rule.priority());
 
-        if (mossBlock == null && mossBlockTag == null) return;
+        if (mossBlock == null && mossBlockTag == null)
+            return;
 
         if (mossBlock != null) {
-            MOSS_GENERATIONS.put(mossBlock, new MossValues(deMossedBlock, auraAmount));
+            computeAgainstPriorty(MOSS_GENERATIONS, mossBlock, mossValues, null);
             return;
         }
 
-        ForgeRegistries.BLOCKS.getValues().stream()
-                .filter(b -> b.defaultBlockState().is(mossBlockTag))
-                .forEach(b -> MOSS_GENERATIONS.put(b, new MossValues(deMossedBlock, auraAmount)));
+        ForgeRegistries.BLOCKS.tags().getTag(mossBlockTag)
+                .forEach(b -> computeAgainstPriorty(MOSS_GENERATIONS, b, mossValues, null));
     }
-    public static void addMossGenerations() {
-        while(!mossRulesQueue.isEmpty()) addMossGeneration(mossRulesQueue.poll());
-    }
-
-    public static final Queue<FlowerGenRule> flowerRulesQueue = new ArrayDeque<>();
     public static void addFlowerGeneration(FlowerGenRule rule) {
         Block flowerBlock = rule.getBlockInput();
         TagKey<Block> flowerBlockTag = rule.getBlockInputTag();
-        if (flowerBlock == null && flowerBlockTag == null) return;
-        int auraAmount = rule.auraAmount();
-        byte lucidity = rule.lucidity();
-        byte obscurity = rule.obscurity();
-        float obscurityScale = rule.obscurityScale();
+        if (flowerBlock == null && flowerBlockTag == null)
+            return;
+        FlowerValues flowerValues = new FlowerValues(rule.auraAmount(), rule.lucidity(),
+                rule.obscurity(), rule.obscurityScale(), rule.priority());
 
         if(flowerBlock != null) {
-            FLOWER_GENERATIONS.put(flowerBlock, new FlowerValues(auraAmount, lucidity, obscurity, obscurityScale));
+            computeAgainstPriorty(FLOWER_GENERATIONS, flowerBlock, flowerValues, null);
             return;
         }
 
-        ForgeRegistries.BLOCKS.getValues().stream()
-                .filter(b -> b.defaultBlockState().is(flowerBlockTag))
-                .forEach(b -> FLOWER_GENERATIONS.put(b, new FlowerValues(auraAmount, lucidity, obscurity, obscurityScale)));
+        ForgeRegistries.BLOCKS.tags().getTag(flowerBlockTag)
+                .forEach(b -> computeAgainstPriorty(FLOWER_GENERATIONS, b, flowerValues, null));
     }
-    public static void addFlowerGenerations() {
-        while(!flowerRulesQueue.isEmpty()) addFlowerGeneration(flowerRulesQueue.poll());
-    }
-
-    public static final Queue<SlimeGenRule> slimeRulesQueue = new ArrayDeque<>();
     public static void addSlimeGeneration(SlimeGenRule rule) {
-        int auraAmount = rule.auraAmount();
-        int slimeColor = rule.slimeColor();
-        int minSizeForSlime = rule.minSizeForSlime();
-        int flatGenerationTimer = rule.flatGenerationTimer();
-        float generationTimerModifier = rule.generationTimerModifier();
-        float sizeModifier = rule.sizeModifier();
-        boolean doSlimeSizeScaling = rule.doSlimeSizeScaling();
-        boolean doEntityDropLoot = rule.doEntityDropLoot();
-        boolean isFlatGenerationTimer = rule.isFlatGenerationTimer();
+        SlimeValues slimeValues = new SlimeValues(rule.auraAmount(), rule.slimeColor(), rule.minSizeForSlime(),
+                rule.flatGenerationTimer(), rule.generationTimerModifier(), rule.sizeModifier(),
+                rule.doSlimeSizeScaling(), rule.doEntityDropLoot(), rule.isFlatGenerationTimer(), rule.priority());
         EntityType<?> slime = rule.getEntity();
 
         if (slime != null) {
-            SLIME_GENERATIONS.put(slime,
-                    new SlimeValues(auraAmount,slimeColor,minSizeForSlime,flatGenerationTimer,generationTimerModifier,
-                            sizeModifier,doSlimeSizeScaling,doEntityDropLoot,isFlatGenerationTimer));
+            computeAgainstPriorty(SLIME_GENERATIONS, slime, slimeValues, null);
             return;
         }
 
         TagKey<EntityType<?>> slimeTag = rule.getEntityTag();
         if (slimeTag != null) {
-            ForgeRegistries.ENTITY_TYPES.getValues().stream()
-                    .filter(e -> e.is(slimeTag))
-                    .forEach(e -> SLIME_GENERATIONS.put(e,
-                            new SlimeValues(auraAmount,slimeColor,minSizeForSlime,flatGenerationTimer,generationTimerModifier,
-                                    sizeModifier,doSlimeSizeScaling,doEntityDropLoot,isFlatGenerationTimer))
+            ForgeRegistries.ENTITY_TYPES.tags().getTag(slimeTag)
+                    .forEach(e -> computeAgainstPriorty(SLIME_GENERATIONS, e, slimeValues, null)
             );
         }
     }
-    public static void addSlimeGenerations() {
-        while(!slimeRulesQueue.isEmpty()) addSlimeGeneration(slimeRulesQueue.poll());
-    }
-
-    public static final Queue<AnimalGenRule> animalRulesQueue = new ArrayDeque<>();
     public static void addAnimalGeneration(AnimalGenRule rule) {
-        int minimumTimeAliveForGenerationTime = rule.minimumTimeAliveForGenerationTime();
-        int maximumGenerationTime = rule.maximumGenerationTime();
-        float timeAliveModifierForGenerationTime = rule.timeAliveModifierForGenerationTime();
-        int minimumTimeAliveForAuraAmount = rule.minimumTimeAliveForAuraAmount();
-        int maximumAuraAmount = rule.maximumAuraAmount();
-        float timeAliveModifierForAuraAmount = rule.timeAliveModifierForAuraAmount();
-        boolean doEntityDropLoot = rule.doEntityDropLoot();
-        boolean isBabyValid = rule.isBabyValid();
-        boolean isFlatAuraGain = rule.isFlatAuraGain();
-        boolean isFlatGenerationTimer = rule.isFlatGenerationTimer();
+        AnimalValues animalValues = new AnimalValues(rule.minimumTimeAliveForGenerationTime(), rule.maximumGenerationTime(),
+                rule.timeAliveModifierForGenerationTime(), rule.minimumTimeAliveForAuraAmount(), rule.maximumAuraAmount(),
+                rule.timeAliveModifierForAuraAmount(), rule.doEntityDropLoot(), rule.isBabyValid(), rule.isFlatAuraGain(),
+                rule.isFlatGenerationTimer(), rule.priority());
         EntityType<?> animal = rule.getEntity();
 
         if (animal != null) {
-            ANIMAL_GENERATIONS.put(animal,
-                    new AnimalValues(minimumTimeAliveForGenerationTime, maximumGenerationTime, timeAliveModifierForGenerationTime,
-                            minimumTimeAliveForAuraAmount, maximumAuraAmount, timeAliveModifierForAuraAmount , doEntityDropLoot,
-                            isBabyValid, isFlatAuraGain, isFlatGenerationTimer));
+            computeAgainstPriorty(ANIMAL_GENERATIONS, animal, animalValues, null);
             return;
         }
 
         TagKey<EntityType<?>> animalTag = rule.getEntityTag();
         if (animalTag != null) {
-            ForgeRegistries.ENTITY_TYPES.getValues().stream()
-                    .filter(e -> e.is(animalTag))
-                    .forEach(e -> ANIMAL_GENERATIONS.put(e,
-                            new AnimalValues(minimumTimeAliveForGenerationTime, maximumGenerationTime, timeAliveModifierForGenerationTime,
-                                    minimumTimeAliveForAuraAmount, maximumAuraAmount, timeAliveModifierForAuraAmount , doEntityDropLoot,
-                                    isBabyValid, isFlatAuraGain, isFlatGenerationTimer))
-                    );
+            ForgeRegistries.ENTITY_TYPES.tags().getTag(animalTag)
+                    .forEach(e -> computeAgainstPriorty(ANIMAL_GENERATIONS, e, animalValues, null)
+            );
         }
     }
-    public static void addAnimalGenerations() {
-        while(!animalRulesQueue.isEmpty()) addAnimalGeneration(animalRulesQueue.poll());
-    }
-
-    public static final Queue<ChorusGenRule> chorusRulesQueue = new ArrayDeque<>();
     public static void addChorusGeneration(ChorusGenRule rule) { 
         Block soilBlock = rule.getBlockSoil();
         TagKey<Block> soilBlockTag = rule.getBlockSoilTag();
-        if (soilBlock == null && soilBlockTag == null) return;
-        int auraGainPerBlock = rule.auraGainPerBlock();
-        boolean isSizeScaled = rule.isSizeScaled();
-        SoundEvent soundEvent = rule.soundEvent();
-        float soundVolume = rule.soundVolume();
-        float soundPitch = rule.soundPitch();
+        if (soilBlock == null && soilBlockTag == null)
+            return;
         List<Block> listSoil = generateListFromEither(rule.soilBlockId(),ForgeRegistries.BLOCKS);
-        Block stem = rule.stemBlock();
-        Block cap = rule.capBlock();
+        ChorusValues chorusValues = new ChorusValues(rule.stemBlock(), rule.capBlock(), rule.auraGainPerBlock(),
+                rule.isSizeScaled(), rule.soundEvent(), rule.soundVolume(), rule.soundPitch(), rule.priority());
 
-        for (Block soil : listSoil) CHORUS_GENERATIONS.put(soil, new ChorusValues
-                (stem, cap, auraGainPerBlock, isSizeScaled, soundEvent, soundVolume, soundPitch));
-    }
-    public static void addChorusGenerations() {
-        while(!chorusRulesQueue.isEmpty()) addChorusGeneration(chorusRulesQueue.poll());
-    }
-
-    public static final Queue<OakGenRule> oakRulesQueue = new ArrayDeque<>();
+        for (Block soil : listSoil)
+            computeAgainstPriorty(CHORUS_GENERATIONS, soil, chorusValues, null);
+    } //todo: change chorus gen to instead take against a list for cap and stem since we know list codecs now
     public static void addOakGeneration(OakGenRule rule) {
-        ResourceKey<ConfiguredFeature<?,?>> featureToReplace = rule.featureToReplace();
-        ResourceKey<ConfiguredFeature<?,?>> featureReplacement = rule.featureReplacement();
-        int auraAmount = rule.auraAmount();
-
-        OAK_GENERATIONS.put(featureToReplace, new OakValues(featureReplacement, auraAmount));
+        OakValues oakValues = new OakValues(rule.featureReplacement(), rule.auraAmount(), rule.priority());
+        computeAgainstPriorty(OAK_GENERATIONS, rule.featureToReplace(), oakValues, null);
     }
-    public static void addOakGenerations() {
-        while(!oakRulesQueue.isEmpty()) addOakGeneration(oakRulesQueue.poll());
-    }
-
-    public static final Queue<PotionGenRule> potionRulesQueue = new ArrayDeque<>();
     public static void addPotionGeneration(PotionGenRule rule) {
-        MobEffect potion = rule.potion();
-        int flatAmplifier = rule.flatAmplifier();
-        int finalScale = rule.finalScale();
-        int flatAmplifierScale = rule.flatAmplifierScale();
-        Set<MobEffect> incompatibleEffects = new HashSet<>(rule.incompatibleEffects());
-        boolean doAmplifierScaling = rule.doAmplifierScaling();
-        boolean doDurationScaling = rule.doDurationScaling();
-
-        POTION_GENERATIONS.put(potion,
-                new PotionValues(flatAmplifier, finalScale, flatAmplifierScale,
-                incompatibleEffects, doAmplifierScaling, doDurationScaling));
+        PotionValues potionValues = new PotionValues(rule.flatAmplifier(), rule.finalScale(), rule.flatAmplifierScale(),
+                new HashSet<>(rule.incompatibleEffects()), rule.doAmplifierScaling(), rule.doDurationScaling(), rule.priority());
+        computeAgainstPriorty(POTION_GENERATIONS, rule.potion(), potionValues, (oldValue, newValue) -> {
+            Set<MobEffect> incompatibleEffects = new HashSet<>(oldValue.incompatibleEffects());
+            incompatibleEffects.addAll(newValue.incompatibleEffects());
+            return new PotionValues(oldValue.flatAmplifier(), oldValue.finalScale(), oldValue.flatAmplifierScale(),
+                    incompatibleEffects, oldValue.doAmplifierScaling(), oldValue.doDurationScaling(), oldValue.priority());
+        });
     }
-    public static void addPotionGenerations() {
-        while(!potionRulesQueue.isEmpty()) addPotionGeneration(potionRulesQueue.poll());
-    }
-
     public static void addFireworkGeneration(FireworkGenRule rule) {
         FIREWORK_GENERATION.put(0, rule.explosionFlickerFactor());
         FIREWORK_GENERATION.put(1, rule.explosionTrailFactor());

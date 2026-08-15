@@ -10,6 +10,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.common.item.ModItems;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -21,7 +22,7 @@ public class ModItemTagGenerator extends ItemTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider pProvider) {
+    protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         this.tag(ModTags.Items.CANNOT_APPLY_BREAK_PREVENTION).add(Items.ELYTRA);
 
         this.tag(ModTags.Items.VALID_WOODEN_STAND_MATERIAL).addTag(ItemTags.LOGS);

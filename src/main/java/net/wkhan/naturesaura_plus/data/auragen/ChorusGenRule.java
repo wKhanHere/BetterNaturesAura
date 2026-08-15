@@ -10,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 public record ChorusGenRule(
         Either<Block, TagKey<Block>> soilBlockId,
@@ -19,8 +20,9 @@ public record ChorusGenRule(
         boolean isSizeScaled,
         SoundEvent soundEvent,
         float soundVolume,
-        float soundPitch
-) {
+        float soundPitch,
+        int priority
+) implements PriorityRule {
 
     public static final Codec<ChorusGenRule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -32,7 +34,8 @@ public record ChorusGenRule(
                     Codec.BOOL.optionalFieldOf("is_size_scaled", true).forGetter(ChorusGenRule::isSizeScaled),
                     ForgeRegistries.SOUND_EVENTS.getCodec().optionalFieldOf("break_sound", SoundEvents.CHORUS_FRUIT_TELEPORT).forGetter(ChorusGenRule::soundEvent),
                     Codec.FLOAT.optionalFieldOf("break_sound_volume", 0.5F).forGetter(ChorusGenRule::soundVolume),
-                    Codec.FLOAT.optionalFieldOf("break_sound_pitch", 1F).forGetter(ChorusGenRule::soundPitch)
+                    Codec.FLOAT.optionalFieldOf("break_sound_pitch", 1F).forGetter(ChorusGenRule::soundPitch),
+                    Codec.INT.optionalFieldOf("priority", 1).forGetter(ChorusGenRule::priority)
             ).apply(instance, ChorusGenRule::new)
     );
 
@@ -41,5 +44,10 @@ public record ChorusGenRule(
     }
     public TagKey<Block> getBlockSoilTag() {
         return this.soilBlockId.right().orElse(null);
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 }

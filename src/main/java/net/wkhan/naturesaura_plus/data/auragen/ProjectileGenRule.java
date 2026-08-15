@@ -10,12 +10,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 public record ProjectileGenRule(
         Either<EntityType<?>, TagKey<EntityType<?>>> projectileId,
         Item correspondingItem,
-        int auraAmount
-) {
+        int auraAmount,
+        int priority
+) implements PriorityRule {
 
     public static final Codec<ProjectileGenRule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -23,7 +25,8 @@ public record ProjectileGenRule(
                             .fieldOf("projectile").forGetter(ProjectileGenRule::projectileId),
                     ForgeRegistries.ITEMS.getCodec().optionalFieldOf("corresponding_item", Items.AIR)
                             .forGetter(ProjectileGenRule::correspondingItem),
-                    Codec.INT.fieldOf("aura_gain").forGetter(ProjectileGenRule::auraAmount)
+                    Codec.INT.fieldOf("aura_gain").forGetter(ProjectileGenRule::auraAmount),
+                    Codec.INT.optionalFieldOf("priority", 1).forGetter(ProjectileGenRule::priority)
             ).apply(instance, ProjectileGenRule::new)
     );
 
@@ -37,5 +40,10 @@ public record ProjectileGenRule(
 
     public TagKey<EntityType<?>> getProjectileTag() {
         return this.projectileId.right().orElse(null);
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 }

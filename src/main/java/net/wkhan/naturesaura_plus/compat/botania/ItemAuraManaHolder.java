@@ -201,8 +201,9 @@ public class ItemAuraManaHolder extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown() && !isCreativeStack(stack))
             return toggleBarDisplay(player, stack, level);
-        else if (!player.isShiftKeyDown())
-            return tryEquipCurio(player, stack, "belt", SoundEvents.ARMOR_EQUIP_LEATHER);
+        else if (!player.isShiftKeyDown()) {
+            return tryEquipCurio(player, stack, SoundEvents.ARMOR_EQUIP_LEATHER);
+        }
         return super.use(level, player, hand);
     }
 

@@ -8,6 +8,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 public record SlimeGenRule(
         Either<EntityType<?>,TagKey<EntityType<?>>> entityId,
@@ -19,8 +20,9 @@ public record SlimeGenRule(
         float sizeModifier,
         boolean doSlimeSizeScaling,
         boolean doEntityDropLoot,
-        boolean isFlatGenerationTimer
-) {
+        boolean isFlatGenerationTimer,
+        int priority
+) implements PriorityRule {
 
     public static final Codec<SlimeGenRule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -34,7 +36,8 @@ public record SlimeGenRule(
                     Codec.FLOAT.optionalFieldOf("size_modifier", 1.0F).forGetter(SlimeGenRule::sizeModifier),
                     Codec.BOOL.optionalFieldOf("use_slime_size", false).forGetter(SlimeGenRule::doSlimeSizeScaling),
                     Codec.BOOL.optionalFieldOf("entity_drop_loot", true).forGetter(SlimeGenRule::doEntityDropLoot),
-                    Codec.BOOL.optionalFieldOf("is_flat_generation_timer", false).forGetter(SlimeGenRule::isFlatGenerationTimer)
+                    Codec.BOOL.optionalFieldOf("is_flat_generation_timer", false).forGetter(SlimeGenRule::isFlatGenerationTimer),
+                    Codec.INT.optionalFieldOf("priority", 1).forGetter(SlimeGenRule::priority)
             ).apply(instance, SlimeGenRule::new)
     );
 
@@ -50,4 +53,8 @@ public record SlimeGenRule(
         return this.entityId.right().orElse(null);
     }
 
+    @Override
+    public int getPriority() {
+        return priority;
+    }
 }

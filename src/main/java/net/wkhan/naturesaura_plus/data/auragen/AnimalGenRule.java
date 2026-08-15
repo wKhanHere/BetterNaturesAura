@@ -8,6 +8,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 public record AnimalGenRule(
         Either<EntityType<?>, TagKey<EntityType<?>>> entityId,
@@ -20,8 +21,9 @@ public record AnimalGenRule(
         boolean doEntityDropLoot,
         boolean isBabyValid,
         boolean isFlatAuraGain,
-        boolean isFlatGenerationTimer
-) {
+        boolean isFlatGenerationTimer,
+        int priority
+) implements PriorityRule {
 
     public static final Codec<AnimalGenRule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -36,7 +38,8 @@ public record AnimalGenRule(
                     Codec.BOOL.optionalFieldOf("do_entity_drop_loot", false).forGetter(AnimalGenRule::doEntityDropLoot),
                     Codec.BOOL.optionalFieldOf("is_baby_valid", false).forGetter(AnimalGenRule::isBabyValid),
                     Codec.BOOL.optionalFieldOf("is_flat_aura_gain", false).forGetter(AnimalGenRule::isFlatAuraGain),
-                    Codec.BOOL.optionalFieldOf("is_flat_generation_timer", false).forGetter(AnimalGenRule::isFlatGenerationTimer)
+                    Codec.BOOL.optionalFieldOf("is_flat_generation_timer", false).forGetter(AnimalGenRule::isFlatGenerationTimer),
+                    Codec.INT.optionalFieldOf("priority", 1).forGetter(AnimalGenRule::priority)
             ).apply(instance, AnimalGenRule::new)
     );
 
@@ -52,4 +55,8 @@ public record AnimalGenRule(
         return this.entityId.right().orElse(null);
     }
 
+    @Override
+    public int getPriority() {
+        return priority;
+    }
 }

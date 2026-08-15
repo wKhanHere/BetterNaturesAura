@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,9 @@ public record PotionGenRule(
         int flatAmplifierScale,
         List<MobEffect> incompatibleEffects,
         boolean doAmplifierScaling,
-        boolean doDurationScaling
-) {
+        boolean doDurationScaling,
+        int priority
+) implements PriorityRule {
     public static final Codec<PotionGenRule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     ForgeRegistries.MOB_EFFECTS.getCodec().fieldOf("potion").forGetter(PotionGenRule::potion),
@@ -26,7 +28,13 @@ public record PotionGenRule(
                     ForgeRegistries.MOB_EFFECTS.getCodec().listOf()
                             .optionalFieldOf("incompatible_effects", new ArrayList<>()).forGetter(PotionGenRule::incompatibleEffects),
                     Codec.BOOL.optionalFieldOf("do_amplifier_scaling", true).forGetter(PotionGenRule::doAmplifierScaling),
-                    Codec.BOOL.optionalFieldOf("do_duration_scaling", true).forGetter(PotionGenRule::doDurationScaling)
+                    Codec.BOOL.optionalFieldOf("do_duration_scaling", true).forGetter(PotionGenRule::doDurationScaling),
+                    Codec.INT.optionalFieldOf("priority", 1).forGetter(PotionGenRule::priority)
             ).apply(instance, PotionGenRule::new)
     );
+
+    @Override
+    public int getPriority() {
+        return priority;
+    }
 }

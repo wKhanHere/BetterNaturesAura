@@ -8,19 +8,22 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 public record MossGenRule(
         Either<Block, TagKey<Block>> blockInputId,
         Block blockOutputId,
-        int auraAmount
-) {
+        int auraAmount,
+        int priority
+) implements PriorityRule {
 
     public static final Codec<MossGenRule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     NaturesAuraPlusUtils.elementOrTagCodec(ForgeRegistries.BLOCKS, Registries.BLOCK)
                             .fieldOf("block_to_convert").forGetter(MossGenRule::blockInputId),
                     ForgeRegistries.BLOCKS.getCodec().fieldOf("block_result").forGetter(MossGenRule::blockOutputId),
-                    Codec.INT.fieldOf("aura_gain").forGetter(MossGenRule::auraAmount)
+                    Codec.INT.fieldOf("aura_gain").forGetter(MossGenRule::auraAmount),
+                    Codec.INT.optionalFieldOf("priority", 1).forGetter(MossGenRule::priority)
             ).apply(instance, MossGenRule::new)
     );
 
@@ -40,4 +43,8 @@ public record MossGenRule(
         return this.blockOutputId;
     }
 
+    @Override
+    public int getPriority() {
+        return priority;
+    }
 }

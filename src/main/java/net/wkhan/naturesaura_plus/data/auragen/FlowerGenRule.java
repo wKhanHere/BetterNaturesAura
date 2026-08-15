@@ -8,14 +8,16 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
+import net.wkhan.naturesaura_plus.data.PriorityRule;
 
 public record FlowerGenRule(
         Either<Block, TagKey<Block>> blockToConvertId,
         int auraAmount,
         byte lucidity,
         byte obscurity,
-        float obscurityScale
-) {
+        float obscurityScale,
+        int priority
+) implements PriorityRule {
 
     public static final Codec<FlowerGenRule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -24,7 +26,8 @@ public record FlowerGenRule(
                     Codec.INT.fieldOf("aura_gain").forGetter(FlowerGenRule::auraAmount),
                     Codec.BYTE.optionalFieldOf("lucidity", (byte) 0).forGetter(FlowerGenRule::lucidity),
                     Codec.BYTE.fieldOf("obscurity").forGetter(FlowerGenRule::obscurity),
-                    Codec.FLOAT.optionalFieldOf("obscurity_scale", 2F).forGetter(FlowerGenRule::obscurityScale)
+                    Codec.FLOAT.optionalFieldOf("obscurity_scale", 2F).forGetter(FlowerGenRule::obscurityScale),
+                    Codec.INT.optionalFieldOf("priority", 1).forGetter(FlowerGenRule::priority)
             ).apply(instance, FlowerGenRule::new)
     );
 
@@ -38,6 +41,11 @@ public record FlowerGenRule(
 
     public TagKey<Block> getBlockInputTag() {
         return this.blockToConvertId.right().orElse(null);
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 }
 

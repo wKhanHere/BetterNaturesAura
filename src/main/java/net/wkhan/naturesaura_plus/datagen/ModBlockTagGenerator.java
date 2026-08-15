@@ -128,5 +128,18 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                         Blocks.BLAST_FURNACE,
                         Blocks.SMOKER
                 );
+
+                this.tag(ModTags.Blocks.AURA_BONEMEAL_BLACKLIST).add(
+                        Blocks.SUNFLOWER,
+                        Blocks.PEONY,
+                        Blocks.ROSE_BUSH,
+                        Blocks.LILAC,
+                        Blocks.PITCHER_PLANT,
+                        Blocks.TALL_GRASS,
+                        Blocks.TALL_SEAGRASS,
+                        Blocks.LARGE_FERN
+                );
+
+                this.tag(ModTags.Blocks.AURA_BONEMEAL_WHITELIST);
         }
 }
