@@ -1,0 +1,7 @@
+{
+  "type": "aura_gen:slime_gen",
+  "entity": "netherexp:ecto_slab",
+  "aura_gain": 64000,
+  "use_slime_size": true,
+  "slime_color": 2051689
+}

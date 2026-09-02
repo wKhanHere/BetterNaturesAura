@@ -1,0 +1,7 @@
+{
+  "type": "aura_gen:slime_gen",
+  "entity": "tconstruct:ender_slime",
+  "aura_gain": 70000,
+  "use_slime_size": true,
+  "slime_color": 10179839
+}
