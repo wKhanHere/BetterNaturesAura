@@ -7,15 +7,131 @@
   },
   "ores": [
     {
+      "data": "#forge:ores/coal",
+      "weight": 5000
+    },
+    {
       "data": "#forge:ores/iron",
-      "weight": 40
+      "weight": 3000
     },
     {
       "data": "#forge:ores/gold",
-      "weight": 20
+      "weight": 500
     },
     {
       "data": "#forge:ores/diamond",
+      "weight": 50
+    },
+    {
+      "data": "#forge:ores/lapis",
+      "weight": 250
+    },
+    {
+      "data": "#forge:ores/redstone",
+      "weight": 200
+    },
+    {
+      "data": "#forge:ores/emerald",
+      "weight": 30
+    },
+    {
+      "data": "#forge:ores/copper",
+      "weight": 2000
+    },
+    {
+      "data": "#forge:ores/tin",
+      "weight": 1800
+    },
+    {
+      "data": "#forge:ores/lead",
+      "weight": 1500
+    },
+    {
+      "data": "#forge:ores/silver",
+      "weight": 1000
+    },
+    {
+      "data": "#forge:ores/nickel",
+      "weight": 100
+    },
+    {
+      "data": "#forge:ores/platinum",
+      "weight": 20
+    },
+    {
+      "data": "#forge:ores/aluminum",
+      "weight": 1200
+    },
+    {
+      "data": "#forge:ores/aluminium",
+      "weight": 1200
+    },
+    {
+      "data": "#forge:ores/osmium",
+      "weight": 1500
+    },
+    {
+      "data": "#forge:ores/zinc",
+      "weight": 1000
+    },
+    {
+      "data": "#forge:ores/yellorite",
+      "weight": 1200
+    },
+    {
+      "data": "#forge:ores/uranium",
+      "weight": 400
+    },
+    {
+      "data": "#forge:ores/apatite",
+      "weight": 700
+    },
+    {
+      "data": "#forge:ores/ruby",
+      "weight": 40
+    },
+    {
+      "data": "#forge:ores/peridot",
+      "weight": 40
+    },
+    {
+      "data": "#forge:ores/topaz",
+      "weight": 40
+    },
+    {
+      "data": "#forge:ores/tanzanite",
+      "weight": 40
+    },
+    {
+      "data": "#forge:ores/malachite",
+      "weight": 40
+    },
+    {
+      "data": "#forge:ores/sapphire",
+      "weight": 40
+    },
+    {
+      "data": "#forge:ores/amber",
+      "weight": 150
+    },
+    {
+      "data": "#forge:ores/resonating",
+      "weight": 50
+    },
+    {
+      "data": "#forge:ores/sulfur",
+      "weight": 600
+    },
+    {
+      "data": "#forge:ores/saltpeter",
+      "weight": 250
+    },
+    {
+      "data": "#forge:ores/salt",
+      "weight": 2900
+    },
+    {
+      "data": "#forge:ores/draconium",
       "weight": 5
     }
   ]

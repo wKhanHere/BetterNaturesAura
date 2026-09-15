@@ -1,0 +1,81 @@
+{
+  "type": "powder_ore_spawn",
+  "dimension": "minecraft:nether",
+  "base_block_to_aura_drain": {
+    "minecraft:netherrack": 20000
+  },
+  "ores": [
+    {
+      "data": "#forge:ores/nether/coal",
+      "weight": 5000
+    },
+    {
+      "data": "#forge:ores/nether/iron",
+      "weight": 3000
+    },
+    {
+      "data": "#forge:ores/nether/gold",
+      "weight": 500
+    },
+    {
+      "data": "#forge:ores/nether/diamond",
+      "weight": 50
+    },
+    {
+      "data": "#forge:ores/nether/lapis",
+      "weight": 250
+    },
+    {
+      "data": "#forge:ores/nether/redstone",
+      "weight": 200
+    },
+    {
+      "data": "#forge:ores/nether/emerald",
+      "weight": 30
+    },
+    {
+      "data": "#forge:ores/quartz",
+      "weight": 8000
+    },
+    {
+      "data": "#forge:ores/netherite_scrap",
+      "weight": 30
+    },
+    {
+      "data": "#forge:ores/nether/copper",
+      "weight": 2000
+    },
+    {
+      "data": "#forge:ores/nether/tin",
+      "weight": 1800
+    },
+    {
+      "data": "#forge:ores/nether/lead",
+      "weight": 1500
+    },
+    {
+      "data": "#forge:ores/nether/silver",
+      "weight": 1000
+    },
+    {
+      "data": "#forge:ores/nether/nickel",
+      "weight": 100
+    },
+    {
+      "data": "#forge:ores/nether/platinum",
+      "weight": 20
+    },
+    {
+      "data": "#forge:ores/firestone",
+      "weight": 30
+    },
+    {
+      "data": "#forge:ores/cobalt",
+      "weight": 50
+    },
+    {
+      "data": "#forge:ores/ardite",
+      "weight": 50
+    }
+  ]
+}
