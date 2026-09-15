@@ -97,8 +97,8 @@ public class ItemAuraManaHolder extends Item {
         public record RecordDualAuraMana(int aura, int max_aura, int mana, int max_mana) implements TooltipComponent {}
 
         @Override
-        public int storeAura(int aura_to_store, boolean simulate) {
-            int store = Math.min(aura_to_store, SASH_AURA_CAPACITY.get() - this.getStoredAura());
+        public int storeAura(int auraToStore, boolean simulate) {
+            int store = Math.min(auraToStore, SASH_AURA_CAPACITY.get() - this.getStoredAura());
             if (!simulate && !isCreativeStack(stack)) {
                 this.setAura(stack,this.getStoredAura() + store);
             }
@@ -106,8 +106,8 @@ public class ItemAuraManaHolder extends Item {
         }
 
         @Override
-        public int drainAura(int aura_to_drain, boolean simulate) {
-            int drain = Math.min(aura_to_drain, this.getStoredAura());
+        public int drainAura(int auraToDrain, boolean simulate) {
+            int drain = Math.min(auraToDrain, this.getStoredAura());
             if (!simulate && !isCreativeStack(stack)) {
                 this.setAura(stack, this.getStoredAura() - drain);
             }

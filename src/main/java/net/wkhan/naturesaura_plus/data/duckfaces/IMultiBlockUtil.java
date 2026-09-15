@@ -1,5 +1,5 @@
 package net.wkhan.naturesaura_plus.data.duckfaces;
 
-public interface MultiBlockUtil {
+public interface IMultiBlockUtil {
     void naturesaura_plus$allowAirInRitual(Boolean allow);
 }

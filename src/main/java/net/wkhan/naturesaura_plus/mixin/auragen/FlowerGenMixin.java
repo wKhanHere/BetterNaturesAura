@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
-import net.wkhan.naturesaura_plus.data.duckfaces.FlowerGeneration;
+import net.wkhan.naturesaura_plus.data.duckfaces.IFlowerGeneration;
 import net.wkhan.naturesaura_plus.network.ModNetwork;
 import net.wkhan.naturesaura_plus.network.packets.S2CPacketFlowerGenUpdate;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +37,7 @@ import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.circularBuffer;
 import static net.wkhan.naturesaura_plus.data.config.AuraGenConfig.*;
 
 @Mixin(BlockEntityFlowerGenerator.class)
-public abstract class FlowerGenMixin extends BlockEntityImpl implements FlowerGeneration {
+public abstract class FlowerGenMixin extends BlockEntityImpl implements IFlowerGeneration {
     public FlowerGenMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -96,9 +96,7 @@ public abstract class FlowerGenMixin extends BlockEntityImpl implements FlowerGe
             this.naturesaura_plus$vitality = (byte) Math.max(this.naturesaura_plus$vitality - obscurity, 0);
         }
 
-        //this.sendToClients(); // Not implemented, idk how this works yet
         S2CPacketFlowerGenUpdate msg = new S2CPacketFlowerGenUpdate(this.naturesaura_plus$vitality, flower, this.getBlockPos());
-
         ModNetwork.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(
                 () -> this.level.getChunkAt(this.getBlockPos()) ), msg);
 
@@ -113,7 +111,14 @@ public abstract class FlowerGenMixin extends BlockEntityImpl implements FlowerGe
         int color = Helper.blendColors(6081584, 15023126, (float) auraFactor);
         if (toAdd > 0) {
             for(int i = level.random.nextInt(5) + 5; i >= 0; --i) {
-                PacketHandler.sendToAllAround(level, this.worldPosition, 32, new PacketParticleStream((float)pos.getX() + 0.25F + level.random.nextFloat() * 0.5F, (float)pos.getY() + 0.25F + level.random.nextFloat() * 0.5F, (float)pos.getZ() + 0.25F + level.random.nextFloat() * 0.5F, (float)this.worldPosition.getX() + 0.25F + level.random.nextFloat() * 0.5F, (float)this.worldPosition.getY() + 0.25F + level.random.nextFloat() * 0.5F, (float)this.worldPosition.getZ() + 0.25F + level.random.nextFloat() * 0.5F, level.random.nextFloat() * 0.02F + 0.1F, color, 1.0F));
+                PacketHandler.sendToAllAround(level, this.worldPosition, 32, new PacketParticleStream(
+                        (float)pos.getX() + 0.25F + level.random.nextFloat() * 0.5F,
+                        (float)pos.getY() + 0.25F + level.random.nextFloat() * 0.5F,
+                        (float)pos.getZ() + 0.25F + level.random.nextFloat() * 0.5F,
+                        (float)this.worldPosition.getX() + 0.25F + level.random.nextFloat() * 0.5F,
+                        (float)this.worldPosition.getY() + 0.25F + level.random.nextFloat() * 0.5F,
+                        (float)this.worldPosition.getZ() + 0.25F + level.random.nextFloat() * 0.5F,
+                        level.random.nextFloat() * 0.02F + 0.1F, color, 1.0F));
             }
 
             PacketHandler.sendToAllAround(level, this.worldPosition, 32, new PacketParticles((float)this.worldPosition.getX(), (float)this.worldPosition.getY(), (float)this.worldPosition.getZ(), PacketParticles.Type.FLOWER_GEN_AURA_CREATION));

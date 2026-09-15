@@ -6,7 +6,7 @@ import de.ellpeck.naturesaura.blocks.tiles.BlockEntityOakGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.wkhan.naturesaura_plus.data.duckfaces.OakGeneration;
+import net.wkhan.naturesaura_plus.data.duckfaces.IOakGeneration;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +17,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 @Mixin(BlockEntityOakGenerator.class)
-public abstract class OakGenMixin extends BlockEntityImpl implements OakGeneration {
+public abstract class OakGenMixin extends BlockEntityImpl implements IOakGeneration {
     public OakGenMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }

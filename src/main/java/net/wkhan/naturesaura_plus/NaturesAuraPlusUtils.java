@@ -30,8 +30,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.wkhan.naturesaura_plus.data.PriorityRule;
 import net.wkhan.naturesaura_plus.data.trackers.TreeRitualTreeTracker;
-import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
-import net.wkhan.naturesaura_plus.data.duckfaces.MultiBlockUtil;
+import net.wkhan.naturesaura_plus.data.duckfaces.IAbstractWoodStand;
+import net.wkhan.naturesaura_plus.data.duckfaces.IMultiBlockUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -290,9 +290,9 @@ public class NaturesAuraPlusUtils {
     public static <T> T updateWoodStandMemoryIfRitual(Level level, BlockPos saplingPos, Supplier<T> originalCall, Predicate<T> grewSuccessfully) {
         if (level.getServer() == null || !level.getServer().isSameThread())
             return originalCall.get();
-        ((MultiBlockUtil) Multiblocks.TREE_RITUAL).naturesaura_plus$allowAirInRitual(true);
+        ((IMultiBlockUtil) Multiblocks.TREE_RITUAL).naturesaura_plus$allowAirInRitual(true);
         boolean isRitual = Multiblocks.TREE_RITUAL.isComplete(level, saplingPos);
-        ((MultiBlockUtil) Multiblocks.TREE_RITUAL).naturesaura_plus$allowAirInRitual(false);
+        ((IMultiBlockUtil) Multiblocks.TREE_RITUAL).naturesaura_plus$allowAirInRitual(false);
         if (!isRitual)
             return originalCall.get();
 
@@ -323,7 +323,7 @@ public class NaturesAuraPlusUtils {
 
         Multiblocks.TREE_RITUAL.forEach(saplingPos, 'W', (standPos, matcher) -> {
             BlockEntity tile = level.getBlockEntity(standPos);
-            if (tile instanceof AbstractWoodStand woodStand) {
+            if (tile instanceof IAbstractWoodStand woodStand) {
                 woodStand.naturesaura_plus$setTreeStemCache(capturedStems.isEmpty() ? null : capturedStems);
                 woodStand.naturesaura_plus$setTreeLeafCache(capturedLeaves.isEmpty() ? null : capturedLeaves);
                 woodStand.naturesaura_plus$setTreeDecoratorCache(capturedDecorators.isEmpty() ? null : capturedDecorators);

@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.wkhan.naturesaura_plus.data.duckfaces.AbstractWoodStand;
+import net.wkhan.naturesaura_plus.data.duckfaces.IAbstractWoodStand;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,7 +40,7 @@ import java.util.*;
 import static net.wkhan.naturesaura_plus.client.render.DynamicWoodStandModel.STAND_MATERIAL;
 
 @Mixin(BlockEntityWoodStand.class)
-public abstract class BlockEntityWoodStandMixin extends BlockEntityImpl implements AbstractWoodStand {
+public abstract class BlockEntityWoodStandMixin extends BlockEntityImpl implements IAbstractWoodStand {
     public BlockEntityWoodStandMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -73,6 +73,8 @@ public abstract class BlockEntityWoodStandMixin extends BlockEntityImpl implemen
     )
     private void naturesaura_plus$RitualCheck(CallbackInfoReturnable<Boolean> cir) {
         Level level = this.getLevel();
+        if (level == null)
+            return;
         if (!Multiblocks.TREE_RITUAL.isComplete(level, this.ritualPos)) {
             cir.setReturnValue(false);
             return;
@@ -132,7 +134,7 @@ public abstract class BlockEntityWoodStandMixin extends BlockEntityImpl implemen
     private void naturesaura_plus$RitualTick(CallbackInfo ci) {
         ci.cancel();
         Level level = this.getLevel();
-        if (level.isClientSide() || this.ritualPos == null || this.recipe == null || level.getGameTime() % 5L != 0L) {
+        if (level == null || level.isClientSide() || this.ritualPos == null || this.recipe == null || level.getGameTime() % 5L != 0L) {
             return;
         }
 

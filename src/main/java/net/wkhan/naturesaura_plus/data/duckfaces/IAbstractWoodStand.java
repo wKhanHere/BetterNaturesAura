@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Set;
 
-public interface AbstractWoodStand {
+public interface IAbstractWoodStand {
     BlockState naturesaura_plus$getWoodStandMaterialBlockState();
     void naturesaura_plus$setWoodStandMaterialBlockState(BlockState material);
     void naturesaura_plus$setTreeStemCache(Set<BlockPos> treeCache);

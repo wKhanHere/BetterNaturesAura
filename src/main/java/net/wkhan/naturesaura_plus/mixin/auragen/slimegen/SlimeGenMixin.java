@@ -54,10 +54,7 @@ public abstract class SlimeGenMixin extends BlockEntityImpl implements ISlimeGen
         AuraGenRules.SlimeValues slimeValues = SLIME_GENERATIONS.get(entity.getType());
         float size;
         size = slimeValues.doSlimeSizeScaling() && entity instanceof Slime slime ? slime.getSize() : slimeValues.sizeModifier();
-        int genTime;
-        if (slimeValues.isFlatGenerationTimer()) genTime = slimeValues.flatGenerationTimer();
-        else genTime = Math.round(size * slimeValues.generationTimerModifier());
-        this.generationTimer = genTime;
+        this.generationTimer = slimeValues.isFlatGenerationTimer() ? slimeValues.flatGenerationTimer() : Math.round(size * slimeValues.generationTimerModifier());
         this.amountToRelease = Math.round(size * slimeValues.auraAmount() / this.generationTimer);
         this.color = slimeValues.slimeColor();
         if (this.level == null)

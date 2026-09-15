@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.wkhan.naturesaura_plus.data.duckfaces.OakGeneration;
+import net.wkhan.naturesaura_plus.data.duckfaces.IOakGeneration;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,7 +37,7 @@ public abstract class AbstractTreeGrowerMixin {
             BlockEntity be = serverLevel.getBlockEntity(oakGenPos);
             if (!(be instanceof BlockEntityOakGenerator oakGen))
                 return;
-            int toAdd = ((OakGeneration) oakGen).naturesaura_plus$scheduledBigTreesAuraGainRemove();
+            int toAdd = ((IOakGeneration) oakGen).naturesaura_plus$scheduledBigTreesAuraGainRemove();
             Level level = oakGen.getLevel();
             if (level == null)
                 return;

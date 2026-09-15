@@ -16,7 +16,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.level.SaplingGrowTreeEvent;
 import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
-import net.wkhan.naturesaura_plus.data.duckfaces.OakGeneration;
+import net.wkhan.naturesaura_plus.data.duckfaces.IOakGeneration;
 import net.wkhan.naturesaura_plus.common.tag.ModTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -76,7 +76,7 @@ public abstract class BlockOakGenMixin extends BlockContainerImpl {
             ResourceKey<ConfiguredFeature<?, ?>> replacement = oakValues.featureReplacement();
             if (replacement == null)
                 return true;
-            ((OakGeneration) oakGen).naturesaura_plus$scheduledBigTreesAuraGainAdd(oakValues.auraAmount());
+            ((IOakGeneration) oakGen).naturesaura_plus$scheduledBigTreesAuraGainAdd(oakValues.auraAmount());
             event.setFeature(replacement);
             OAK_GEN_POS.set(tile.getBlockPos());
             return true;
