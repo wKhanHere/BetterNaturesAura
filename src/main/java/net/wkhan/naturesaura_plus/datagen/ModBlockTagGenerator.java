@@ -43,60 +43,52 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                                 Blocks.NETHER_WART_BLOCK
                         );
 
-                this.tag(ModTags.Blocks.HOPPER_UPGRADE_AFFECTED)
-                        .add(
-                                Blocks.HOPPER,
-                                de.ellpeck.naturesaura.blocks.ModBlocks.GRATED_CHUTE
-                        );
+                this.tag(ModTags.Blocks.HOPPER_UPGRADE_AFFECTED).add(
+                        Blocks.HOPPER,
+                        de.ellpeck.naturesaura.blocks.ModBlocks.GRATED_CHUTE
+                );
 
-                this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE_CHEST)
-                        .add(
-                                Blocks.CHEST,
-                                Blocks.BARREL,
-                                Blocks.SPAWNER
-                        );
+                this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE_CHEST).add(
+                        Blocks.CHEST,
+                        Blocks.BARREL,
+                        Blocks.SPAWNER
+                );
 
-                this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE)
-                        .add(
-                                Blocks.COPPER_BLOCK,
-                                Blocks.IRON_BLOCK,
-                                Blocks.GOLD_BLOCK,
-                                Blocks.DIAMOND_BLOCK,
-                                Blocks.NETHERITE_BLOCK
-                        );
+                this.tag(ModTags.Blocks.LOOT_FINDER_TREASURE).add(
+                        Blocks.COPPER_BLOCK,
+                        Blocks.IRON_BLOCK,
+                        Blocks.GOLD_BLOCK,
+                        Blocks.DIAMOND_BLOCK,
+                        Blocks.NETHERITE_BLOCK
+                );
 
-                this.tag(ModTags.Blocks.TOWERING_PLANT_SOIL)
-                        .add(
-                                Blocks.END_STONE
-                        );
+                this.tag(ModTags.Blocks.TOWERING_PLANT_SOIL).add(
+                        Blocks.END_STONE
+                );
 
-                this.tag(ModTags.Blocks.TOWERING_PLANT_STEM)
-                        .add(
-                                Blocks.CHORUS_PLANT
-                        );
+                this.tag(ModTags.Blocks.TOWERING_PLANT_STEM).add(
+                        Blocks.CHORUS_PLANT
+                );
 
-                this.tag(ModTags.Blocks.TOWERING_PLANT_CAP)
-                        .add(
-                                Blocks.CHORUS_FLOWER
-                        );
+                this.tag(ModTags.Blocks.TOWERING_PLANT_CAP).add(
+                        Blocks.CHORUS_FLOWER
+                );
 
                 this.tag(ModTags.Blocks.OAK_GEN_SAPLING)
                         .addTag(BlockTags.SAPLINGS);
 
-                this.tag(BlockTags.LOGS)
-                        .add(
-                                ModBlocks.STRIPPED_ANCIENT_LOG.get(),
-                                ModBlocks.STRIPPED_ANCIENT_BARK.get()
-                        );
+                this.tag(BlockTags.LOGS).add(
+                        ModBlocks.STRIPPED_ANCIENT_LOG.get(),
+                        ModBlocks.STRIPPED_ANCIENT_BARK.get()
+                );
 
-                this.tag(ModTags.Blocks.TREE_FERTILIZER_SAFE_IN_RITUAL)
-                        .add(
-                                de.ellpeck.naturesaura.blocks.ModBlocks.GOLD_POWDER,
-                                de.ellpeck.naturesaura.blocks.ModBlocks.PLACER,
-                                de.ellpeck.naturesaura.blocks.ModBlocks.WOOD_STAND,
-                                Blocks.CHEST,
-                                Blocks.BARREL
-                        );
+                this.tag(ModTags.Blocks.TREE_FERTILIZER_SAFE_IN_RITUAL).add(
+                        de.ellpeck.naturesaura.blocks.ModBlocks.GOLD_POWDER,
+                        de.ellpeck.naturesaura.blocks.ModBlocks.PLACER,
+                        de.ellpeck.naturesaura.blocks.ModBlocks.WOOD_STAND,
+                        Blocks.CHEST,
+                        Blocks.BARREL
+                );
 
                 this.tag(BlockTags.SAPLINGS)
                         .add(
@@ -141,5 +133,9 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 );
 
                 this.tag(ModTags.Blocks.AURA_BONEMEAL_WHITELIST);
+
+                this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                        ModBlocks.AURIC_OVEN_BRICK.get()
+                );
         }
 }

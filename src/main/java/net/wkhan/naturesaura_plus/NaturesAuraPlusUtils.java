@@ -9,8 +9,11 @@ import de.ellpeck.naturesaura.api.aura.container.IAuraContainer;
 import de.ellpeck.naturesaura.api.aura.item.IAuraRecharge;
 import de.ellpeck.naturesaura.blocks.multi.Multiblocks;
 import de.ellpeck.naturesaura.enchant.ModEnchantments;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -27,6 +30,8 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.wkhan.naturesaura_plus.data.PriorityRule;
 import net.wkhan.naturesaura_plus.data.trackers.TreeRitualTreeTracker;
@@ -385,5 +390,31 @@ public class NaturesAuraPlusUtils {
                 return oldValue;
             return biFunction.apply(oldValue, passedValue);
         });
+    }
+
+    public static List<Component> buildFluidStackToolTip(FluidStack fluidStack, int capacity) {
+        List<Component> tooltip = new ArrayList<>();
+
+        if (fluidStack.isEmpty()) {
+            tooltip.add(Component.translatable("tooltip.naturesauraplus.empty").withStyle(ChatFormatting.GRAY));
+            return tooltip;
+        }
+        tooltip.add(fluidStack.getDisplayName());
+
+        if (Screen.hasShiftDown()) {
+            ResourceLocation registryName = ForgeRegistries.FLUIDS.getKey(fluidStack.getFluid());
+            String regString = registryName != null ? registryName.toString() : "Unknown";
+            tooltip.add(Component.literal("Fluid Registry: " + regString).withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.literal("Density: " + fluidStack.getFluid().getFluidType().getDensity()).withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.literal("Temperature: " + fluidStack.getFluid().getFluidType().getTemperature()).withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.literal("Viscosity: " + fluidStack.getFluid().getFluidType().getViscosity()).withStyle(ChatFormatting.DARK_GRAY));
+            String nbtString = fluidStack.hasTag() ? fluidStack.getTag().toString() : "None";
+            tooltip.add(Component.literal("NBT Data: " + nbtString).withStyle(ChatFormatting.DARK_GRAY));
+        }
+        else
+            tooltip.add(Component.translatable("tooltip.naturesauraplus.hold_shift").withStyle(ChatFormatting.DARK_GRAY));
+
+        tooltip.add(Component.literal(fluidStack.getAmount() + "/" + capacity + "mB").withStyle(ChatFormatting.GRAY));
+        return tooltip;
     }
 }

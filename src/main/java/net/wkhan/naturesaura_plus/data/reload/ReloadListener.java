@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,26 +17,25 @@ import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.data.OreSpawnRule;
 import net.wkhan.naturesaura_plus.data.OreSpawnRules;
 import net.wkhan.naturesaura_plus.data.auragen.*;
-import org.apache.logging.log4j.Logger;
+import net.wkhan.naturesaura_plus.data.recipe.ModRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static net.wkhan.naturesaura_plus.NaturesAuraPlus.NA_LOGGER;
 import static net.wkhan.naturesaura_plus.NaturesAuraPlusUtils.processRuleQueue;
 import static net.wkhan.naturesaura_plus.data.OreSpawnRules.*;
 import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.addAuraGenerations;
 import static net.wkhan.naturesaura_plus.data.config.MiscConfig.SHOW_AURA_GEN_RULES_IN_LOG;
 import static net.wkhan.naturesaura_plus.data.config.MiscConfig.SHOW_ORE_SPAWN_RULES_IN_LOG;
-import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class ReloadListener extends SimpleJsonResourceReloadListener {
     public ReloadListener() {
         super(new Gson(), "interactions");
     }
 
-    private static final Logger LOGGER = getLogger();
     protected static final List<String> loadedAuraRules = new ArrayList<>();
     protected static final List<String> loadedOreRules = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
             try {
                 JsonObject json = jsonElement.getAsJsonObject();
                 if (!json.has("type")) {
-                    LOGGER.error("Missing 'type' field in rule file: {}", fileId);
+                    NA_LOGGER.error("Missing 'type' field in rule file: {}", fileId);
                     return;
                 }
                 String type = json.get("type").getAsString();
@@ -59,7 +59,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<ProjectileGenRule> result = ProjectileGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] ProjectileGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] ProjectileGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.projectileRulesQueue.add(rule);
@@ -69,7 +69,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<MossGenRule> result = MossGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] MossGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] MossGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.mossRulesQueue.add(rule);
@@ -79,7 +79,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<FlowerGenRule> result = FlowerGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] FlowerGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] FlowerGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.flowerRulesQueue.add(rule);
@@ -89,7 +89,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<SlimeGenRule> result = SlimeGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] SlimeGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] SlimeGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.slimeRulesQueue.add(rule);
@@ -99,7 +99,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<AnimalGenRule> result = AnimalGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] AnimalGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] AnimalGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.animalRulesQueue.add(rule);
@@ -109,7 +109,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<ChorusGenRule> result = ChorusGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] ChorusGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] ChorusGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.chorusRulesQueue.add(rule);
@@ -119,7 +119,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<OakGenRule> result = OakGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] OakGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] OakGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.oakRulesQueue.add(rule);
@@ -129,7 +129,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<PotionGenRule> result = PotionGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] PotionGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] PotionGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.potionRulesQueue.add(rule);
@@ -139,7 +139,7 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<FireworkGenRule> result = FireworkGenRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                errorMessage -> LOGGER.error("[NaturesAuraPlus] FireworkGen JSON Error: {}", errorMessage))
+                                errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] FireworkGen JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedAuraRules.add(fileId.toString());
                                     AuraGenRules.addFireworkGeneration(rule);
@@ -149,18 +149,18 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
                         DataResult<OreSpawnRule> result = OreSpawnRule.CODEC.parse(JsonOps.INSTANCE, json)
                                 .mapError(originalError -> "Error in file '" + fileId + "': " + originalError);
                         result.resultOrPartial(
-                                        errorMessage -> LOGGER.error("[NaturesAuraPlus] OreSpawn JSON Error: {}", errorMessage))
+                                        errorMessage -> NA_LOGGER.error("[NaturesAuraPlus] OreSpawn JSON Error: {}", errorMessage))
                                 .ifPresent(rule -> {
                                     loadedOreRules.add(fileId.toString());
                                     oreRulesQueue.add(rule);
                                 });
                     }
 
-                    default -> LOGGER.error("Unknown rule type '{}' in file: {}", type, fileId);
+                    default -> NA_LOGGER.error("Unknown rule type '{}' in file: {}", type, fileId);
                 }
             }
             catch (Exception e) {
-                LOGGER.error("Failed to load rule: {}\nHere's your stack:\n", fileId, e);
+                NA_LOGGER.error("Failed to load rule: {}\nHere's your stack:\n", fileId, e);
             }
         });
     }
@@ -179,14 +179,19 @@ public class ReloadListener extends SimpleJsonResourceReloadListener {
         @SubscribeEvent
         public static void onTagsUpdated(TagsUpdatedEvent event) {
             addAuraGenerations();
-            LOGGER.info("Number of aura gen rules loaded: {}", AuraGenRules.auraRulesCount());
+            NA_LOGGER.info("Number of aura gen rules loaded: {}", AuraGenRules.auraRulesCount());
             if (SHOW_AURA_GEN_RULES_IN_LOG.get())
-                LOGGER.info("Aura generation rules loaded: {}", loadedAuraRules);
+                NA_LOGGER.info("Aura generation rules loaded: {}", loadedAuraRules);
 
             processRuleQueue(oreRulesQueue, OreSpawnRules::addOreSpawn);
-            LOGGER.info("Number of ore spawn rules added: {}", ORE_SPAWNS.size());
+            NA_LOGGER.info("Number of ore spawn rules added: {}", ORE_SPAWNS.size());
             if (SHOW_ORE_SPAWN_RULES_IN_LOG.get())
-                LOGGER.info("Ore spawn rules loaded: {}", ORE_SPAWNS);
+                NA_LOGGER.info("Ore spawn rules loaded: {}", ORE_SPAWNS);
+        }
+
+        @SubscribeEvent
+        public static void onRecipesUpdated(RecipesUpdatedEvent event) {
+            ModRecipeTypes.AURA_OVEN.get().clearCaches(); //todo: make this prettier so that i dont have to always manually add this
         }
     }
 }

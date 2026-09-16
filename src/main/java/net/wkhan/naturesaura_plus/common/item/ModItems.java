@@ -24,6 +24,12 @@ public class ModItems {
     public static final DeferredRegister<Item> NATURES_AURA_ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, "naturesaura");
 
+    public static final RegistryObject<Item> STRIPPED_ANCIENT_LOG = NATURES_AURA_ITEMS.register("stripped_ancient_log",
+            () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_LOG.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> STRIPPED_ANCIENT_BARK = NATURES_AURA_ITEMS.register("stripped_ancient_bark",
+            () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_BARK.get(), new Item.Properties()));
+
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, NaturesAuraPlus.MODID);
 
@@ -38,7 +44,7 @@ public class ModItems {
                 @Override public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
                     return UseAnim.DRINK;
                 }
-                @Override public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> toolTip, TooltipFlag p_41424_) {
+                @Override public void appendHoverText(@NotNull ItemStack p_41421_, @Nullable Level p_41422_, @NotNull List<Component> toolTip, @NotNull TooltipFlag p_41424_) {
                     toolTip.add(Component.translatable("info.naturesaura_plus.coffee")
                             .setStyle(Style.EMPTY.withItalic(true).applyFormat(ChatFormatting.GRAY)));
                 }
@@ -49,11 +55,8 @@ public class ModItems {
                     .nutrition(1).saturationMod(0.2f).build())
                     .stacksTo(16).rarity(Rarity.RARE)));
 
-    public static final RegistryObject<Item> STRIPPED_ANCIENT_LOG = NATURES_AURA_ITEMS.register("stripped_ancient_log",
-            () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_LOG.get(), new Item.Properties()));
-
-    public static final RegistryObject<Item> STRIPPED_ANCIENT_BARK = NATURES_AURA_ITEMS.register("stripped_ancient_bark",
-            () -> new BlockItem(ModBlocks.STRIPPED_ANCIENT_BARK.get(), new Item.Properties()));
+    public static final RegistryObject<Item> AURIC_OVEN_BRICK = ITEMS.register("auric_oven_brick",
+            () -> new BlockItem(ModBlocks.AURIC_OVEN_BRICK.get(), new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

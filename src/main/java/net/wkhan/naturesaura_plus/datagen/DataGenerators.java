@@ -22,7 +22,8 @@ public class DataGenerators {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         generator.addProvider(event.includeClient(), new ModItemModelProvider(output, helper));
-        generator.addProvider(event.includeClient(), new ModBlockStateProvider(output,"naturesaura" ,helper));
+        generator.addProvider(event.includeClient(), new ModBlockStateProviderNA(output,"naturesaura" ,helper));
+        generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, NaturesAuraPlus.MODID ,helper));
 
         generator.addProvider(event.includeServer(), new ModEntityTagGenerator(output,lookupProvider,helper));
         ModBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(),

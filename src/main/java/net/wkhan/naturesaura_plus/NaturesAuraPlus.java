@@ -8,6 +8,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.wkhan.naturesaura_plus.common.block.ModBlocks;
+import net.wkhan.naturesaura_plus.common.block.blockentity.ModBlockEntities;
+import net.wkhan.naturesaura_plus.common.gui.ModMenuTypes;
+import net.wkhan.naturesaura_plus.data.recipe.ModRecipeTypes;
+import net.wkhan.naturesaura_plus.data.recipe.ModRecipes;
 import net.wkhan.naturesaura_plus.data.reload.LogCleaner;
 import net.wkhan.naturesaura_plus.network.ModNetwork;
 import net.wkhan.naturesaura_plus.compat.botania.BotaniaModItems;
@@ -16,11 +20,15 @@ import net.wkhan.naturesaura_plus.data.reload.ReloadListener;
 import net.wkhan.naturesaura_plus.data.config.AuraGenConfig;
 import net.wkhan.naturesaura_plus.data.config.GameplayConfig;
 import net.wkhan.naturesaura_plus.data.config.MiscConfig;
+import org.apache.logging.log4j.Logger;
+
+import static org.apache.logging.log4j.LogManager.getLogger;
 
 @Mod(NaturesAuraPlus.MODID)
 public class NaturesAuraPlus
 {
     public static final String MODID = "naturesaura_plus";
+    public static final Logger NA_LOGGER = getLogger();
 
     public static boolean isKubeJsLoaded;
     public static boolean isCuriosLoaded;
@@ -38,6 +46,10 @@ public class NaturesAuraPlus
         ModItems.register(modEventBus);
         if (isBotaniaLoaded) BotaniaModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
+        ModRecipeTypes.register(modEventBus);
+        ModRecipes.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.addListener(this::onReload);

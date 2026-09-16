@@ -1,32 +1,23 @@
 package net.wkhan.naturesaura_plus.client.event;
 
 import com.mojang.blaze3d.platform.Window;
-import de.ellpeck.naturesaura.api.NaturesAuraAPI;
 import de.ellpeck.naturesaura.blocks.tiles.BlockEntityFlowerGenerator;
 import de.ellpeck.naturesaura.events.ClientEvents;
 import de.ellpeck.naturesaura.items.ItemEye;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -34,43 +25,37 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.forgespi.locating.IModFile;
 import net.minecraftforge.resource.PathPackResources;
 import net.wkhan.naturesaura_plus.NaturesAuraPlus;
 import net.wkhan.naturesaura_plus.NaturesAuraPlusUtils;
 import net.wkhan.naturesaura_plus.client.ClientDualBarTooltipComponent;
 import net.wkhan.naturesaura_plus.client.render.DynamicWoodStandModel;
-import net.wkhan.naturesaura_plus.data.auragen.AuraGenRules;
-import net.wkhan.naturesaura_plus.data.duckfaces.FlowerGeneration;
+import net.wkhan.naturesaura_plus.common.gui.ModMenuTypes;
+import net.wkhan.naturesaura_plus.common.gui.oven.OvenScreen;
+import net.wkhan.naturesaura_plus.data.duckfaces.IFlowerGeneration;
 import net.wkhan.naturesaura_plus.compat.botania.ItemAuraManaHolder;
-import org.jetbrains.annotations.NotNull;
 import vazkii.patchouli.common.item.ItemModBook;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import static de.ellpeck.naturesaura.api.NaturesAuraAPI.PROJECTILE_GENERATIONS;
-import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.*;
-import static net.wkhan.naturesaura_plus.data.auragen.AuraGenRules.CHORUS_GENERATIONS;
+import static net.wkhan.naturesaura_plus.NaturesAuraPlus.NA_LOGGER;
 
 public class ClientCommonEvents {
-
-    private static final HashMap<Object, Component> AURA_GEN_TOOLTIPS = new HashMap<>();
 
     @Mod.EventBusSubscriber(modid = NaturesAuraPlus.MODID,
             bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -83,17 +68,18 @@ public class ClientCommonEvents {
 
         @SubscribeEvent
         public static void onModelBake(ModelEvent.ModifyBakingResult event) {
+            //NaturalStand
             ResourceLocation standId = ResourceLocation.fromNamespaceAndPath("naturesaura", "wood_stand");
             ModelResourceLocation modelLocWaterLogged = new ModelResourceLocation(standId, "waterlogged=true");
             ModelResourceLocation modelLoc = new ModelResourceLocation(standId, "waterlogged=false");
 
             BakedModel existingModelWaterLogged = event.getModels().get(modelLocWaterLogged);
             BakedModel existingModel = event.getModels().get(modelLoc);
-            if (existingModelWaterLogged == null || existingModel == null)
-                return;
-            event.getModels().put(modelLocWaterLogged, new DynamicWoodStandModel(existingModelWaterLogged));
-            event.getModels().put(modelLoc, new DynamicWoodStandModel(existingModel));
-       }
+            if (existingModelWaterLogged != null && existingModel != null) {
+                event.getModels().put(modelLocWaterLogged, new DynamicWoodStandModel(existingModelWaterLogged));
+                event.getModels().put(modelLoc, new DynamicWoodStandModel(existingModel));
+            }
+        }
 
         @SubscribeEvent
         public static void onAddPackFinders(AddPackFindersEvent event) {
@@ -110,20 +96,10 @@ public class ClientCommonEvents {
                 event.addRepositorySource((consumer) -> consumer.accept(pack));
         }
 
-//        @SubscribeEvent
-//        public static void onClientRecipesUpdate(RecipesUpdatedEvent event) {
-//            for (EntityType<?> entityType : PROJECTILE_GENERATIONS.keySet()) {
-//                Item item = ProjectileValues.get(entityType);
-//                if (item == Items.AIR)
-//                    continue;
-//                AURA_GEN_TOOLTIPS.put(item, getToolTipFromKey("info.naturesaura_plus.projectile",
-//                        0xFF9FAF6C, PROJECTILE_GENERATIONS.get(entityType)));
-//            }
-//
-//            for (EntityType<?> entityType : SLIME_GENERATIONS.keySet()) {
-//
-//            }
-//        }
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            event.enqueueWork(() -> MenuScreens.register(ModMenuTypes.OVEN_MENU.get(), OvenScreen::new));
+        }
     }
 
     private static final List<Field> auraItemFields = new ArrayList<>();
@@ -136,7 +112,7 @@ public class ClientCommonEvents {
                 auraItemFields.add(field);
             }
         } catch (Exception e) {
-            System.err.println("Failed to access de.ellpeck.naturesaura.events.ClientEvents classes' private variable (heldEye) via reflection.");
+            NA_LOGGER.error("Failed to access de.ellpeck.naturesaura.events.ClientEvents classes' private variable (heldEye) via reflection.");
         }
     }
 
@@ -146,41 +122,6 @@ public class ClientCommonEvents {
             bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
     public static class duringGameplayClientEvents {
         static boolean isLookingAtBlock;
-
-//        @SubscribeEvent
-//        public static void onToolTipEvent(ItemTooltipEvent event) {
-//            if (event.getEntity() == null || !event.getEntity().level().isClientSide)
-//                return;
-//            ItemStack stack = event.getItemStack();
-//            Item item = stack.getItem();
-//            int[] aura = new int[numberOfAuraGens()];
-//            int lucidity; int obscurity; float obscurityScale;
-//            boolean chorusSizeScale;
-//            if (!(item instanceof BlockItem)) {
-//                if (items.)
-//
-//                    //todo: firework gen & potion gen
-//                    return;
-//            }
-//            Block block = ((BlockItem) item).getBlock();
-//            AuraGenRules.MossValues mossValues = MOSS_GENERATIONS.get(block);
-//            if (mossValues != null)
-//                aura[6] = mossValues.auraAmount();
-//
-//            AuraGenRules.FlowerValues flowerValues = FLOWER_GENERATIONS.get(block);
-//            if (flowerValues != null) {
-//                aura[7] = flowerValues.auraAmount();
-//                lucidity = flowerValues.lucidity();
-//                obscurity = flowerValues.obscurity();
-//                obscurityScale = flowerValues.obscurityScale();
-//            }
-//
-//            AuraGenRules.ChorusValues chorusValues = CHORUS_GENERATIONS.get(block);
-//            if (chorusValues != null) {
-//                aura[8] = chorusValues.auraGainPerBlock();
-//                chorusSizeScale = chorusValues.isSizeScaled();
-//            }
-//        }
 
         @SubscribeEvent
         public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -236,12 +177,12 @@ public class ClientCommonEvents {
                 yGuiOffset = 20;
             GuiGraphics graphics = event.getGuiGraphics();
             Window eventWindow = event.getWindow();
-            int vitality = ((FlowerGeneration) flowerGenerator).naturesaura_plus$flowerTileAuraGeneratorReadVitality();
+            int vitality = ((IFlowerGeneration) flowerGenerator).naturesaura_plus$flowerTileAuraGeneratorReadVitality();
             int centerX = eventWindow.getGuiScaledWidth() / 2;
             int centerY = eventWindow.getGuiScaledHeight() / 2;
             drawVitalityBar(graphics, vitality, 100, 16384063,
                     mc, centerX-40, centerY + yGuiOffset, 15, "Vitality", null);
-            drawFlowerDisplay((FlowerGeneration) flowerGenerator, graphics, centerX, centerY, yGuiOffset);
+            drawFlowerDisplay((IFlowerGeneration) flowerGenerator, graphics, centerX, centerY, yGuiOffset);
         }
     }
 
@@ -265,7 +206,7 @@ public class ClientCommonEvents {
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    private static void drawFlowerDisplay(FlowerGeneration flowerGenerator, GuiGraphics graphics, int centreX, int centreY, int yGuiOffset) {
+    private static void drawFlowerDisplay(IFlowerGeneration flowerGenerator, GuiGraphics graphics, int centreX, int centreY, int yGuiOffset) {
         NaturesAuraPlusUtils.circularBuffer<Block> flowerBuffer =
                 flowerGenerator.naturesaura_plus$flowerTileAuraGeneratorReadBuffer();
         if (flowerBuffer == null)
@@ -302,10 +243,5 @@ public class ClientCommonEvents {
                     slotSide, slotSide, 34, 0, slotSide, slotSide,texSize,texSize);
         } //Mid
         graphics.pose().popPose();
-    }
-
-    private static Component getToolTipFromKey(String langKey, int textColor, Object... args) {
-        MutableComponent component = Component.translatable(langKey, args);
-        return component.withStyle(Style.EMPTY.withColor(textColor));
     }
 }

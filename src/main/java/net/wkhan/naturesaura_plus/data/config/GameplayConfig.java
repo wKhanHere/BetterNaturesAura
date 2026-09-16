@@ -39,6 +39,18 @@ public class GameplayConfig {
     // Aura Bone-meal
     public static final ForgeConfigSpec.BooleanValue ENABLE_WHITELIST_AURA_BONEMEAL;
     public static final ForgeConfigSpec.IntValue AURA_BONEMEAL_COST;
+
+    //Auric Concentrator
+    public static final ForgeConfigSpec.BooleanValue IF_AURA_CONSUME_FOR_OVEN_CREATION;
+    public static final ForgeConfigSpec.IntValue AURA_CONSUME_FOR_OVEN_CREATION;
+    public static final ForgeConfigSpec.IntValue AMOUNT_ITEM_CONSUMED_ON_AURA_OVEN_FORM;
+    public static final ForgeConfigSpec.IntValue OVEN_AURA_CAPACITY;
+    public static final ForgeConfigSpec.IntValue OVEN_FLUID_TANK_CAPACITY;
+    public static final ForgeConfigSpec.IntValue OVEN_TICK_RATE_FOR_AURA_DRAIN;
+    public static final ForgeConfigSpec.IntValue OVEN_AURA_DRAIN_AMOUNT_PER_DRAIN;
+    public static final ForgeConfigSpec.IntValue ITEM_DURABILITY_CONSUMED_ON_AURA_OVEN_FORM;
+    public static final ForgeConfigSpec.BooleanValue ALLOW_BUCKET_OUTPUT_EXTRACTION;
+    public static final ForgeConfigSpec.BooleanValue ALLOW_FLUID_EXTRACTION_BY_BUCKET;
     static {
         BUILDER.comment("Tools").push("Tools");
         BREAK_PREVENTION_APPLY_COST = BUILDER
@@ -118,12 +130,46 @@ public class GameplayConfig {
                 .defineInRange("auraBoneMealCost", 3500, 1, Integer.MAX_VALUE);
         BUILDER.pop();
 
+        BUILDER.comment("Auric Concentrator").push("AuricConcentrator");
+        IF_AURA_CONSUME_FOR_OVEN_CREATION = BUILDER
+                .comment("Whether forming the Auric-Concentrator requires aura (true), or requires a specific item (false). (Default: true)")
+                .define("ifAuraConsumeForOven", true);
+        AURA_CONSUME_FOR_OVEN_CREATION = BUILDER
+                .comment("Amount of aura forming the Auric-Concentrator takes, if aura consume for oven formation is enabled. (Default: 100,000)")
+                .defineInRange("auraConsumeForOven", 100000, 1, Integer.MAX_VALUE);
+        AMOUNT_ITEM_CONSUMED_ON_AURA_OVEN_FORM = BUILDER
+                .comment("How many items to be consumed for forming Auric-Concentrator. (Default: 0)")
+                .defineInRange("amountItemConsumedOnAuraOvenForm", 0, 0, 64);
+        ITEM_DURABILITY_CONSUMED_ON_AURA_OVEN_FORM = BUILDER
+                .comment("The amount of durability damage that the hammer building the Auric Concentrator multiblock takes, only if said item has durability. (Default: 1)")
+                .defineInRange("itemDurabilityConsumedOnAuraOvenForm", 1, 0, Integer.MAX_VALUE);
+        OVEN_AURA_CAPACITY = BUILDER
+                .comment("The aura capacity for the Auric Concentrator multiblock. (Default: 500,000)")
+                .defineInRange("ovenAuraCapacity", 500000, 1, Integer.MAX_VALUE);
+        OVEN_TICK_RATE_FOR_AURA_DRAIN = BUILDER
+                .comment("The number of ticks per which Auric Concentrator multiblock drains aura from the surrounding. \nNote, lower values may adversely affect performance. (Default: 20)")
+                .defineInRange("ovenTickRateForAuraDrain", 20, 1, Integer.MAX_VALUE);
+        OVEN_AURA_DRAIN_AMOUNT_PER_DRAIN = BUILDER
+                .comment("The amount of aura that the Auric Concentrator multiblock drains per attempt to recharge its internal aura reserve. (Default: 10,000)")
+                .defineInRange("ovenAuraDrainAmountPerDrain", 10000, 1, Integer.MAX_VALUE);
+        OVEN_FLUID_TANK_CAPACITY = BUILDER
+                .comment("The fluid-tank capacity (in mB) for the Auric Concentrator multiblock. \nNote, for reflecting the change in this value, running worlds have to be restarted. (Default: 5,000)")
+                .defineInRange("ovenFluidTankCapacity", 5000, 1, Integer.MAX_VALUE);
+        ALLOW_BUCKET_OUTPUT_EXTRACTION = BUILDER
+                .comment("Whether the output bucket slot can be extracted via hoppers, pipes, etc. (Default: true)")
+                .define("allowBucketOutputExtraction", true);
+        ALLOW_FLUID_EXTRACTION_BY_BUCKET = BUILDER
+                .comment("Whether the auric concentrator tank's fluid can be extracted via buckets/tanks on right click by a player. (Default: true)")
+                .define("allowFluidExtractionByBucket", true);
+        BUILDER.pop();
+
         SPEC = BUILDER.build();
     }
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
-        if(event.getConfig().getSpec() != SPEC) return;
+        if(event.getConfig().getSpec() != SPEC)
+            return;
 
     }
 }

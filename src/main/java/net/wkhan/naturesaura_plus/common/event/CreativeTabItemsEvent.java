@@ -23,6 +23,7 @@ public class CreativeTabItemsEvent {
         event.accept(ModItems.BREAK_PREVENTION.get());
         event.accept(ModItems.COFFEE.get());
         event.accept(ModItems.AURA_COFFEE.get());
+        event.accept(ModItems.AURIC_OVEN_BRICK.get());
         if (isBotaniaLoaded) {
             event.accept(BotaniaModItems.AURA_MANA_HOLDER.get());
             ItemStack auraManaHolder = new ItemStack(BotaniaModItems.AURA_MANA_HOLDER.get());

@@ -13,6 +13,7 @@ public class ModTags {
         public static final TagKey<Item> CANNOT_APPLY_BREAK_PREVENTION = tag("cannot_apply_break_prevention");
         public static final TagKey<Item> VALID_WOODEN_STAND_MATERIAL = tag("valid_wooden_stand_material");
         public static final TagKey<Item> VALID_SMELTABLE_TO_BOOST = tag("valid_smeltable_to_boost");
+        public static final TagKey<Item> OVEN_HAMMER = tag("oven_hammer");
 
         private static TagKey<Item> tag(String name) {
             return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NaturesAuraPlus.MODID, name));

@@ -133,10 +133,15 @@ dependencies {
     implementation fg.deobf("curse.maven:kubejs-238086:8010958")
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:rhino-416294:6186971")
-    implementation fg.deobf("curse.maven:botania-225643:8370023")
+    implementation fg.deobf("curse.maven:botania-225643:8702079")
     implementation fg.deobf("curse.maven:create-328085:7178761")
     implementation fg.deobf("curse.maven:malum-484064:6646111")
     implementation fg.deobf("curse.maven:lodestone-616457:6213794")
+    implementation fg.deobf("curse.maven:immersive-engineering-231951:6206989")
+    implementation fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
+    implementation fg.deobf("curse.maven:observable-509575:5643037")
+    implementation fg.deobf("curse.maven:jei-238222:8879628")
+    implementation fg.deobf("curse.maven:emi-580555:8081375")
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")

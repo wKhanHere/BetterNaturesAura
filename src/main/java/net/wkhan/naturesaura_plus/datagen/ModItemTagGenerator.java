@@ -33,5 +33,7 @@ public class ModItemTagGenerator extends ItemTagsProvider {
         );
 
         this.tag(ModTags.Items.VALID_SMELTABLE_TO_BOOST);
+
+        this.tag(ModTags.Items.OVEN_HAMMER);
     }
 }
