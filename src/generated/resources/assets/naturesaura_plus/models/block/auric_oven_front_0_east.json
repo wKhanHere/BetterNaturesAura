@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "naturesaura_plus:block/auric_oven_brick",
+    "east": "naturesaura_plus:block/auric_oven_front_0",
+    "north": "naturesaura_plus:block/auric_oven_brick",
+    "particle": "naturesaura_plus:block/auric_oven_brick",
+    "south": "naturesaura_plus:block/auric_oven_brick",
+    "up": "naturesaura_plus:block/auric_oven_brick",
+    "west": "naturesaura_plus:block/auric_oven_brick"
+  }
+}

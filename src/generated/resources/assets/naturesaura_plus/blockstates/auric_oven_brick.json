@@ -1,0 +1,148 @@
+{
+  "variants": {
+    "facing=east,part=base": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=east,part=core": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=east,part=edge": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=east,part=front_0": {
+      "model": "naturesaura_plus:block/auric_oven_front_0_east"
+    },
+    "facing=east,part=front_1": {
+      "model": "naturesaura_plus:block/auric_oven_front_1_east"
+    },
+    "facing=east,part=front_2": {
+      "model": "naturesaura_plus:block/auric_oven_front_2_east"
+    },
+    "facing=east,part=front_3": {
+      "model": "naturesaura_plus:block/auric_oven_front_3_east"
+    },
+    "facing=east,part=front_4": {
+      "model": "naturesaura_plus:block/auric_oven_front_4_east"
+    },
+    "facing=east,part=front_5": {
+      "model": "naturesaura_plus:block/auric_oven_front_5_east"
+    },
+    "facing=east,part=front_6": {
+      "model": "naturesaura_plus:block/auric_oven_front_6_east"
+    },
+    "facing=east,part=front_7": {
+      "model": "naturesaura_plus:block/auric_oven_front_7_east"
+    },
+    "facing=east,part=front_8": {
+      "model": "naturesaura_plus:block/auric_oven_front_8_east"
+    },
+    "facing=north,part=base": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=north,part=core": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=north,part=edge": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=north,part=front_0": {
+      "model": "naturesaura_plus:block/auric_oven_front_0_north"
+    },
+    "facing=north,part=front_1": {
+      "model": "naturesaura_plus:block/auric_oven_front_1_north"
+    },
+    "facing=north,part=front_2": {
+      "model": "naturesaura_plus:block/auric_oven_front_2_north"
+    },
+    "facing=north,part=front_3": {
+      "model": "naturesaura_plus:block/auric_oven_front_3_north"
+    },
+    "facing=north,part=front_4": {
+      "model": "naturesaura_plus:block/auric_oven_front_4_north"
+    },
+    "facing=north,part=front_5": {
+      "model": "naturesaura_plus:block/auric_oven_front_5_north"
+    },
+    "facing=north,part=front_6": {
+      "model": "naturesaura_plus:block/auric_oven_front_6_north"
+    },
+    "facing=north,part=front_7": {
+      "model": "naturesaura_plus:block/auric_oven_front_7_north"
+    },
+    "facing=north,part=front_8": {
+      "model": "naturesaura_plus:block/auric_oven_front_8_north"
+    },
+    "facing=south,part=base": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=south,part=core": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=south,part=edge": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=south,part=front_0": {
+      "model": "naturesaura_plus:block/auric_oven_front_0_south"
+    },
+    "facing=south,part=front_1": {
+      "model": "naturesaura_plus:block/auric_oven_front_1_south"
+    },
+    "facing=south,part=front_2": {
+      "model": "naturesaura_plus:block/auric_oven_front_2_south"
+    },
+    "facing=south,part=front_3": {
+      "model": "naturesaura_plus:block/auric_oven_front_3_south"
+    },
+    "facing=south,part=front_4": {
+      "model": "naturesaura_plus:block/auric_oven_front_4_south"
+    },
+    "facing=south,part=front_5": {
+      "model": "naturesaura_plus:block/auric_oven_front_5_south"
+    },
+    "facing=south,part=front_6": {
+      "model": "naturesaura_plus:block/auric_oven_front_6_south"
+    },
+    "facing=south,part=front_7": {
+      "model": "naturesaura_plus:block/auric_oven_front_7_south"
+    },
+    "facing=south,part=front_8": {
+      "model": "naturesaura_plus:block/auric_oven_front_8_south"
+    },
+    "facing=west,part=base": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=west,part=core": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=west,part=edge": {
+      "model": "naturesaura_plus:block/auric_oven_brick"
+    },
+    "facing=west,part=front_0": {
+      "model": "naturesaura_plus:block/auric_oven_front_0_west"
+    },
+    "facing=west,part=front_1": {
+      "model": "naturesaura_plus:block/auric_oven_front_1_west"
+    },
+    "facing=west,part=front_2": {
+      "model": "naturesaura_plus:block/auric_oven_front_2_west"
+    },
+    "facing=west,part=front_3": {
+      "model": "naturesaura_plus:block/auric_oven_front_3_west"
+    },
+    "facing=west,part=front_4": {
+      "model": "naturesaura_plus:block/auric_oven_front_4_west"
+    },
+    "facing=west,part=front_5": {
+      "model": "naturesaura_plus:block/auric_oven_front_5_west"
+    },
+    "facing=west,part=front_6": {
+      "model": "naturesaura_plus:block/auric_oven_front_6_west"
+    },
+    "facing=west,part=front_7": {
+      "model": "naturesaura_plus:block/auric_oven_front_7_west"
+    },
+    "facing=west,part=front_8": {
+      "model": "naturesaura_plus:block/auric_oven_front_8_west"
+    }
+  }
+}
