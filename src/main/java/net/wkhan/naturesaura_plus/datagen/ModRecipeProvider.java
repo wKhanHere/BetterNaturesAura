@@ -27,7 +27,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(pWriter, NaturesAuraPlus.MODID + ":stripped_ancient_wood_from_logs");
         Item ancientPlanks = ForgeRegistries.ITEMS.getValue(ResourceLocation
                 .fromNamespaceAndPath("naturesaura","ancient_planks"));
-        if (ancientPlanks == null) return;
+        if (ancientPlanks == null)
+            return;
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ancientPlanks, 2)
                 .requires(Ingredient.of(ModBlocks.STRIPPED_ANCIENT_LOG.get(), ModBlocks.STRIPPED_ANCIENT_BARK.get()))
                 .unlockedBy("has_ancient_log", has(ModBlocks.STRIPPED_ANCIENT_LOG.get()))

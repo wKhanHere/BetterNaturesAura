@@ -1,0 +1,28 @@
+{
+  "type": "naturesaura_plus:oven",
+  "ingredient": {
+    "item": "minecraft:raw_gold_block"
+  },
+  "result": {
+    "item": "minecraft:gold_ingot",
+    "count": 10
+  },
+  "bonus_outputs": [
+    {
+      "item": "minecraft:gold_ingot",
+      "count": 2,
+      "chance": 0.6
+    },
+    {
+      "item": "minecraft:gold_nugget",
+      "count": 8,
+      "chance": 0.8
+    }
+  ],
+  "processing_time": 30,
+  "aura_cost": 10000,
+  "result_fluid": {
+    "fluid": "minecraft:milk",
+    "amount": 250
+  }
+}

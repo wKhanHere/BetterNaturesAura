@@ -1,0 +1,17 @@
+{
+  "type": "naturesaura_plus:oven",
+  "ingredient": {
+    "item": "minecraft:raw_iron"
+  },
+  "result": {
+    "item": "minecraft:iron_ingot",
+    "count": 1
+  },
+  "bonus_outputs": [],
+  "processing_time": 30,
+  "aura_cost": 10000,
+  "result_fluid": {
+    "fluid": "minecraft:milk",
+    "amount": 250
+  }
+}
