@@ -1,7 +1,7 @@
 {
   "type": "naturesaura_plus:oven",
   "ingredient": {
-    "item": "minecraft:raw_gold_block"
+    "tag": "minecraft:logs"
   },
   "result": {
     "item": "minecraft:gold_ingot",

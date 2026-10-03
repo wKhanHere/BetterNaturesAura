@@ -70,7 +70,7 @@ public class OvenRecipeCategory implements IRecipeCategory<OvenRecipe> {
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull OvenRecipe recipe, @NotNull IFocusGroup iFocusGroup) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 14, 31).addItemStack(recipe.getInput().getItems()[0]);
+        builder.addSlot(RecipeIngredientRole.INPUT, 14, 31).addIngredients(recipe.getInput());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 66, 31).addItemStack(recipe.getPrimaryOutput());
         NonNullList<OvenRecipe.BonusOutput> bonusOutputs = recipe.getBonusOutputs();
         int i = 0;
