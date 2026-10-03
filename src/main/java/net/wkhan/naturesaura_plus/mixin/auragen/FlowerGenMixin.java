@@ -56,8 +56,10 @@ public abstract class FlowerGenMixin extends BlockEntityImpl implements IFlowerG
     private void naturesaura_plus$flowerAuraGenerator(CallbackInfo ci) {
         ci.cancel();
         Level level = this.level;
-        if (level == null) return;
-        if (level.isClientSide || level.getGameTime() % 10 != 0L) return;
+        if (level == null)
+            return;
+        if (level.isClientSide || level.getGameTime() % 10 != 0L)
+            return;
 
         List<BlockPos> possible = new ArrayList<>();
         int range = FLOWER_GEN_RANGE.get();
@@ -67,29 +69,32 @@ public abstract class FlowerGenMixin extends BlockEntityImpl implements IFlowerG
                     BlockPos offset = this.worldPosition.offset(x, y, z);
                     BlockState state = level.getBlockState(offset);
                     if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) &&
-                            state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) continue;
+                            state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER)
+                        continue;
                     Block block = state.getBlock();
-                    if (FLOWER_GENERATIONS.containsKey(block)) {
+                    if (FLOWER_GENERATIONS.containsKey(block))
                         possible.add(offset);
-                    }
                 }
             }
         }
-        if (possible.isEmpty()) return;
+        if (possible.isEmpty())
+            return;
 
         BlockPos pos = possible.get(level.random.nextInt(possible.size()));
         Block flower = level.getBlockState(pos).getBlock();
-        naturesaura_plus$flowerMemory.writeObject(flower);
-        this.setChanged();
-        int repeatFlower = naturesaura_plus$flowerMemory.countObject(flower) - 1;
+        int repeatFlower = naturesaura_plus$flowerMemory.countObject(flower);
         AuraGenRules.FlowerValues stats = FLOWER_GENERATIONS.get(flower);
         byte lucidity = stats.lucidity();
         double auraFactor = (1 - Math.pow(((double) (100 - this.naturesaura_plus$vitality)/FLOWER_GEN_VITALITY_FLOOR.get()),FLOWER_GEN_POW_FACTOR.get())); //make float
         int auraAmount = (int) (stats.auraAmount() * auraFactor);
         int toAdd = Math.max(0, auraAmount);
 
+        if (!this.canGenerateRightNow(toAdd))
+            return;
+
         if (lucidity != 0 && repeatFlower == 0) {
-            if (this.naturesaura_plus$vitality != 100) this.naturesaura_plus$vitality = (byte) Math.min(this.naturesaura_plus$vitality + lucidity,100);
+            if (this.naturesaura_plus$vitality != 100)
+                this.naturesaura_plus$vitality = (byte) Math.min(this.naturesaura_plus$vitality + lucidity,100);
         }
         else if (this.naturesaura_plus$vitality != 0) {
             byte obscurity = (byte) (stats.obscurity() * Math.pow(stats.obscurityScale(),repeatFlower));
@@ -101,12 +106,14 @@ public abstract class FlowerGenMixin extends BlockEntityImpl implements IFlowerG
                 () -> this.level.getChunkAt(this.getBlockPos()) ), msg);
 
         if (toAdd > 0) {
-            if (IAuraType.forLevel(level).isSimilar(NaturesAuraAPI.TYPE_OVERWORLD) && this.canGenerateRightNow(toAdd)) {
+            if (IAuraType.forLevel(level).isSimilar(NaturesAuraAPI.TYPE_OVERWORLD)) {
                 this.generateAura(toAdd);
             } else {
                 toAdd = 0;
             }
         }
+        naturesaura_plus$flowerMemory.writeObject(flower);
+        this.setChanged();
         level.removeBlock(pos, false);
         int color = Helper.blendColors(6081584, 15023126, (float) auraFactor);
         if (toAdd > 0) {
