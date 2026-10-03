@@ -182,9 +182,9 @@ public abstract class BlockEntityWoodStandMixin extends BlockEntityImpl implemen
                 }
 
             if (this.naturesaura_plus$treeCacheDecorator != null) {
-                for (BlockPos leafPos : this.naturesaura_plus$treeCacheDecorator) {
-                    level.setBlockAndUpdate(leafPos, Blocks.AIR.defaultBlockState());
-                    PacketHandler.sendToAllAround(level, leafPos, 32, new PacketParticles((float) leafPos.getX(), (float) leafPos.getY(), (float) leafPos.getZ(), PacketParticles.Type.TR_DISAPPEAR));
+                for (BlockPos decoPos : this.naturesaura_plus$treeCacheDecorator) {
+                    level.setBlockAndUpdate(decoPos, Blocks.AIR.defaultBlockState());
+                    PacketHandler.sendToAllAround(level, decoPos, 32, new PacketParticles((float) decoPos.getX(), (float) decoPos.getY(), (float) decoPos.getZ(), PacketParticles.Type.TR_DISAPPEAR));
                 }
             }
 

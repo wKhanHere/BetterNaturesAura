@@ -28,16 +28,16 @@ public abstract class LevelMixin extends CapabilityProvider<Level> {
         Set<BlockPos> stems = TreeRitualTreeTracker.STEM_CACHE.get();
         if (stems == null)
             return;
-
         Set<BlockPos> leaves = TreeRitualTreeTracker.LEAF_CACHE.get();
         if (leaves == null)
             return;
-
         Set<BlockPos> decorators = TreeRitualTreeTracker.DECORATOR_CACHE.get();
         if (decorators == null)
             return;
 
         if (state.is(EXCLUDE_IN_TREE_RITUAL_CLEANUP))
+            return;
+        if (state.getBlock() == (((Level) (Object) this).getBlockState(pos)).getBlock())
             return;
 
         BlockPos immutablePos = pos.immutable();
