@@ -49,7 +49,9 @@ public class SlotSpecificItemStackHandler extends ItemStackHandler {
         return switch (slot) {
             case 0 -> {
                 Level level = this.levelSupplier.get();
-                yield level != null && ModRecipeTypes.AURA_OVEN.get().getInputCache().getRecipe(level, stack) != null;
+                if (level == null)
+                    yield false;
+                yield ModRecipeTypes.AURA_OVEN.get().getInputCache().getRecipe(level, stack) != null;
                 //todo: change this to use any cache (replace .get() till with a constructor var)
             }
             case 5 -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();

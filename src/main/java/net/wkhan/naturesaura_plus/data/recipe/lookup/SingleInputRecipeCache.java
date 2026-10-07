@@ -32,7 +32,9 @@ public class SingleInputRecipeCache<RECIPE extends AuraRecipe> implements IInput
 
         List<RECIPE> recipes = recipeType.getRecipes(level);
         for (RECIPE recipe : recipes) {
-            this.cache.put(recipe.getInput().getItems()[0].getItem(), recipe);
+            for (ItemStack stack : recipe.getInput().getItems()) {
+                this.cache.put(stack.getItem(), recipe);
+            }
         }
         return this.cache.get(input.getItem());
     }
