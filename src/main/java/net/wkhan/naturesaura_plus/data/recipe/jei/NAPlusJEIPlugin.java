@@ -2,6 +2,7 @@ package net.wkhan.naturesaura_plus.data.recipe.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -9,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.wkhan.naturesaura_plus.common.block.ModBlocks;
+import net.wkhan.naturesaura_plus.common.gui.oven.OvenScreen;
 import net.wkhan.naturesaura_plus.data.recipe.ModRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,6 +21,13 @@ public class NAPlusJEIPlugin implements IModPlugin {
     @Override
     public @NotNull ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(MODID, "jei_plugin");
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addRecipeClickArea(
+                OvenScreen.class, 38, 31, 15, 16, OvenRecipeCategory.TYPE
+        );
     }
 
     @Override

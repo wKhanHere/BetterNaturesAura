@@ -141,7 +141,7 @@ dependencies {
     implementation fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
     implementation fg.deobf("curse.maven:observable-509575:5643037")
     implementation fg.deobf("curse.maven:jei-238222:8879628")
-    implementation fg.deobf("curse.maven:emi-580555:8081375")
+//    implementation fg.deobf("curse.maven:emi-580555:8081375")
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
