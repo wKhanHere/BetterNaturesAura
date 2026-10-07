@@ -62,8 +62,8 @@ public class AuraGenConfig {
                 .comment("Horizontal range in blocks of the moss generator. (Default: 2) \n(Note, does not affect vertical range)")
                 .defineInRange("mossGenRange", 2, 1, 10);
         MOSS_GEN_MEMORY_SIZE = BUILDER
-                .comment("Number of mosses the moss aura generator block remembers when determining if moss block is recent (Hence skipping if recent). (Default: 3)")
-                .defineInRange("mossGenMemorySize", 3, 1, 1000);
+                .comment("Number of mosses the moss aura generator block remembers when determining if moss block is recent (Hence skipping if recent). (Default: 1)")
+                .defineInRange("mossGenMemorySize", 1, 1, 1000);
         BUILDER.pop();
 
 

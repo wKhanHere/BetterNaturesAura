@@ -99,6 +99,9 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                         );
 
                 this.tag(ModTags.Blocks.EXCLUDE_IN_TREE_RITUAL_CLEANUP)
+                        .add(
+                                Blocks.ROOTED_DIRT
+                        )
                         .addOptional(
                                 ResourceLocation.fromNamespaceAndPath("malum", "blighted_soil")
                         )

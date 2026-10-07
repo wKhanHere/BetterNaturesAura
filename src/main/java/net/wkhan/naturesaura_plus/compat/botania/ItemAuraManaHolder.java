@@ -51,6 +51,9 @@ public class ItemAuraManaHolder extends Item {
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.getString(DISPLAY_MODE_TAG).isEmpty())
+            tag.putString(DISPLAY_MODE_TAG, AURA_TAG);
         return new DualAuraManaItemImpl(stack);
     }
 

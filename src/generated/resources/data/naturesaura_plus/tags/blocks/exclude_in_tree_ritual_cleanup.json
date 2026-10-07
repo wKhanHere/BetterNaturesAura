@@ -1,5 +1,6 @@
 {
   "values": [
+    "minecraft:rooted_dirt",
     {
       "id": "malum:blighted_soil",
       "required": false
