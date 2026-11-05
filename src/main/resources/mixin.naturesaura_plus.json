@@ -30,6 +30,8 @@
     "item.ItemAuraCacheMixin",
     "item.ItemLootFinderMixin",
     "misc.BlastFurnaceBoosterMixin",
+    "misc.ItemEffectPowderMixin",
+    "misc.JEINaturesAuraPluginMixin",
     "misc.OreSpawnEffectMixin",
     "misc.PetReviverEventsMixin",
     "misc.PlantBoostEffectMixin",
