@@ -22,11 +22,10 @@ public abstract class ItemEffectPowderMixin extends ItemImpl {
     }
 
     @WrapMethod(
-            method = "getName",
-            remap = false
+            method = "getName"
     )
     private Component naturesaura_plus$fixNullGetEffectInName(ItemStack stack, Operation<Component> original) {
         ResourceLocation effect = getEffect(stack);
-        return Component.translatable(effect == null ? this.getDescriptionId(stack) : this.getDescriptionId(stack) + "." + getEffect(stack));
+        return Component.translatable(effect == null ? this.getDescriptionId(stack) : this.getDescriptionId(stack) + "." + effect);
     }
 }
